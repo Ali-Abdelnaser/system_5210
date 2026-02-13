@@ -1,0 +1,16 @@
+flutter_native_splash:
+  color: "#ffffff" # خلفية بيضاء
+  image: assets/img/logo.png # مسار اللوجو بتاعك
+  
+  android_12:
+    color: "#ffffff"
+    icon_background_color: "#ffffff"
+    image: assets/img/logo.png # لوجو مخصص لاندرويد 12 (اختياري)
+    
+  ios: true
+  android: true
+  web: false
+
+  # لو حابب تظهر صوره تحت خالص (زي كلمة Powered by)
+  # brand: assets/images/brand.png 
+
