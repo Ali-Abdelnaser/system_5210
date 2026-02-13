@@ -65,6 +65,7 @@ dependencies:
   flutter_dotenv: ^6.0.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  audioplayers: ^6.1.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -91,6 +92,8 @@ flutter:
   assets:
     - assets/img/
     - assets/svg/
+    - assets/img/games/game1/
+    - assets/audio/games/game1/
     - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

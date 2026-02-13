@@ -49,6 +49,12 @@ import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe
 import '../../features/nutrition_scan/data/repositories/nutrition_repository_impl.dart';
 import '../../features/nutrition_scan/domain/repositories/nutrition_repository.dart';
 import '../../features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import '../../features/games/balanced_diet/data/datasources/game_remote_data_source.dart';
+import '../../features/games/balanced_diet/data/datasources/game_remote_data_source_impl.dart';
+import '../../features/games/balanced_diet/data/repositories/game_repository_impl.dart';
+import '../../features/games/balanced_diet/domain/repositories/game_repository.dart';
+import '../../features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
+import '../../features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -122,6 +128,8 @@ Future<void> init() async {
 
   sl.registerFactory(() => NutritionScanCubit(repository: sl()));
   sl.registerFactory(() => RecipeCubit(getRecipesUseCase: sl()));
+  sl.registerFactory(() => BalancedPlateCubit(repository: sl(), auth: sl()));
+  sl.registerFactory(() => GameStatsCubit(repository: sl(), auth: sl()));
 
   // Repository
   // Repository
@@ -142,6 +150,9 @@ Future<void> init() async {
   sl.registerLazySingleton<RecipeRepository>(
     () => RecipeRepositoryImpl(remoteDataSource: sl()),
   );
+  sl.registerLazySingleton<GameRepository>(
+    () => GameRepositoryImpl(remoteDataSource: sl()),
+  );
 
   // Data sources
   sl.registerLazySingleton<SpecialistsRemoteDataSource>(
@@ -157,6 +168,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<RecipeRemoteDataSource>(
     () => RecipeRemoteDataSourceImpl(firestore: sl()),
+  );
+  sl.registerLazySingleton<GameRemoteDataSource>(
+    () => GameRemoteDataSourceImpl(firestore: sl()),
   );
 
   // External

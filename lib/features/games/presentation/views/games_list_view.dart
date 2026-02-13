@@ -1,0 +1,224 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:system_5210/core/theme/app_theme.dart';
+import 'package:system_5210/core/utils/app_images.dart';
+import 'package:system_5210/core/utils/app_routes.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+
+class GamesListView extends StatelessWidget {
+  const GamesListView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        title: Text(
+          'أرض الألعاب',
+          style: GoogleFonts.cairo(
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF2D3142), // Dark color for better contrast
+            fontSize: 24,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        iconTheme: const IconThemeData(color: Color(0xFF2D3142)),
+      ),
+      body: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
+          ),
+
+          SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              children: [
+                _buildGameCard(
+                  context,
+                  title: 'الطبق المتوازن',
+                  description: 'ساعد بطلنا في اختيار وجبة صحية ولذيذة!',
+                  imagePath: AppImages.plate,
+                  color: AppTheme.appGreen,
+                  routeName: AppRoutes.balancedPlateGame,
+                ).animate().slideX(
+                  begin: -1,
+                  end: 0,
+                  duration: 600.ms,
+                  curve: Curves.easeOutBack,
+                ),
+
+                const SizedBox(height: 20),
+
+                // Placeholder for upcoming games
+                _buildUpcomingGameCard(
+                  'لعبة الألوان النشيطة',
+                  'قريباً في تحديثنا القادم!',
+                ).animate().slideX(
+                  begin: 1,
+                  end: 0,
+                  delay: 200.ms,
+                  duration: 600.ms,
+                  curve: Curves.easeOutBack,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGameCard(
+    BuildContext context, {
+    required String title,
+    required String description,
+    required String imagePath,
+    required Color color,
+    required String routeName,
+  }) {
+    return GestureDetector(
+      onTap: () => Navigator.pushNamed(context, routeName),
+      child: GlassContainer(
+        blur: 10,
+        opacity: 0.6,
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.white.withOpacity(0.5)),
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            children: [
+              // Game Icon/Thumbnail
+              Container(
+                width: 90,
+                height: 90,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: color.withOpacity(0.2),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Image.asset(imagePath, fit: BoxFit.contain),
+              ),
+
+              const SizedBox(width: 20),
+
+              // Game Details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.cairo(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF2D3142),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      description,
+                      style: GoogleFonts.cairo(
+                        fontSize: 14,
+                        color: const Color(0xFF475569),
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.balancedPlateStats,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.bar_chart_rounded, size: 16, color: color),
+                          const SizedBox(width: 4),
+                          Text(
+                            'الإحصائيات والسجل',
+                            style: GoogleFonts.cairo(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: color,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Play Icon
+              Icon(Icons.play_circle_fill_rounded, color: color, size: 40),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUpcomingGameCard(String title, String status) {
+    return GlassContainer(
+      blur: 10,
+      opacity: 0.2,
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(25),
+      border: Border.all(color: Colors.white.withOpacity(0.3)),
+      child: Opacity(
+        opacity: 0.6,
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            children: [
+              Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.lock_rounded,
+                  color: Colors.grey,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.cairo(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF2D3142).withOpacity(0.7),
+                    ),
+                  ),
+                  Text(
+                    status,
+                    style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:system_5210/features/specialists/presentation/views/data_uploader_view.dart';
+import '../../core/utils/injection_container.dart';
 import '../../features/auth/presentation/views/forgot_password_view.dart';
 import '../../features/auth/presentation/views/login_view.dart';
 import '../../features/auth/presentation/views/register_view.dart';
@@ -19,6 +21,11 @@ import '../../features/nutrition_scan/presentation/pages/recent_scans_page.dart'
 import '../../features/healthy_recipes/presentation/views/recipes_list_view.dart';
 import '../../features/healthy_recipes/presentation/views/recipe_details_view.dart';
 import '../../features/healthy_recipes/domain/entities/recipe.dart';
+import '../../features/games/balanced_diet/presentation/views/balanced_plate_view.dart';
+import '../../features/games/balanced_diet/presentation/views/game_stats_view.dart';
+import '../../features/games/presentation/views/games_list_view.dart';
+import '../../features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
+import '../../features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -42,6 +49,9 @@ class AppRoutes {
   static const String recentScans = '/recent-scans';
   static const String healthyRecipes = '/healthy-recipes';
   static const String recipeDetails = '/recipe-details';
+  static const String balancedPlateGame = '/balanced-plate-game';
+  static const String balancedPlateStats = '/balanced-plate-stats';
+  static const String gamesList = '/games-list';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     Widget page;
@@ -112,6 +122,21 @@ class AppRoutes {
       case recipeDetails:
         final recipe = settings.arguments as Recipe;
         page = RecipeDetailsView(recipe: recipe);
+        break;
+      case balancedPlateGame:
+        page = BlocProvider(
+          create: (context) => sl<BalancedPlateCubit>()..startGame(),
+          child: const BalancedPlateView(),
+        );
+        break;
+      case balancedPlateStats:
+        page = BlocProvider(
+          create: (context) => sl<GameStatsCubit>(),
+          child: const GameStatsView(),
+        );
+        break;
+      case gamesList:
+        page = const GamesListView();
         break;
       default:
         return null;

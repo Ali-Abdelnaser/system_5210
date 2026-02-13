@@ -100,7 +100,7 @@ class _DataUploaderViewState extends State<DataUploaderView> {
       ],
       videoUrl: 'https://www.instagram.com/hassankauod/reel/DOlhrjLDSNR/',
       imageUrl:
-          'https://images.unsplash.com/photo-1523294587484-cccb444e8ec7?q=80&w=1000&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1502741126161-b048400d085d?q=80&w=1000&auto=format&fit=crop',
     ),
     const RecipeModel(
       id: '',
@@ -112,7 +112,7 @@ class _DataUploaderViewState extends State<DataUploaderView> {
       stepsAr: ['قطع الفواكه', 'أضف العصير والعسل'],
       videoUrl: '',
       imageUrl:
-          'https://images.unsplash.com/photo-1519996529931-28324d5a630e?q=80&w=1000&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1502741126161-b048400d085d?q=80&w=1000&auto=format&fit=crop',
     ),
     const RecipeModel(
       id: '',
@@ -124,7 +124,7 @@ class _DataUploaderViewState extends State<DataUploaderView> {
       stepsAr: ['حمص الخبز', 'اهرس الأفوكادو', 'ضع البيض المسلوق في الأعلى'],
       videoUrl: '',
       imageUrl:
-          'https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=1000&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1502741126161-b048400d085d?q=80&w=1000&auto=format&fit=crop',
     ),
     const RecipeModel(
       id: '',
@@ -136,7 +136,7 @@ class _DataUploaderViewState extends State<DataUploaderView> {
       stepsAr: ['اخلط المكونات', 'قدمها باردة'],
       videoUrl: '',
       imageUrl:
-          'https://images.unsplash.com/photo-1553530245-565cb2913e61?q=80&w=1000&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1502741126161-b048400d085d?q=80&w=1000&auto=format&fit=crop',
     ),
     const RecipeModel(
       id: '',
@@ -148,7 +148,7 @@ class _DataUploaderViewState extends State<DataUploaderView> {
       stepsAr: ['قطع الخضار شرائح', 'قدمها مع غمسة الحمص'],
       videoUrl: '',
       imageUrl:
-          'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=1000&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1502741126161-b048400d085d?q=80&w=1000&auto=format&fit=crop',
     ),
   ];
 

@@ -7,6 +7,7 @@ import 'package:system_5210/features/profile/presentation/views/profile_view.dar
 import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
 import 'package:system_5210/features/nutrition_scan/presentation/pages/scan_intro_view.dart';
 import '../manager/home_cubit.dart';
+import 'package:system_5210/features/games/presentation/views/games_list_view.dart';
 
 class MainLayoutView extends StatefulWidget {
   const MainLayoutView({super.key});
@@ -41,7 +42,7 @@ class _MainLayoutViewState extends State<MainLayoutView> {
             children: const [
               HomeView(),
               ScanIntroView(),
-              Center(child: Text("Game Screen (Coming Soon)")),
+              GamesListView(),
               ProfileView(),
             ],
           ),
