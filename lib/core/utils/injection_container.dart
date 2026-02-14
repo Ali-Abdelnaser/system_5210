@@ -29,10 +29,10 @@ import 'package:system_5210/features/auth/domain/usecases/send_email_verificatio
 import 'package:system_5210/features/auth/domain/usecases/verify_email_otp_usecase.dart';
 import 'package:system_5210/features/auth/domain/usecases/update_password_usecase.dart';
 import 'package:system_5210/features/auth/domain/usecases/update_email_usecase.dart';
-import '../../features/user_setup/data/repositories/user_setup_repository_impl.dart';
-import '../../features/user_setup/domain/repositories/user_setup_repository.dart';
-import '../../features/user_setup/domain/usecases/save_user_profile_usecase.dart';
-import '../../features/user_setup/presentation/manager/user_setup_cubit.dart';
+import 'package:system_5210/features/user_setup/data/repositories/user_setup_repository_impl.dart';
+import 'package:system_5210/features/user_setup/domain/repositories/user_setup_repository.dart';
+import 'package:system_5210/features/user_setup/domain/usecases/save_user_profile_usecase.dart';
+import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
 import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
 
 import 'package:system_5210/features/user_setup/domain/usecases/get_user_profile_usecase.dart';
@@ -46,15 +46,16 @@ import 'package:system_5210/features/healthy_recipes/data/repositories/recipe_re
 import 'package:system_5210/features/healthy_recipes/domain/repositories/recipe_repository.dart';
 import 'package:system_5210/features/healthy_recipes/domain/usecases/get_recipes_usecase.dart';
 import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
-import '../../features/nutrition_scan/data/repositories/nutrition_repository_impl.dart';
-import '../../features/nutrition_scan/domain/repositories/nutrition_repository.dart';
-import '../../features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import '../../features/games/balanced_diet/data/datasources/game_remote_data_source.dart';
-import '../../features/games/balanced_diet/data/datasources/game_remote_data_source_impl.dart';
-import '../../features/games/balanced_diet/data/repositories/game_repository_impl.dart';
-import '../../features/games/balanced_diet/domain/repositories/game_repository.dart';
-import '../../features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
-import '../../features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
+import 'package:system_5210/features/nutrition_scan/data/repositories/nutrition_repository_impl.dart';
+import 'package:system_5210/features/nutrition_scan/domain/repositories/nutrition_repository.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:system_5210/features/games/balanced_diet/data/datasources/game_remote_data_source.dart';
+import 'package:system_5210/features/games/balanced_diet/data/datasources/game_remote_data_source_impl.dart';
+import 'package:system_5210/features/games/balanced_diet/data/repositories/game_repository_impl.dart';
+import 'package:system_5210/features/games/food_matching/presentation/cubit/food_matching_cubit.dart';
+import 'package:system_5210/features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
+import 'package:system_5210/features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
+import 'package:system_5210/features/games/balanced_diet/domain/repositories/game_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -130,6 +131,7 @@ Future<void> init() async {
   sl.registerFactory(() => RecipeCubit(getRecipesUseCase: sl()));
   sl.registerFactory(() => BalancedPlateCubit(repository: sl(), auth: sl()));
   sl.registerFactory(() => GameStatsCubit(repository: sl(), auth: sl()));
+  sl.registerFactory(() => FoodMatchingCubit(repository: sl(), auth: sl()));
 
   // Repository
   // Repository

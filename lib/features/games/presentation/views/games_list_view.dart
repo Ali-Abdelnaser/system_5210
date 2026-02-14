@@ -41,10 +41,11 @@ class GamesListView extends StatelessWidget {
                 _buildGameCard(
                   context,
                   title: 'الطبق المتوازن',
-                  description: 'ساعد بطلنا في اختيار وجبة صحية ولذيذة!',
+                  description: 'ساعد بطلنا في اختيار وجبة صحية ولذيذة',
                   imagePath: AppImages.plate,
                   color: AppTheme.appGreen,
                   routeName: AppRoutes.balancedPlateGame,
+                  statsRouteName: AppRoutes.balancedPlateStats,
                 ).animate().slideX(
                   begin: -1,
                   end: 0,
@@ -54,14 +55,32 @@ class GamesListView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // Placeholder for upcoming games
-                _buildUpcomingGameCard(
-                  'لعبة الألوان النشيطة',
-                  'قريباً في تحديثنا القادم!',
+                _buildGameCard(
+                  context,
+                  title: 'لعبة التوصيل الذكية',
+                  description: 'وصل الكلمات بصورها المناسبة بذكاء وسرعة',
+                  imagePath: AppImages.connect,
+                  color: AppTheme.appBlue,
+                  routeName: AppRoutes.matchingGame,
+                  statsRouteName: AppRoutes.matchingStats,
                 ).animate().slideX(
                   begin: 1,
                   end: 0,
                   delay: 200.ms,
+                  duration: 600.ms,
+                  curve: Curves.easeOutBack,
+                ),
+
+                const SizedBox(height: 20),
+
+                // Placeholder for upcoming games
+                _buildUpcomingGameCard(
+                  'لعبة الألوان النشيطة',
+                  'قريباً في تحديثنا القادم',
+                ).animate().slideX(
+                  begin: -1,
+                  end: 0,
+                  delay: 400.ms,
                   duration: 600.ms,
                   curve: Curves.easeOutBack,
                 ),
@@ -80,6 +99,7 @@ class GamesListView extends StatelessWidget {
     required String imagePath,
     required Color color,
     required String routeName,
+    required String statsRouteName,
   }) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, routeName),
@@ -138,10 +158,7 @@ class GamesListView extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     GestureDetector(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.balancedPlateStats,
-                      ),
+                      onTap: () => Navigator.pushNamed(context, statsRouteName),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

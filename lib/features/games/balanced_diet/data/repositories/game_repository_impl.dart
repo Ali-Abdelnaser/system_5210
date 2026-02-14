@@ -24,10 +24,14 @@ class GameRepositoryImpl implements GameRepository {
 
   @override
   Future<Either<String, List<GameResultModel>>> getGameHistory(
-    String uid,
-  ) async {
+    String uid, {
+    String? gameId,
+  }) async {
     try {
-      final history = await remoteDataSource.getGameHistory(uid);
+      final history = await remoteDataSource.getGameHistory(
+        uid,
+        gameId: gameId,
+      );
       return Right(history);
     } catch (e) {
       return Left(e.toString());
@@ -35,9 +39,12 @@ class GameRepositoryImpl implements GameRepository {
   }
 
   @override
-  Future<Either<String, GameStatsModel>> getGameStats(String uid) async {
+  Future<Either<String, GameStatsModel>> getGameStats(
+    String uid, {
+    String? gameId,
+  }) async {
     try {
-      final stats = await remoteDataSource.getGameStats(uid);
+      final stats = await remoteDataSource.getGameStats(uid, gameId: gameId);
       return Right(stats);
     } catch (e) {
       return Left(e.toString());

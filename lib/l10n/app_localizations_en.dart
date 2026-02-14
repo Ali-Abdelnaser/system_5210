@@ -66,10 +66,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerHere => 'Register here';
 
   @override
-  String get newHeroTitleBoy => 'New Member!';
+  String get newHeroTitleBoy => 'New Member';
 
   @override
-  String get newHeroTitleGirl => 'New Member!';
+  String get newHeroTitleGirl => 'New Member';
 
   @override
   String get heroNameBoy => 'Full Name';
@@ -87,7 +87,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get parentsEmail => 'Parents Email';
 
   @override
-  String get startAdventure => 'Get Started Now!';
+  String get startAdventure => 'Get Started Now';
 
   @override
   String get boy => 'Boy';
@@ -100,7 +100,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingDesc5 =>
-      'Your body energy! Eat 5 servings of colorful fruits and vegetables every day to stay strong.';
+      'Your body energy. Eat 5 servings of colorful fruits and vegetables every day to stay strong.';
 
   @override
   String get onboardingTitle2 => '2 Hours of Screen Time Only';
@@ -114,7 +114,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingDesc1 =>
-      'Move, play, and run for an entire hour every day. Exercise makes your heart and muscles strong!';
+      'Move, play, and run for an entire hour every day. Exercise makes your heart and muscles strong';
 
   @override
   String get onboardingTitle0 => '0 Sugar & Fizzy Drinks';
@@ -131,7 +131,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get forgotPasswordDesc =>
-      'Don\'t worry! Enter your email and we will send a code to reset your password.';
+      'Don\'t worry. Enter your email and we will send a code to reset your password.';
 
   @override
   String get sendCode => 'Send Code';
@@ -201,7 +201,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get whoAreYou => 'Who are you?';
 
   @override
-  String get welcomeHero => 'Welcome!';
+  String get welcomeHero => 'Welcome';
 
   @override
   String get chooseRole => 'Choose your role';
@@ -422,33 +422,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get funZone => 'Fun Zone';
 
   @override
-  String get promoTip1 => 'An apple a day keeps the doctor away!';
+  String get promoTip1 => 'An apple a day keeps the doctor away';
 
   @override
-  String get promoTip2 => 'Water is the best fuel for your brain!';
+  String get promoTip2 => 'Water is the best fuel for your brain';
 
   @override
-  String get promoTip3 => '1 hour of play makes you stronger!';
+  String get promoTip3 => '1 hour of play makes you stronger';
 
   @override
-  String get promoTip4 => 'Sleep well to grow tall and smart!';
+  String get promoTip4 => 'Sleep well to grow tall and smart';
 
   @override
-  String get promoTip5 => 'Brush your teeth to keep them bright!';
+  String get promoTip5 => 'Brush your teeth to keep them bright';
 
   @override
   String dayStreak(int count) {
-    return '$count Day Streak!';
+    return '$count Day Streak';
   }
 
   @override
   String get mysteryMissionTitle => 'Mystery Mission ⚡';
 
   @override
-  String get mysteryMissionSubTitle => 'Tap to reveal your challenge!';
+  String get mysteryMissionSubTitle => 'Tap to reveal your challenge';
 
   @override
-  String get summaryCardTitle => 'Keep going!';
+  String get summaryCardTitle => 'Keep going';
 
   @override
   String summaryCardSubTitle(int completed, int total) {
@@ -465,19 +465,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get badges => 'Badges';
 
   @override
-  String get missionComplete => 'Mission Complete! 🎉';
+  String get missionComplete => 'Mission Complete 🎉';
 
   @override
   String get missionHydrationTitle => 'Hydration Target';
 
   @override
-  String get missionHydrationText => 'Drink a big glass of water right now!';
+  String get missionHydrationText => 'Drink a big glass of water right now';
 
   @override
   String get missionEnergyTitle => 'Energy Burst';
 
   @override
-  String get missionEnergyText => 'Do 10 jumping jacks!';
+  String get missionEnergyText => 'Do 10 jumping jacks';
 
   @override
   String get missionSnackTitle => 'Snack Attack';
@@ -489,13 +489,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get missionLoveTitle => 'Spread Love';
 
   @override
-  String get missionLoveText => 'Give a high-five or hug to someone nearby!';
+  String get missionLoveText => 'Give a high-five or hug to someone nearby';
 
   @override
-  String get keepItUp => 'Keep it up!';
+  String get keepItUp => 'Keep it up';
 
   @override
-  String get reduceThis => 'Reduce this!';
+  String get reduceThis => 'Reduce this';
 
   @override
   String get logTime => 'Log Time';
@@ -552,13 +552,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Are you sure you want to delete this child profile?';
 
   @override
-  String get congratulationsTitle => 'Congratulations!';
+  String get congratulationsTitle => 'Congratulations';
 
   @override
   String get setupComplete => 'Setup Complete';
 
   @override
-  String get readyToStart => 'You are ready to start your healthy journey!';
+  String get readyToStart => 'You are ready to start your healthy journey';
 
   @override
   String get specialistsTitle => 'Specialists Directory';
@@ -601,10 +601,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign in with phone is not available yet. Please use email.';
 
   @override
-  String get welcomeBack => 'Welcome back! 🌟';
+  String get welcomeBack => 'Welcome back 🌟';
 
   @override
-  String get welcomeMission => 'Welcome to our MISSION! 🚀';
+  String get welcomeMission => 'Welcome to our MISSION 🚀';
 
   @override
   String get callNow => 'Call Now';
@@ -669,7 +669,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serverErrorMessage =>
-      'Sorry, we\'re facing a minor issue with the server. We\'ll be back online soon!';
+      'Sorry, we\'re facing a minor issue with the server. We\'ll be back online soon';
 
   @override
   String get retry => 'Retry';

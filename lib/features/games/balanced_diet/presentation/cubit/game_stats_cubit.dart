@@ -10,7 +10,7 @@ class GameStatsCubit extends Cubit<GameStatsState> {
   GameStatsCubit({required this.repository, required this.auth})
     : super(GameStatsInitial());
 
-  Future<void> loadStats() async {
+  Future<void> loadStats({String? gameId}) async {
     final user = auth.currentUser;
     if (user == null) {
       emit(const GameStatsFailure('User not logged in'));
@@ -19,8 +19,11 @@ class GameStatsCubit extends Cubit<GameStatsState> {
 
     emit(GameStatsLoading());
 
-    final statsResult = await repository.getGameStats(user.uid);
-    final historyResult = await repository.getGameHistory(user.uid);
+    final statsResult = await repository.getGameStats(user.uid, gameId: gameId);
+    final historyResult = await repository.getGameHistory(
+      user.uid,
+      gameId: gameId,
+    );
 
     statsResult.fold((failure) => emit(GameStatsFailure(failure)), (stats) {
       historyResult.fold(

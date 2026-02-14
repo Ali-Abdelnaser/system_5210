@@ -43,7 +43,8 @@ class AppImages {
   // Game 1: Balanced Plate
   static const String _game1Path = 'assets/img/games/game1/';
   static const String plate = '${_game1Path}plate.webp';
-
+  static const String connect = '${_game1Path}connect.png';
+  
   // Game Characters (Success/Fail for 4 characters)
   static const String gameSuccess1 = '${_game1Path}success_character.webp';
   static const String gameSuccess2 = '${_game1Path}success_character2.webp';

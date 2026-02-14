@@ -215,13 +215,13 @@ abstract class AppLocalizations {
   /// No description provided for @newHeroTitleBoy.
   ///
   /// In en, this message translates to:
-  /// **'New Member!'**
+  /// **'New Member'**
   String get newHeroTitleBoy;
 
   /// No description provided for @newHeroTitleGirl.
   ///
   /// In en, this message translates to:
-  /// **'New Member!'**
+  /// **'New Member'**
   String get newHeroTitleGirl;
 
   /// No description provided for @heroNameBoy.
@@ -257,7 +257,7 @@ abstract class AppLocalizations {
   /// No description provided for @startAdventure.
   ///
   /// In en, this message translates to:
-  /// **'Get Started Now!'**
+  /// **'Get Started Now'**
   String get startAdventure;
 
   /// No description provided for @boy.
@@ -281,7 +281,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingDesc5.
   ///
   /// In en, this message translates to:
-  /// **'Your body energy! Eat 5 servings of colorful fruits and vegetables every day to stay strong.'**
+  /// **'Your body energy. Eat 5 servings of colorful fruits and vegetables every day to stay strong.'**
   String get onboardingDesc5;
 
   /// No description provided for @onboardingTitle2.
@@ -305,7 +305,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingDesc1.
   ///
   /// In en, this message translates to:
-  /// **'Move, play, and run for an entire hour every day. Exercise makes your heart and muscles strong!'**
+  /// **'Move, play, and run for an entire hour every day. Exercise makes your heart and muscles strong'**
   String get onboardingDesc1;
 
   /// No description provided for @onboardingTitle0.
@@ -335,7 +335,7 @@ abstract class AppLocalizations {
   /// No description provided for @forgotPasswordDesc.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t worry! Enter your email and we will send a code to reset your password.'**
+  /// **'Don\'t worry. Enter your email and we will send a code to reset your password.'**
   String get forgotPasswordDesc;
 
   /// No description provided for @sendCode.
@@ -467,7 +467,7 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeHero.
   ///
   /// In en, this message translates to:
-  /// **'Welcome!'**
+  /// **'Welcome'**
   String get welcomeHero;
 
   /// No description provided for @chooseRole.
@@ -893,37 +893,37 @@ abstract class AppLocalizations {
   /// No description provided for @promoTip1.
   ///
   /// In en, this message translates to:
-  /// **'An apple a day keeps the doctor away!'**
+  /// **'An apple a day keeps the doctor away'**
   String get promoTip1;
 
   /// No description provided for @promoTip2.
   ///
   /// In en, this message translates to:
-  /// **'Water is the best fuel for your brain!'**
+  /// **'Water is the best fuel for your brain'**
   String get promoTip2;
 
   /// No description provided for @promoTip3.
   ///
   /// In en, this message translates to:
-  /// **'1 hour of play makes you stronger!'**
+  /// **'1 hour of play makes you stronger'**
   String get promoTip3;
 
   /// No description provided for @promoTip4.
   ///
   /// In en, this message translates to:
-  /// **'Sleep well to grow tall and smart!'**
+  /// **'Sleep well to grow tall and smart'**
   String get promoTip4;
 
   /// No description provided for @promoTip5.
   ///
   /// In en, this message translates to:
-  /// **'Brush your teeth to keep them bright!'**
+  /// **'Brush your teeth to keep them bright'**
   String get promoTip5;
 
   /// No description provided for @dayStreak.
   ///
   /// In en, this message translates to:
-  /// **'{count} Day Streak!'**
+  /// **'{count} Day Streak'**
   String dayStreak(int count);
 
   /// No description provided for @mysteryMissionTitle.
@@ -935,13 +935,13 @@ abstract class AppLocalizations {
   /// No description provided for @mysteryMissionSubTitle.
   ///
   /// In en, this message translates to:
-  /// **'Tap to reveal your challenge!'**
+  /// **'Tap to reveal your challenge'**
   String get mysteryMissionSubTitle;
 
   /// No description provided for @summaryCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Keep going!'**
+  /// **'Keep going'**
   String get summaryCardTitle;
 
   /// No description provided for @summaryCardSubTitle.
@@ -971,7 +971,7 @@ abstract class AppLocalizations {
   /// No description provided for @missionComplete.
   ///
   /// In en, this message translates to:
-  /// **'Mission Complete! 🎉'**
+  /// **'Mission Complete 🎉'**
   String get missionComplete;
 
   /// No description provided for @missionHydrationTitle.
@@ -983,7 +983,7 @@ abstract class AppLocalizations {
   /// No description provided for @missionHydrationText.
   ///
   /// In en, this message translates to:
-  /// **'Drink a big glass of water right now!'**
+  /// **'Drink a big glass of water right now'**
   String get missionHydrationText;
 
   /// No description provided for @missionEnergyTitle.
@@ -995,7 +995,7 @@ abstract class AppLocalizations {
   /// No description provided for @missionEnergyText.
   ///
   /// In en, this message translates to:
-  /// **'Do 10 jumping jacks!'**
+  /// **'Do 10 jumping jacks'**
   String get missionEnergyText;
 
   /// No description provided for @missionSnackTitle.
@@ -1019,19 +1019,19 @@ abstract class AppLocalizations {
   /// No description provided for @missionLoveText.
   ///
   /// In en, this message translates to:
-  /// **'Give a high-five or hug to someone nearby!'**
+  /// **'Give a high-five or hug to someone nearby'**
   String get missionLoveText;
 
   /// No description provided for @keepItUp.
   ///
   /// In en, this message translates to:
-  /// **'Keep it up!'**
+  /// **'Keep it up'**
   String get keepItUp;
 
   /// No description provided for @reduceThis.
   ///
   /// In en, this message translates to:
-  /// **'Reduce this!'**
+  /// **'Reduce this'**
   String get reduceThis;
 
   /// No description provided for @logTime.
@@ -1127,7 +1127,7 @@ abstract class AppLocalizations {
   /// No description provided for @congratulationsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Congratulations!'**
+  /// **'Congratulations'**
   String get congratulationsTitle;
 
   /// No description provided for @setupComplete.
@@ -1139,7 +1139,7 @@ abstract class AppLocalizations {
   /// No description provided for @readyToStart.
   ///
   /// In en, this message translates to:
-  /// **'You are ready to start your healthy journey!'**
+  /// **'You are ready to start your healthy journey'**
   String get readyToStart;
 
   /// No description provided for @specialistsTitle.
@@ -1223,13 +1223,13 @@ abstract class AppLocalizations {
   /// No description provided for @welcomeBack.
   ///
   /// In en, this message translates to:
-  /// **'Welcome back! 🌟'**
+  /// **'Welcome back 🌟'**
   String get welcomeBack;
 
   /// No description provided for @welcomeMission.
   ///
   /// In en, this message translates to:
-  /// **'Welcome to our MISSION! 🚀'**
+  /// **'Welcome to our MISSION 🚀'**
   String get welcomeMission;
 
   /// No description provided for @callNow.
@@ -1355,7 +1355,7 @@ abstract class AppLocalizations {
   /// No description provided for @serverErrorMessage.
   ///
   /// In en, this message translates to:
-  /// **'Sorry, we\'re facing a minor issue with the server. We\'ll be back online soon!'**
+  /// **'Sorry, we\'re facing a minor issue with the server. We\'ll be back online soon'**
   String get serverErrorMessage;
 
   /// No description provided for @retry.

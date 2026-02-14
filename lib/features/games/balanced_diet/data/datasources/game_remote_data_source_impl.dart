@@ -15,7 +15,7 @@ class GameRemoteDataSourceImpl implements GameRemoteDataSource {
           .collection('users')
           .doc(uid)
           .collection('games')
-          .doc('game1');
+          .doc(result.gameId);
 
       // Update summary stats
       await gameDoc.set({
@@ -23,9 +23,11 @@ class GameRemoteDataSourceImpl implements GameRemoteDataSource {
         'balancedPlays': FieldValue.increment(result.isBalanced ? 1 : 0),
         'unbalancedPlays': FieldValue.increment(result.isBalanced ? 0 : 1),
         'lastPlayedAt': Timestamp.fromDate(result.playedAt),
+        // Track 3-star performances
+        'stars3Count': FieldValue.increment(result.stars == 3 ? 1 : 0),
       }, SetOptions(merge: true));
 
-      // Organized path for history: users/{uid}/games/game1/history
+      // Organized path for history: users/{uid}/games/{gameId}/history
       await gameDoc.collection('history').add(result.toJson());
     } catch (e) {
       throw Exception("Failed to save game result: $e");
@@ -33,13 +35,16 @@ class GameRemoteDataSourceImpl implements GameRemoteDataSource {
   }
 
   @override
-  Future<List<GameResultModel>> getGameHistory(String uid) async {
+  Future<List<GameResultModel>> getGameHistory(
+    String uid, {
+    String? gameId,
+  }) async {
     try {
       final snapshot = await firestore
           .collection('users')
           .doc(uid)
           .collection('games')
-          .doc('game1')
+          .doc(gameId ?? 'game1') // Default to game1 for legacy
           .collection('history')
           .orderBy('playedAt', descending: true)
           .get();
@@ -53,13 +58,13 @@ class GameRemoteDataSourceImpl implements GameRemoteDataSource {
   }
 
   @override
-  Future<GameStatsModel> getGameStats(String uid) async {
+  Future<GameStatsModel> getGameStats(String uid, {String? gameId}) async {
     try {
       final doc = await firestore
           .collection('users')
           .doc(uid)
           .collection('games')
-          .doc('game1')
+          .doc(gameId ?? 'game1')
           .get();
 
       if (doc.exists) {

@@ -7,6 +7,12 @@ abstract class GameRepository {
     String uid,
     GameResultModel result,
   );
-  Future<Either<String, List<GameResultModel>>> getGameHistory(String uid);
-  Future<Either<String, GameStatsModel>> getGameStats(String uid);
+  Future<Either<String, List<GameResultModel>>> getGameHistory(
+    String uid, {
+    String? gameId,
+  });
+  Future<Either<String, GameStatsModel>> getGameStats(
+    String uid, {
+    String? gameId,
+  });
 }

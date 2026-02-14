@@ -66,10 +66,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get registerHere => 'سجل من هنا';
 
   @override
-  String get newHeroTitleBoy => 'عضو جديد!';
+  String get newHeroTitleBoy => 'عضو جديد';
 
   @override
-  String get newHeroTitleGirl => 'عضوة جديدة!';
+  String get newHeroTitleGirl => 'عضوة جديدة';
 
   @override
   String get heroNameBoy => 'الاسم بالكامل';
@@ -87,7 +87,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get parentsEmail => 'البريد الإلكتروني';
 
   @override
-  String get startAdventure => 'ابدأ الآن!';
+  String get startAdventure => 'ابدأ الآن';
 
   @override
   String get boy => 'ذكر';
@@ -114,7 +114,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get onboardingDesc1 =>
-      'تحرك والعب واجري لمدة ساعة كاملة كل يوم، النشاط البدني يقوي قلبك وعضلاتك!';
+      'تحرك والعب واجري لمدة ساعة كاملة كل يوم، النشاط البدني يقوي قلبك وعضلاتك';
 
   @override
   String get onboardingTitle0 => '0 سكر ومشروبات غازية';
@@ -131,7 +131,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forgotPasswordDesc =>
-      'لا تقلق! أدخل إيميلك وسنقوم بإرسال كود لاستعادة كلمة السر.';
+      'لا تقلق، أدخل إيميلك وسنقوم بإرسال كود لاستعادة كلمة السر.';
 
   @override
   String get sendCode => 'إرسال الكود';
@@ -201,7 +201,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get whoAreYou => 'عرفنا عليك أكثر؟';
 
   @override
-  String get welcomeHero => 'أهلاً بك معنا!';
+  String get welcomeHero => 'أهلاً بك معنا';
 
   @override
   String get chooseRole => 'اختر دورك';
@@ -419,33 +419,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get funZone => 'منطقة المرح';
 
   @override
-  String get promoTip1 => 'تفاحة في اليوم تغنيك عن زيارة الطبيب!';
+  String get promoTip1 => 'تفاحة في اليوم تغنيك عن زيارة الطبيب';
 
   @override
-  String get promoTip2 => 'الماء هو أفضل وقود للعقل ولزيادة التركيز!';
+  String get promoTip2 => 'الماء هو أفضل وقود للعقل ولزيادة التركيز';
 
   @override
-  String get promoTip3 => 'ساعة من الحركة والنشاط تجعلك أقوى!';
+  String get promoTip3 => 'ساعة من الحركة والنشاط تجعلك أقوى';
 
   @override
-  String get promoTip4 => 'النوم الكافي يساعدك على النمو والتركيز!';
+  String get promoTip4 => 'النوم الكافي يساعدك على النمو والتركيز';
 
   @override
-  String get promoTip5 => 'اغسل أسنانك يومياً للحفاظ على صحتها!';
+  String get promoTip5 => 'اغسل أسنانك يومياً للحفاظ على صحتها';
 
   @override
   String dayStreak(int count) {
-    return 'تتابع لـ $count أيام!';
+    return 'تتابع لـ $count أيام';
   }
 
   @override
   String get mysteryMissionTitle => 'مهمة إضافية ⚡';
 
   @override
-  String get mysteryMissionSubTitle => 'اضغط لاكتشاف التحدي!';
+  String get mysteryMissionSubTitle => 'اضغط لاكتشاف التحدي';
 
   @override
-  String get summaryCardTitle => 'استمر، أنت رائع!';
+  String get summaryCardTitle => 'استمر، أنت رائع';
 
   @override
   String summaryCardSubTitle(int completed, int total) {
@@ -462,19 +462,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get badges => 'أوسمة';
 
   @override
-  String get missionComplete => 'تمت المهمة بنجاح! 🎉';
+  String get missionComplete => 'تمت المهمة بنجاح 🎉';
 
   @override
   String get missionHydrationTitle => 'هدف الارتواء';
 
   @override
-  String get missionHydrationText => 'اشرب كوب كبير من الماء الآن!';
+  String get missionHydrationText => 'اشرب كوب كبير من الماء الآن';
 
   @override
   String get missionEnergyTitle => 'دفعة طاقة';
 
   @override
-  String get missionEnergyText => 'اقفز 10 مرات في مكانك!';
+  String get missionEnergyText => 'اقفز 10 مرات في مكانك';
 
   @override
   String get missionSnackTitle => 'وجبة خفيفة';
@@ -486,13 +486,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get missionLoveTitle => 'انشر الحب';
 
   @override
-  String get missionLoveText => 'عبر عن تقديرك لشخص قريب منك!';
+  String get missionLoveText => 'عبر عن تقديرك لشخص قريب منك';
 
   @override
-  String get keepItUp => 'استمر هكذا!';
+  String get keepItUp => 'استمر هكذا';
 
   @override
-  String get reduceThis => 'قلل من هذا!';
+  String get reduceThis => 'قلل من هذا';
 
   @override
   String get logTime => 'تسجيل الوقت';
@@ -548,13 +548,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteChildConfirm => 'هل أنت متأكد أنك تريد حذف ملف هذا الطفل؟';
 
   @override
-  String get congratulationsTitle => 'تهانينا!';
+  String get congratulationsTitle => 'تهانينا';
 
   @override
   String get setupComplete => 'اكتمل الإعداد';
 
   @override
-  String get readyToStart => 'أنت مستعد لبدء رحلتك الصحية!';
+  String get readyToStart => 'أنت مستعد لبدء رحلتك الصحية';
 
   @override
   String get specialistsTitle => 'دليل المتخصصين';
@@ -597,10 +597,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'تسجيل الدخول بالهاتف غير متاح حالياً. برجاء استخدام البريد الإلكتروني.';
 
   @override
-  String get welcomeBack => 'أهلاً بك مجدداً! 🌟';
+  String get welcomeBack => 'أهلاً بك مجدداً 🌟';
 
   @override
-  String get welcomeMission => 'أهلاً بك في مهمتنا! 🚀';
+  String get welcomeMission => 'أهلاً بك في مهمتنا 🚀';
 
   @override
   String get callNow => 'اتصل الآن';
@@ -665,7 +665,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get serverErrorMessage =>
-      'عذراً، نواجه مشكلة بسيطة في السيرفر حالياً. سنعود للخدمة قريباً!';
+      'عذراً، نواجه مشكلة بسيطة في السيرفر حالياً. سنعود للخدمة قريباً';
 
   @override
   String get retry => 'إعادة المحاولة';
