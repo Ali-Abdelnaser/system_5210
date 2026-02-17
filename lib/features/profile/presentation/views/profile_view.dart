@@ -319,6 +319,22 @@ class ProfileView extends StatelessWidget {
                                 iconColor: AppTheme.appBlue,
                                 onTap: () {},
                               ),
+                              const Divider(
+                                height: 1,
+                                indent: 70,
+                                color: Color(0xFFF1F5F9),
+                              ),
+                              _ProfileMenuItem(
+                                icon: Icons.lightbulb_outline_rounded,
+                                title: l10n.healthyInsightsTitle,
+                                iconColor: AppTheme.appYellow,
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.healthyInsights,
+                                  );
+                                },
+                              ),
                             ]),
                             const SizedBox(height: 32),
                             _buildMenuCard(context, [
@@ -662,10 +678,12 @@ class _ProfileMenuItem extends StatelessWidget {
                 ),
               ),
               if (!isDestructive)
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
+                Icon(
+                  Localizations.localeOf(context).languageCode == 'ar'
+                      ? Icons.arrow_back_ios_new_rounded
+                      : Icons.arrow_forward_ios_rounded,
                   size: 14,
-                  color: Color(0xFFCBD5E1),
+                  color: const Color(0xFFCBD5E1),
                 ),
             ],
           ),

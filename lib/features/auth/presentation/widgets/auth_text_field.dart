@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AuthTextField extends StatefulWidget {
   final String label;
-  final String iconPath;
+  final String? iconPath;
   final bool isPassword;
   final bool isNumeric;
   final TextEditingController? controller;
@@ -16,7 +16,7 @@ class AuthTextField extends StatefulWidget {
   const AuthTextField({
     super.key,
     required this.label,
-    required this.iconPath,
+    this.iconPath,
     this.isPassword = false,
     this.isNumeric = false,
     this.controller,
@@ -94,25 +94,30 @@ class _AuthTextFieldState extends State<AuthTextField> {
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder: (child, animation) {
-                    return ScaleTransition(scale: animation, child: child);
-                  },
-                  child: SvgPicture.asset(
-                    widget.iconPath,
-                    key: ValueKey(widget.iconPath),
-                    width: 20,
-                    height: 20,
-                    colorFilter: const ColorFilter.mode(
-                      Color(0xFF94A3B8),
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-              ),
+              prefixIcon: widget.iconPath != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        transitionBuilder: (child, animation) {
+                          return ScaleTransition(
+                            scale: animation,
+                            child: child,
+                          );
+                        },
+                        child: SvgPicture.asset(
+                          widget.iconPath!,
+                          key: ValueKey(widget.iconPath),
+                          width: 20,
+                          height: 20,
+                          colorFilter: const ColorFilter.mode(
+                            Color(0xFF94A3B8),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                    )
+                  : null,
               suffixIcon: widget.isPassword
                   ? IconButton(
                       icon: Icon(

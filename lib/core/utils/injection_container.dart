@@ -56,10 +56,20 @@ import 'package:system_5210/features/games/food_matching/presentation/cubit/food
 import 'package:system_5210/features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
 import 'package:system_5210/features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
 import 'package:system_5210/features/games/balanced_diet/domain/repositories/game_repository.dart';
+import 'package:system_5210/features/games/quizGame/data/datasources/quiz_local_data_source.dart';
+import 'package:system_5210/features/games/quizGame/data/datasources/quiz_remote_data_source.dart';
+import 'package:system_5210/features/games/quizGame/data/repositories/quiz_repository_impl.dart';
+import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+
+import 'package:system_5210/core/services/notification_service.dart';
+import 'package:system_5210/core/services/streak_service.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // Services
+  sl.registerLazySingleton(() => NotificationService());
+  sl.registerLazySingleton(() => StreakService(sl()));
   // Use cases
   sl.registerLazySingleton(() => GetSpecialists(sl()));
   sl.registerLazySingleton(() => LoginWithEmailUseCase(sl()));
@@ -92,7 +102,11 @@ Future<void> init() async {
 
   // Home
   sl.registerFactory(
-    () => HomeCubit(getUserProfileUseCase: sl(), authRepository: sl()),
+    () => HomeCubit(
+      getUserProfileUseCase: sl(),
+      authRepository: sl(),
+      streakService: sl(),
+    ),
   );
 
   sl.registerFactory(
@@ -132,6 +146,7 @@ Future<void> init() async {
   sl.registerFactory(() => BalancedPlateCubit(repository: sl(), auth: sl()));
   sl.registerFactory(() => GameStatsCubit(repository: sl(), auth: sl()));
   sl.registerFactory(() => FoodMatchingCubit(repository: sl(), auth: sl()));
+  sl.registerFactory(() => QuizCubit(repository: sl()));
 
   // Repository
   // Repository
@@ -155,6 +170,9 @@ Future<void> init() async {
   sl.registerLazySingleton<GameRepository>(
     () => GameRepositoryImpl(remoteDataSource: sl()),
   );
+  sl.registerLazySingleton<QuizRepositoryImpl>(
+    () => QuizRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()),
+  );
 
   // Data sources
   sl.registerLazySingleton<SpecialistsRemoteDataSource>(
@@ -173,6 +191,12 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<GameRemoteDataSource>(
     () => GameRemoteDataSourceImpl(firestore: sl()),
+  );
+  sl.registerLazySingleton<QuizLocalDataSource>(
+    () => QuizLocalDataSourceImpl(localStorage: sl()),
+  );
+  sl.registerLazySingleton<QuizRemoteDataSource>(
+    () => QuizRemoteDataSourceImpl(firestore: sl(), auth: sl()),
   );
 
   // External

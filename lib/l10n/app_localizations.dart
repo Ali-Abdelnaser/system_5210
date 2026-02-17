@@ -2005,6 +2005,300 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No recipes found'**
   String get noRecipes;
+
+  /// No description provided for @healthyInsightsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Healthy Insights'**
+  String get healthyInsightsTitle;
+
+  /// No description provided for @healthyInsightsSubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical facts for your family\'s health'**
+  String get healthyInsightsSubTitle;
+
+  /// No description provided for @didYouKnow.
+  ///
+  /// In en, this message translates to:
+  /// **'Did you know?'**
+  String get didYouKnow;
+
+  /// No description provided for @streakResetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak Reset'**
+  String get streakResetTitle;
+
+  /// No description provided for @streakResetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Aww, you missed your streak. It was {count} days. Let\'s start again to beat your record.'**
+  String streakResetMessage(int count);
+
+  /// No description provided for @streakContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it up'**
+  String get streakContinue;
+
+  /// No description provided for @streakNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Your Streak Alive'**
+  String get streakNotificationTitle;
+
+  /// No description provided for @streakNotificationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the app now to maintain your daily streak and reach your goals.'**
+  String get streakNotificationMessage;
+
+  /// No description provided for @streakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get streakLabel;
+
+  /// No description provided for @adminAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Access'**
+  String get adminAccess;
+
+  /// No description provided for @adminSystemDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'System Dashboard'**
+  String get adminSystemDashboard;
+
+  /// No description provided for @adminInvalidLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid login credentials'**
+  String get adminInvalidLogin;
+
+  /// No description provided for @adminLoginToControlPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Login to Control Panel'**
+  String get adminLoginToControlPanel;
+
+  /// No description provided for @adminManageSpecialists.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Specialists'**
+  String get adminManageSpecialists;
+
+  /// No description provided for @adminAddDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Doctor'**
+  String get adminAddDoctor;
+
+  /// No description provided for @adminEditDoctor.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Doctor Details'**
+  String get adminEditDoctor;
+
+  /// No description provided for @adminNoDoctors.
+  ///
+  /// In en, this message translates to:
+  /// **'No specialists available yet'**
+  String get adminNoDoctors;
+
+  /// No description provided for @adminDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Delete'**
+  String get adminDeleteConfirmTitle;
+
+  /// No description provided for @adminDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this doctor? This action cannot be undone.'**
+  String get adminDeleteConfirmMessage;
+
+  /// No description provided for @adminNameAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (Arabic)'**
+  String get adminNameAr;
+
+  /// No description provided for @adminNameEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (English)'**
+  String get adminNameEn;
+
+  /// No description provided for @adminSpecialtyAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty (Arabic)'**
+  String get adminSpecialtyAr;
+
+  /// No description provided for @adminSpecialtyEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty (English)'**
+  String get adminSpecialtyEn;
+
+  /// No description provided for @adminAboutAr.
+  ///
+  /// In en, this message translates to:
+  /// **'About (Arabic)'**
+  String get adminAboutAr;
+
+  /// No description provided for @adminAboutEn.
+  ///
+  /// In en, this message translates to:
+  /// **'About (English)'**
+  String get adminAboutEn;
+
+  /// No description provided for @adminClinicLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinic Location'**
+  String get adminClinicLocation;
+
+  /// No description provided for @adminContactNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact Number'**
+  String get adminContactNumber;
+
+  /// No description provided for @adminWhatsappNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp Number'**
+  String get adminWhatsappNumber;
+
+  /// No description provided for @adminExperienceYears.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience Years'**
+  String get adminExperienceYears;
+
+  /// No description provided for @adminWorkingHoursAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Working Hours (Ar)'**
+  String get adminWorkingHoursAr;
+
+  /// No description provided for @adminWorkingHoursEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Working Hours (En)'**
+  String get adminWorkingHoursEn;
+
+  /// No description provided for @adminOnlineConsultation.
+  ///
+  /// In en, this message translates to:
+  /// **'Online Consultation'**
+  String get adminOnlineConsultation;
+
+  /// No description provided for @adminSaveData.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Data'**
+  String get adminSaveData;
+
+  /// No description provided for @adminDoctorPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Doctor\'s Photo'**
+  String get adminDoctorPhoto;
+
+  /// No description provided for @adminInitializeAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Initialize Admin Account (First time only)'**
+  String get adminInitializeAccount;
+
+  /// No description provided for @adminAccountCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin account ali/123 created successfully'**
+  String get adminAccountCreated;
+
+  /// No description provided for @adminManageRecipes.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Recipes'**
+  String get adminManageRecipes;
+
+  /// No description provided for @adminAddRecipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Add New Recipe'**
+  String get adminAddRecipe;
+
+  /// No description provided for @adminEditRecipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Recipe'**
+  String get adminEditRecipe;
+
+  /// No description provided for @adminNoRecipes.
+  ///
+  /// In en, this message translates to:
+  /// **'No recipes available yet'**
+  String get adminNoRecipes;
+
+  /// No description provided for @adminDeleteRecipeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this recipe?'**
+  String get adminDeleteRecipeConfirm;
+
+  /// No description provided for @adminRecipeIngredientsAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients (Ar - one per line)'**
+  String get adminRecipeIngredientsAr;
+
+  /// No description provided for @adminRecipeIngredientsEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients (En - one per line)'**
+  String get adminRecipeIngredientsEn;
+
+  /// No description provided for @adminRecipeStepsAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparation Steps (Ar - one per line)'**
+  String get adminRecipeStepsAr;
+
+  /// No description provided for @adminRecipeStepsEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparation Steps (En - one per line)'**
+  String get adminRecipeStepsEn;
+
+  /// No description provided for @adminRecipeVideoUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Video URL (Optional)'**
+  String get adminRecipeVideoUrl;
+
+  /// No description provided for @adminRecipePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe Photo'**
+  String get adminRecipePhoto;
+
+  /// No description provided for @specialists.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialists'**
+  String get specialists;
+
+  /// No description provided for @recipes.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipes'**
+  String get recipes;
 }
 
 class _AppLocalizationsDelegate

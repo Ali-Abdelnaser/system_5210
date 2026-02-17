@@ -1006,4 +1006,155 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noRecipes => 'لا توجد وصفات';
+
+  @override
+  String get healthyInsightsTitle => 'معلومات تهمك';
+
+  @override
+  String get healthyInsightsSubTitle => 'حقائق طبية لصحة عائلتك';
+
+  @override
+  String get didYouKnow => 'هل تعلم؟';
+
+  @override
+  String get streakResetTitle => 'الستريك طفى';
+
+  @override
+  String streakResetMessage(int count) {
+    return 'خسارة، الستريك بتاعك كان $count يوم. يلا نبدأ من جديد ونكسر الرقم ده';
+  }
+
+  @override
+  String get streakContinue => 'استمر يا بطل';
+
+  @override
+  String get streakNotificationTitle => 'حافظ على الستريك';
+
+  @override
+  String get streakNotificationMessage =>
+      'افتح التطبيق الآن للحفاظ على الستريك اليومي وتحقيق أهدافك';
+
+  @override
+  String get streakLabel => 'ستريك';
+
+  @override
+  String get adminAccess => 'دخول المسؤول';
+
+  @override
+  String get adminSystemDashboard => 'لوحة تحكم النظام';
+
+  @override
+  String get adminInvalidLogin => 'بيانات الدخول غير صحيحة';
+
+  @override
+  String get adminLoginToControlPanel => 'دخول للوحة التحكم';
+
+  @override
+  String get adminManageSpecialists => 'إدارة المتخصصين';
+
+  @override
+  String get adminAddDoctor => 'إضافة دكتور جديد';
+
+  @override
+  String get adminEditDoctor => 'تعديل بيانات الدكتور';
+
+  @override
+  String get adminNoDoctors => 'لا يوجد دكاترة حالياً';
+
+  @override
+  String get adminDeleteConfirmTitle => 'تأكيد الحذف';
+
+  @override
+  String get adminDeleteConfirmMessage =>
+      'هل أنت متأكد من حذف هذا الدكتور؟ لا يمكن التراجع عن هذا الفعل.';
+
+  @override
+  String get adminNameAr => 'الاسم بالعربي';
+
+  @override
+  String get adminNameEn => 'الاسم بالإنجليزي';
+
+  @override
+  String get adminSpecialtyAr => 'التخصص بالعربي';
+
+  @override
+  String get adminSpecialtyEn => 'التخصص بالإنجليزي';
+
+  @override
+  String get adminAboutAr => 'نبذة بالعربي';
+
+  @override
+  String get adminAboutEn => 'نبذة بالإنجليزي';
+
+  @override
+  String get adminClinicLocation => 'موقع العيادة';
+
+  @override
+  String get adminContactNumber => 'رقم التواصل';
+
+  @override
+  String get adminWhatsappNumber => 'رقم الواتساب';
+
+  @override
+  String get adminExperienceYears => 'سنين الخبرة';
+
+  @override
+  String get adminWorkingHoursAr => 'ساعات العمل (ع)';
+
+  @override
+  String get adminWorkingHoursEn => 'Hours (En)';
+
+  @override
+  String get adminOnlineConsultation => 'استشارة أونلاين';
+
+  @override
+  String get adminSaveData => 'حفظ البيانات';
+
+  @override
+  String get adminDoctorPhoto => 'صورة الدكتور';
+
+  @override
+  String get adminInitializeAccount => 'تهيئة حساب المسؤول (لأول مرة فقط)';
+
+  @override
+  String get adminAccountCreated => 'تم إنشاء حساب المسؤول ali/123 بنجاح';
+
+  @override
+  String get adminManageRecipes => 'إدارة الوصفات';
+
+  @override
+  String get adminAddRecipe => 'إضافة وصفة جديدة';
+
+  @override
+  String get adminEditRecipe => 'تعديل وصفة';
+
+  @override
+  String get adminNoRecipes => 'لا توجد وصفات حالياً';
+
+  @override
+  String get adminDeleteRecipeConfirm => 'هل أنت متأكد من حذف هذه الوصفة؟';
+
+  @override
+  String get adminRecipeIngredientsAr => 'المكونات (عربي - سطر لكل مكون)';
+
+  @override
+  String get adminRecipeIngredientsEn => 'Ingredients (En - line per item)';
+
+  @override
+  String get adminRecipeStepsAr => 'خطوات التحضير (عربي - سطر لكل خطوة)';
+
+  @override
+  String get adminRecipeStepsEn => 'Preparation Steps (En - line per step)';
+
+  @override
+  String get adminRecipeVideoUrl => 'رابط الفيديو (اختياري)';
+
+  @override
+  String get adminRecipePhoto => 'صورة الوصفة';
+
+  @override
+  String get specialists => 'المتخصصين';
+
+  @override
+  String get recipes => 'الوصفات';
 }

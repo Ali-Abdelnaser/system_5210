@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:system_5210/core/services/notification_service.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
 import 'package:system_5210/firebase_options.dart';
 import 'package:system_5210/core/theme/app_theme.dart';
@@ -13,16 +13,45 @@ import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
 import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
 import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
 import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
-
+import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
+import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('en'));
+ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('ar'));
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
 
-  // 1. تأكد من تهيئة Firebase أولاً
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint("Dotenv Load Error: $e");
+  }
+
+  // تهيئة الـ Dependency Injection
+  await di.init();
+
+  // تهيئة الخدمات بشكل متوازي (Async) لتسريع الـ Splash
+  _initializeServices();
+
+  // تحميل اللغة المحفوظة
+  String langCode = 'ar';
+  try {
+    final localStorage = di.sl<LocalStorageService>();
+    final settings = await localStorage.get('settings', 'language');
+    if (settings != null && settings['code'] != null) {
+      langCode = settings['code'];
+      appLocale.value = Locale(langCode);
+    }
+  } catch (e) {
+    debugPrint("Error loading language: $e");
+  }
+
+  runApp(const MyApp());
+}
+
+Future<void> _initializeServices() async {
+  // تهيئة الفايربيز
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -31,21 +60,22 @@ void main() async {
     debugPrint("Firebase Initialization Error: $e");
   }
 
-  // 2. ثم قم بتهيئة الـ Dependency Injection
-  await di.init();
-
-  // 3. Load Saved Language
+  // تهيئة الإشعارات وجدولة التذكير اليومي
   try {
-    final localStorage = di.sl<LocalStorageService>();
-    final settings = await localStorage.get('settings', 'language');
-    if (settings != null && settings['code'] != null) {
-      appLocale.value = Locale(settings['code']);
-    }
-  } catch (e) {
-    debugPrint("Error loading language: $e");
-  }
+    final notificationService = di.sl<NotificationService>();
+    await notificationService.init();
 
-  runApp(const MyApp());
+    // جدولة الإشعار اليومي باللغة المناسبة
+    final currentLocale = appLocale.value;
+    final l10n = await AppLocalizations.delegate.load(currentLocale);
+
+    await notificationService.scheduleDailyReminder(
+      title: l10n.streakNotificationTitle,
+      body: l10n.streakNotificationMessage,
+    );
+  } catch (e) {
+    debugPrint("Notification Scheduling Error: $e");
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -68,31 +98,25 @@ class MyApp extends StatelessWidget {
             BlocProvider<RecipeCubit>(
               create: (_) => di.sl<RecipeCubit>()..getRecipes(),
             ),
+            BlocProvider<HomeCubit>(
+              create: (_) => di.sl<HomeCubit>()..loadUserProfile(),
+            ),
+            BlocProvider<ProfileCubit>(
+              create: (_) => di.sl<ProfileCubit>()..getProfile(),
+            ),
           ],
-
           child: GestureDetector(
-            onTap: () {
-              // Unfocus keyboard when tapping anywhere outside a text field
-              FocusScopeNode currentFocus = FocusScope.of(context);
-              if (!currentFocus.hasPrimaryFocus &&
-                  currentFocus.focusedChild != null) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              }
-            },
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: MaterialApp(
               title: AppStrings.appName,
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
+              scrollBehavior: GlobalScrollBehavior(),
               locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
-              localizationsDelegates: const [
-                AppLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              initialRoute: AppRoutes.splash,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
               onGenerateRoute: AppRoutes.onGenerateRoute,
+              initialRoute: AppRoutes.splash,
             ),
           ),
         );

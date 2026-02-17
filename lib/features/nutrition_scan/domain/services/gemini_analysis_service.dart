@@ -5,8 +5,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'dart:typed_data';
-import 'package:image/image.dart' as img;
+import 'package:system_5210/core/utils/image_compressor.dart';
 
 class GeminiAnalysisService {
   late final GenerativeModel _model;
@@ -57,14 +56,16 @@ class GeminiAnalysisService {
       }
 
       debugPrint("Starting Image Optimization...");
-      // Optimize Image in background isolate
-      final imageBytes = await compute(_readAndOptimizeImage, imagePath);
+      // Optimize Image using native compression
+      final imageBytes = await ImageCompressor.compressBytes(
+        await imageFile.readAsBytes(),
+      );
       debugPrint(
         "Image Optimized. Size: ${(imageBytes.length / 1024).toStringAsFixed(2)} KB",
       );
 
       final prompt = TextPart(_getAnalysisPrompt(languageCode));
-      final imagePart = DataPart('image/jpeg', imageBytes);
+      final imagePart = DataPart('image/webp', imageBytes);
 
       GenerateContentResponse response;
       try {
@@ -139,22 +140,4 @@ class GeminiAnalysisService {
       throw Exception("Failed to parse analysis results");
     }
   }
-}
-
-// Top-level function for compute (Must be outside the class)
-Future<Uint8List> _readAndOptimizeImage(String path) async {
-  final file = File(path);
-  final bytes = await file.readAsBytes();
-  final image = img.decodeImage(bytes);
-
-  if (image == null) return bytes;
-
-  // Resize to 1024px for optimal OCR balance
-  if (image.width > 1024) {
-    final resized = img.copyResize(image, width: 1024);
-    return Uint8List.fromList(img.encodeJpg(resized, quality: 75));
-  }
-
-  // Ensure it's a reasonable JWT quality even if size is small
-  return Uint8List.fromList(img.encodeJpg(image, quality: 80));
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/widgets/app_shimmer.dart';
@@ -66,7 +67,7 @@ class RecipesSection extends StatelessWidget {
           ),
         ),
       ],
-    );
+    ).animate().fadeIn(delay: 600.ms);
   }
 
   Widget _buildSectionTitle({
@@ -137,9 +138,12 @@ class RecipesSection extends StatelessWidget {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.arrow_forward_rounded,
+              child: Icon(
+                languageCode == 'ar'
+                    ? Icons.arrow_back_ios_new_rounded
+                    : Icons.arrow_forward_ios_rounded,
                 color: AppTheme.appBlue,
+                size: 20,
               ),
             ),
             const SizedBox(height: 12),

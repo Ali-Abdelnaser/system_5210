@@ -139,12 +139,4 @@ class _CongratulationsViewState extends State<CongratulationsView> {
       ),
     );
   }
-
-  Widget _buildCircle(double size, Color color) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-    );
-  }
 }

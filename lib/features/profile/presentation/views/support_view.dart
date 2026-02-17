@@ -41,6 +41,7 @@ class SupportView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(30),
+                clipBehavior: Clip.antiAlias,
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
@@ -105,6 +106,19 @@ class SupportView extends StatelessWidget {
                           subtitle: l10n.liveChatSubtitle,
                           onTap: () {
                             // Link to live chat or support portal
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        _buildContactOption(
+                          context: context,
+                          icon: Icons.lightbulb_outline_rounded,
+                          title: l10n.healthyInsightsTitle,
+                          subtitle: l10n.healthyInsightsSubTitle,
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              '/healthy-insights', // Using the route name directly to avoid import issues if not available, but AppRoutes is standard
+                            );
                           },
                         ),
                         const SizedBox(height: 180),

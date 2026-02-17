@@ -17,6 +17,7 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
+  static bool _isFirstLaunch = true;
   late AnimationController _controller;
   late Animation<double> _radiusAnimation;
   late Animation<double> _opacityAnimation;
@@ -58,11 +59,16 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
       ),
     ]).animate(_controller);
 
-    // 3. Opacity Animation: Fade out at the very end
     _opacityAnimation = TweenSequence([
       TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 85),
       TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 15),
     ]).animate(_controller);
+
+    if (!_isFirstLaunch) {
+      _navigateNext();
+      return;
+    }
+    _isFirstLaunch = false;
 
     _controller.forward();
 

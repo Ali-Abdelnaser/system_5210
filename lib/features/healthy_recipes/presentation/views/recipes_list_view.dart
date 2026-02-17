@@ -6,9 +6,12 @@ import 'package:system_5210/features/healthy_recipes/domain/entities/recipe.dart
 import 'package:system_5210/l10n/app_localizations.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
 import '../manager/recipe_cubit.dart';
 import '../manager/recipe_state.dart';
 import '../widgets/recipe_card.dart';
+import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
 
 class RecipesListView extends StatefulWidget {
   const RecipesListView({super.key});
@@ -64,7 +67,10 @@ class _RecipesListViewState extends State<RecipesListView> {
             _tapCount++;
             if (_tapCount == 4) {
               _tapCount = 0;
-              Navigator.pushNamed(context, AppRoutes.uploader);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminLoginView()),
+              );
             }
           },
           child: Text(
@@ -81,60 +87,93 @@ class _RecipesListViewState extends State<RecipesListView> {
         ),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          _buildSearchField(l10n, languageCode),
-          Expanded(
-            child: BlocBuilder<RecipeCubit, RecipeState>(
-              builder: (context, state) {
-                if (state is RecipeLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is RecipeLoaded) {
-                  final recipes = _isSearching
-                      ? _filteredRecipes
-                      : state.recipes;
+      body: RefreshIndicator(
+        onRefresh: () => context.read<RecipeCubit>().getRecipes(),
+        color: AppTheme.appBlue,
+        child: Column(
+          children: [
+            _buildSearchField(l10n, languageCode),
+            Expanded(
+              child: BlocBuilder<RecipeCubit, RecipeState>(
+                builder: (context, state) {
+                  if (state is RecipeLoading) {
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(24),
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.75,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                      itemCount: 6,
+                      itemBuilder: (context, index) =>
+                          AppShimmer.recipeGridCard(),
+                    );
+                  } else if (state is RecipeLoaded) {
+                    final recipes = _isSearching
+                        ? _filteredRecipes
+                        : state.recipes;
 
-                  if (recipes.isEmpty) {
-                    return Center(
-                      child: Text(
-                        l10n.noRecipes,
-                        style: (languageCode == 'ar'
-                            ? GoogleFonts.cairo
-                            : GoogleFonts
-                                  .poppins)(fontSize: 16, color: Colors.grey),
+                    if (recipes.isEmpty) {
+                      return SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.7,
+                          child: Center(
+                            child: Text(
+                              l10n.noRecipes,
+                              style:
+                                  (languageCode == 'ar'
+                                  ? GoogleFonts.cairo
+                                  : GoogleFonts.poppins)(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(24),
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.75,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                      itemCount: recipes.length,
+                      itemBuilder: (context, index) {
+                        return RecipeCard(
+                          recipe: recipes[index],
+                          onTap: () => Navigator.pushNamed(
+                            context,
+                            AppRoutes.recipeDetails,
+                            arguments: recipes[index],
+                          ),
+                        );
+                      },
+                    );
+                  } else if (state is RecipeError) {
+                    return SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: Center(child: Text(state.message)),
                       ),
                     );
                   }
-
-                  return GridView.builder(
-                    padding: const EdgeInsets.all(24),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.75,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                        ),
-                    itemCount: recipes.length,
-                    itemBuilder: (context, index) {
-                      return RecipeCard(
-                        recipe: recipes[index],
-                        onTap: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.recipeDetails,
-                          arguments: recipes[index],
-                        ),
-                      );
-                    },
-                  );
-                } else if (state is RecipeError) {
-                  return Center(child: Text(state.message));
-                }
-                return const SizedBox.shrink();
-              },
+                  return const SizedBox.shrink();
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -167,7 +206,10 @@ class _RecipesListViewState extends State<RecipesListView> {
             hintStyle: (languageCode == 'ar'
                 ? GoogleFonts.cairo
                 : GoogleFonts.poppins)(fontSize: 14, color: Colors.grey[400]),
-            prefixIcon: const Icon(Icons.search, color: AppTheme.appBlue),
+            prefixIcon: const Icon(
+              Icons.search_rounded,
+              color: AppTheme.appBlue,
+            ),
             border: InputBorder.none,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 20,
@@ -175,7 +217,7 @@ class _RecipesListViewState extends State<RecipesListView> {
             ),
           ),
         ),
-      ),
+      ).animate().fadeIn(delay: 100.ms).slideY(begin: -0.2),
     );
   }
 }

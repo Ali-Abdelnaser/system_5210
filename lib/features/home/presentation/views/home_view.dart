@@ -15,10 +15,15 @@ import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
 import 'package:system_5210/features/specialists/domain/usecases/get_specialists.dart';
 import 'package:system_5210/core/utils/injection_container.dart';
 import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:system_5210/core/widgets/app_shimmer.dart';
 import 'package:system_5210/features/specialists/presentation/views/doctor_details_view.dart';
 import 'package:system_5210/features/healthy_recipes/presentation/widgets/recipes_section.dart';
 import '../manager/home_cubit.dart';
+import 'package:system_5210/features/healthy_insights/presentation/widgets/insight_promo_banner.dart';
+import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
+import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:system_5210/core/utils/app_routes.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -60,45 +65,77 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
       body: RefreshIndicator(
         onRefresh: () async {
-          _loadSpecialists();
-          context.read<HomeCubit>().loadUserProfile();
+          // جلب كل البيانات الأساسية مرة أخرى (ريفريش للتطبيق بالكامل)
+          await Future.wait([
+            _loadSpecialists(),
+            context.read<HomeCubit>().loadUserProfile(),
+            context.read<RecipeCubit>().getRecipes(),
+            context.read<ProfileCubit>().getProfile(),
+          ]);
         },
         color: AppTheme.appBlue,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(
-              child: BlocBuilder<HomeCubit, HomeState>(
+              child: BlocConsumer<HomeCubit, HomeState>(
+                listener: (context, state) {
+                  if (state is HomeLoaded && state.streakResult != null) {
+                    final status = state.streakResult!['status'];
+                    final previousStreak =
+                        state.streakResult!['previousStreak'];
+
+                    if (status == 'reset' && previousStreak > 0) {
+                      AppAlerts.showCustomDialog(
+                        context,
+                        title: l10n.streakResetTitle,
+                        message: l10n.streakResetMessage(previousStreak),
+                        buttonText: l10n.streakContinue,
+                        isSuccess: false,
+                        icon: Icons.refresh_rounded,
+                        onPressed: () => Navigator.pop(context),
+                      );
+                    } else if (status == 'frozen') {
+                      // Optional: show a small info that it's frozen
+                    }
+                  }
+                },
                 builder: (context, state) {
                   String name = l10n.heroName;
+                  int streakCount = 0;
+                  String streakStatus = 'active';
                   if (state is HomeLoaded) {
                     name = state.displayName;
+                    streakCount = state.userProfile.currentStreak;
+                    streakStatus = state.userProfile.streakStatus;
                   }
                   return HomeAppBar(
                     displayName: name,
-                    streakCount: 3,
+                    streakCount: streakCount,
+                    streakStatus: streakStatus,
                     isLoading: state is HomeInitial || state is HomeLoading,
                   );
                 },
               ),
             ),
-            const SliverToBoxAdapter(
-              child: Padding(
+            SliverToBoxAdapter(
+              child: const Padding(
                 padding: EdgeInsets.only(bottom: 25),
                 child: PromoSlider(),
-              ),
+              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
             ),
             SliverToBoxAdapter(
               child: _buildSectionTitle(
                 title: l10n.specialistsTitle,
                 actionText: l10n.seeAll,
                 onActionTap: () => _navigateToSpecialists(context),
-              ),
+              ).animate().fadeIn(delay: 300.ms),
             ),
             SliverToBoxAdapter(
               child: SizedBox(
@@ -124,7 +161,7 @@ class _HomeViewState extends State<HomeView> {
                               (specialists.length > 5
                                   ? 5
                                   : specialists.length)) {
-                            return _buildSeeAllCard(context, l10n);
+                            return _buildSeeAllCard(context, l10n, isAr);
                           }
                           return DoctorQuickCard(
                             doctor: specialists[index],
@@ -135,6 +172,15 @@ class _HomeViewState extends State<HomeView> {
                           );
                         },
                       ),
+              ).animate().fadeIn(delay: 400.ms),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 25),
+                child: InsightPromoBanner(
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.healthyInsights),
+                ),
               ),
             ),
             SliverToBoxAdapter(child: const RecipesSection()),
@@ -150,7 +196,7 @@ class _HomeViewState extends State<HomeView> {
                 completedTargets: 1,
                 totalTargets: 4,
                 onTap: () => _navigateToDailyChallenge(context),
-              ),
+              ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 20)),
             SliverToBoxAdapter(
@@ -312,7 +358,11 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget _buildSeeAllCard(BuildContext context, AppLocalizations l10n) {
+  Widget _buildSeeAllCard(
+    BuildContext context,
+    AppLocalizations l10n,
+    bool isAr,
+  ) {
     return GestureDetector(
       onTap: () => _navigateToSpecialists(context),
       child: Container(
@@ -334,9 +384,12 @@ class _HomeViewState extends State<HomeView> {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.arrow_forward_rounded,
+              child: Icon(
+                isAr
+                    ? Icons.arrow_back_ios_new_rounded
+                    : Icons.arrow_forward_ios_rounded,
                 color: AppTheme.appBlue,
+                size: 20,
               ),
             ),
             const SizedBox(height: 12),

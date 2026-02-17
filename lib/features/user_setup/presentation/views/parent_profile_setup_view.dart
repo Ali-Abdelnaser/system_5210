@@ -439,6 +439,7 @@ class _ParentProfileSetupViewState extends State<ParentProfileSetupView> {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
+              clipBehavior: Clip.antiAlias,
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                 child: Column(

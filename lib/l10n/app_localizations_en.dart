@@ -1012,4 +1012,159 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noRecipes => 'No recipes found';
+
+  @override
+  String get healthyInsightsTitle => 'Healthy Insights';
+
+  @override
+  String get healthyInsightsSubTitle =>
+      'Medical facts for your family\'s health';
+
+  @override
+  String get didYouKnow => 'Did you know?';
+
+  @override
+  String get streakResetTitle => 'Streak Reset';
+
+  @override
+  String streakResetMessage(int count) {
+    return 'Aww, you missed your streak. It was $count days. Let\'s start again to beat your record.';
+  }
+
+  @override
+  String get streakContinue => 'Keep it up';
+
+  @override
+  String get streakNotificationTitle => 'Keep Your Streak Alive';
+
+  @override
+  String get streakNotificationMessage =>
+      'Open the app now to maintain your daily streak and reach your goals.';
+
+  @override
+  String get streakLabel => 'Streak';
+
+  @override
+  String get adminAccess => 'Admin Access';
+
+  @override
+  String get adminSystemDashboard => 'System Dashboard';
+
+  @override
+  String get adminInvalidLogin => 'Invalid login credentials';
+
+  @override
+  String get adminLoginToControlPanel => 'Login to Control Panel';
+
+  @override
+  String get adminManageSpecialists => 'Manage Specialists';
+
+  @override
+  String get adminAddDoctor => 'Add New Doctor';
+
+  @override
+  String get adminEditDoctor => 'Edit Doctor Details';
+
+  @override
+  String get adminNoDoctors => 'No specialists available yet';
+
+  @override
+  String get adminDeleteConfirmTitle => 'Confirm Delete';
+
+  @override
+  String get adminDeleteConfirmMessage =>
+      'Are you sure you want to delete this doctor? This action cannot be undone.';
+
+  @override
+  String get adminNameAr => 'Name (Arabic)';
+
+  @override
+  String get adminNameEn => 'Name (English)';
+
+  @override
+  String get adminSpecialtyAr => 'Specialty (Arabic)';
+
+  @override
+  String get adminSpecialtyEn => 'Specialty (English)';
+
+  @override
+  String get adminAboutAr => 'About (Arabic)';
+
+  @override
+  String get adminAboutEn => 'About (English)';
+
+  @override
+  String get adminClinicLocation => 'Clinic Location';
+
+  @override
+  String get adminContactNumber => 'Contact Number';
+
+  @override
+  String get adminWhatsappNumber => 'WhatsApp Number';
+
+  @override
+  String get adminExperienceYears => 'Experience Years';
+
+  @override
+  String get adminWorkingHoursAr => 'Working Hours (Ar)';
+
+  @override
+  String get adminWorkingHoursEn => 'Working Hours (En)';
+
+  @override
+  String get adminOnlineConsultation => 'Online Consultation';
+
+  @override
+  String get adminSaveData => 'Save Data';
+
+  @override
+  String get adminDoctorPhoto => 'Doctor\'s Photo';
+
+  @override
+  String get adminInitializeAccount =>
+      'Initialize Admin Account (First time only)';
+
+  @override
+  String get adminAccountCreated =>
+      'Admin account ali/123 created successfully';
+
+  @override
+  String get adminManageRecipes => 'Manage Recipes';
+
+  @override
+  String get adminAddRecipe => 'Add New Recipe';
+
+  @override
+  String get adminEditRecipe => 'Edit Recipe';
+
+  @override
+  String get adminNoRecipes => 'No recipes available yet';
+
+  @override
+  String get adminDeleteRecipeConfirm =>
+      'Are you sure you want to delete this recipe?';
+
+  @override
+  String get adminRecipeIngredientsAr => 'Ingredients (Ar - one per line)';
+
+  @override
+  String get adminRecipeIngredientsEn => 'Ingredients (En - one per line)';
+
+  @override
+  String get adminRecipeStepsAr => 'Preparation Steps (Ar - one per line)';
+
+  @override
+  String get adminRecipeStepsEn => 'Preparation Steps (En - one per line)';
+
+  @override
+  String get adminRecipeVideoUrl => 'Video URL (Optional)';
+
+  @override
+  String get adminRecipePhoto => 'Recipe Photo';
+
+  @override
+  String get specialists => 'Specialists';
+
+  @override
+  String get recipes => 'Recipes';
 }

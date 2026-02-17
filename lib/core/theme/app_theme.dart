@@ -34,3 +34,12 @@ class AppTheme {
     ),
   );
 }
+
+/// سلوك السكرول العام للتطبيق - نستخدم الـ Bounce بدلاً من الـ Stretch
+/// لمنع الفليكر (الوميض) الذي يحدث في تأثيرات الزجاج (BackdropFilter) في أندرويد
+class GlobalScrollBehavior extends MaterialScrollBehavior {
+  @override
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    return const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
+  }
+}

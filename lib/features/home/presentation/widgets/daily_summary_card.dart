@@ -110,9 +110,10 @@ class DailySummaryCard extends StatelessWidget {
                   color: AppTheme.appBlue.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons
-                      .chevron_right_rounded, // Better icon for directional flow
+                child: Icon(
+                  Localizations.localeOf(context).languageCode == 'ar'
+                      ? Icons.chevron_left_rounded
+                      : Icons.chevron_right_rounded,
                   color: AppTheme.appBlue,
                   size: 20,
                 ),

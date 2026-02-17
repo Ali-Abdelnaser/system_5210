@@ -220,7 +220,10 @@ class _OnboardingViewState extends State<OnboardingView> {
                     child: Icon(
                       _currentPage == screens.length - 1
                           ? Icons.done_all
-                          : Icons.arrow_forward_ios,
+                          : (Localizations.localeOf(context).languageCode ==
+                                    'ar'
+                                ? Icons.arrow_back_ios_new_rounded
+                                : Icons.arrow_forward_ios_rounded),
                       color: Colors.white,
                       size: 28,
                     ),

@@ -10,6 +10,10 @@ class UserProfileModel extends Equatable {
   final Map<String, dynamic> quizAnswers;
   final Map<String, dynamic>? parentProfile;
   final bool isSetupCompleted;
+  final int currentStreak;
+  final int maxStreak;
+  final DateTime? lastLoginDate;
+  final String streakStatus; // 'active', 'frozen'
 
   const UserProfileModel({
     required this.uid,
@@ -21,6 +25,10 @@ class UserProfileModel extends Equatable {
     required this.quizAnswers,
     this.parentProfile,
     this.isSetupCompleted = false,
+    this.currentStreak = 0,
+    this.maxStreak = 0,
+    this.lastLoginDate,
+    this.streakStatus = 'active',
   });
 
   Map<String, dynamic> toMap() {
@@ -34,6 +42,10 @@ class UserProfileModel extends Equatable {
       'quizAnswers': quizAnswers,
       'parentProfile': parentProfile,
       'isSetupCompleted': isSetupCompleted,
+      'currentStreak': currentStreak,
+      'maxStreak': maxStreak,
+      'lastLoginDate': lastLoginDate?.toIso8601String(),
+      'streakStatus': streakStatus,
       'updatedAt': DateTime.now().toIso8601String(),
     };
   }
@@ -51,6 +63,12 @@ class UserProfileModel extends Equatable {
           ? Map<String, dynamic>.from(map['parentProfile'])
           : null,
       isSetupCompleted: map['isSetupCompleted'] ?? false,
+      currentStreak: map['currentStreak'] ?? 0,
+      maxStreak: map['maxStreak'] ?? 0,
+      lastLoginDate: map['lastLoginDate'] != null
+          ? DateTime.parse(map['lastLoginDate'])
+          : null,
+      streakStatus: map['streakStatus'] ?? 'active',
     );
   }
 
@@ -64,6 +82,10 @@ class UserProfileModel extends Equatable {
     Map<String, dynamic>? quizAnswers,
     Map<String, dynamic>? parentProfile,
     bool? isSetupCompleted,
+    int? currentStreak,
+    int? maxStreak,
+    DateTime? lastLoginDate,
+    String? streakStatus,
   }) {
     return UserProfileModel(
       uid: uid ?? this.uid,
@@ -75,6 +97,10 @@ class UserProfileModel extends Equatable {
       quizAnswers: quizAnswers ?? this.quizAnswers,
       parentProfile: parentProfile ?? this.parentProfile,
       isSetupCompleted: isSetupCompleted ?? this.isSetupCompleted,
+      currentStreak: currentStreak ?? this.currentStreak,
+      maxStreak: maxStreak ?? this.maxStreak,
+      lastLoginDate: lastLoginDate ?? this.lastLoginDate,
+      streakStatus: streakStatus ?? this.streakStatus,
     );
   }
 
@@ -88,5 +114,9 @@ class UserProfileModel extends Equatable {
     quizAnswers,
     parentProfile,
     isSetupCompleted,
+    currentStreak,
+    maxStreak,
+    lastLoginDate,
+    streakStatus,
   ];
 }

@@ -19,8 +19,6 @@ class BalancedPlateCubit extends Cubit<BalancedPlateState> {
     : super(BalancedPlateInitial());
 
   void startGame() {
-    final random = Random();
-
     // Pick 5 random healthy items
     final selectedHealthy = List<IngredientEntity>.from(
       GameIngredientsData.healthyPool,

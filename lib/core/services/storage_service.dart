@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:system_5210/core/utils/image_compressor.dart';
 
 class StorageService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -10,13 +11,17 @@ class StorageService {
     Function(double)? onProgress,
   }) async {
     try {
-      // Reference to 'profile/uid.jpg'
-      final ref = _storage.ref().child('profile').child('$uid.jpg');
+      // 1. Compress and convert to WebP
+      final compressedFile = await ImageCompressor.compressToWebP(imageFile);
+      final fileToUpload = compressedFile ?? imageFile;
+
+      // Reference to 'profile/uid.webp'
+      final ref = _storage.ref().child('profile').child('$uid.webp');
 
       // Upload file
       final uploadTask = ref.putFile(
-        imageFile,
-        SettableMetadata(contentType: 'image/jpeg'),
+        fileToUpload,
+        SettableMetadata(contentType: 'image/webp'),
       );
 
       if (onProgress != null) {

@@ -119,9 +119,7 @@ class DoctorDetailsView extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
-                    crossAxisAlignment: isAr
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
                       // Floating Stats Row
@@ -175,7 +173,7 @@ class DoctorDetailsView extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         doctor.getAbout(lang),
-                        textAlign: isAr ? TextAlign.right : TextAlign.left,
+                        textAlign: TextAlign.start,
                         style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
                           fontSize: 15,
                           color: Colors.blueGrey[600],
@@ -376,7 +374,7 @@ class DoctorDetailsView extends StatelessWidget {
         itemBuilder: (context, index) {
           return Container(
             width: 260,
-            margin: const EdgeInsets.only(right: 16),
+            margin: const EdgeInsetsDirectional.only(end: 16),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(

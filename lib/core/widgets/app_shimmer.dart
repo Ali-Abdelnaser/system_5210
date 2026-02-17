@@ -133,4 +133,34 @@ class AppShimmer extends StatelessWidget {
       ),
     );
   }
+
+  static Widget recipeGridCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AppShimmer(
+            width: double.infinity,
+            height: 140,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppShimmer(width: 120, height: 16),
+                const SizedBox(height: 8),
+                AppShimmer(width: 80, height: 12),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

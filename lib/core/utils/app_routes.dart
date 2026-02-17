@@ -29,6 +29,9 @@ import 'package:system_5210/features/games/balanced_diet/presentation/cubit/game
 import 'package:system_5210/features/games/food_matching/presentation/views/food_matching_view.dart';
 import 'package:system_5210/features/games/food_matching/presentation/views/matching_stats_view.dart';
 import 'package:system_5210/features/games/food_matching/presentation/cubit/food_matching_cubit.dart';
+import 'package:system_5210/features/games/quizGame/presentation/views/quiz_levels_view.dart';
+import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+import 'package:system_5210/features/healthy_insights/presentation/views/healthy_insights_view.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -50,6 +53,7 @@ class AppRoutes {
   static const String healthyRecipes = '/recipes-list';
   static const String recipeDetails = '/recipe-details';
   static const String uploader = '/data-uploader';
+  static const String healthyInsights = '/healthy-insights';
 
   // Games
   static const String gamesList = '/games-list';
@@ -57,6 +61,7 @@ class AppRoutes {
   static const String balancedPlateStats = '/balanced-plate-stats';
   static const String matchingGame = '/matching-game';
   static const String matchingStats = '/matching-stats';
+  static const String quizGame = '/quiz-game';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     Widget page;
@@ -65,7 +70,8 @@ class AppRoutes {
         page = const SplashView();
         break;
       case language:
-        page = const LanguageView();
+        final fromSettings = settings.arguments as bool? ?? false;
+        page = LanguageView(fromSettings: fromSettings);
         break;
       case onboarding:
         page = const OnboardingView();
@@ -154,6 +160,15 @@ class AppRoutes {
           create: (context) => sl<GameStatsCubit>(),
           child: const MatchingStatsView(),
         );
+        break;
+      case quizGame:
+        page = BlocProvider(
+          create: (context) => sl<QuizCubit>()..loadLevels(),
+          child: const QuizLevelsView(),
+        );
+        break;
+      case healthyInsights:
+        page = const HealthyInsightsView();
         break;
       default:
         return null;

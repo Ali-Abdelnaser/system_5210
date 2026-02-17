@@ -46,6 +46,7 @@ class GamesListView extends StatelessWidget {
                   color: AppTheme.appGreen,
                   routeName: AppRoutes.balancedPlateGame,
                   statsRouteName: AppRoutes.balancedPlateStats,
+                  showStats: true,
                 ).animate().slideX(
                   begin: -1,
                   end: 0,
@@ -63,6 +64,7 @@ class GamesListView extends StatelessWidget {
                   color: AppTheme.appBlue,
                   routeName: AppRoutes.matchingGame,
                   statsRouteName: AppRoutes.matchingStats,
+                  showStats: true,
                 ).animate().slideX(
                   begin: 1,
                   end: 0,
@@ -73,10 +75,16 @@ class GamesListView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // Placeholder for upcoming games
-                _buildUpcomingGameCard(
-                  'لعبة الألوان النشيطة',
-                  'قريباً في تحديثنا القادم',
+                _buildGameCard(
+                  context,
+                  title: 'مغامرة المعلومات',
+                  description: 'تحدى نفسك في 14 مستوي من الأسئلة المشوقة',
+                  imagePath: AppImages
+                      .quiz, // Using connect image for now or something else
+                  color: Colors.orange,
+                  routeName: AppRoutes.quizGame,
+                  statsRouteName: AppRoutes.quizGame,
+                  showStats: false,
                 ).animate().slideX(
                   begin: -1,
                   end: 0,
@@ -100,6 +108,7 @@ class GamesListView extends StatelessWidget {
     required Color color,
     required String routeName,
     required String statsRouteName,
+    required bool showStats,
   }) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, routeName),
@@ -156,82 +165,37 @@ class GamesListView extends StatelessWidget {
                         height: 1.3,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, statsRouteName),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.bar_chart_rounded, size: 16, color: color),
-                          const SizedBox(width: 4),
-                          Text(
-                            'الإحصائيات والسجل',
-                            style: GoogleFonts.cairo(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                    if (showStats)
+                      GestureDetector(
+                        onTap: () =>
+                            Navigator.pushNamed(context, statsRouteName),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.bar_chart_rounded,
+                              size: 16,
                               color: color,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 4),
+                            Text(
+                              'الإحصائيات والسجل',
+                              style: GoogleFonts.cairo(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: color,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
 
               // Play Icon
               Icon(Icons.play_circle_fill_rounded, color: color, size: 40),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildUpcomingGameCard(String title, String status) {
-    return GlassContainer(
-      blur: 10,
-      opacity: 0.2,
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(25),
-      border: Border.all(color: Colors.white.withOpacity(0.3)),
-      child: Opacity(
-        opacity: 0.6,
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Row(
-            children: [
-              Container(
-                width: 70,
-                height: 70,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.lock_rounded,
-                  color: Colors.grey,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.cairo(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2D3142).withOpacity(0.7),
-                    ),
-                  ),
-                  Text(
-                    status,
-                    style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

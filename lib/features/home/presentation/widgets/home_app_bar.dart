@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'package:system_5210/core/widgets/streak_widget.dart';
 
 class HomeAppBar extends StatelessWidget {
   final String displayName;
   final int streakCount;
+  final String streakStatus;
   final bool isLoading;
 
   const HomeAppBar({
     super.key,
     required this.displayName,
     required this.streakCount,
+    this.streakStatus = 'active',
     this.isLoading = false,
   });
 
@@ -70,34 +72,15 @@ class HomeAppBar extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          // Streak Counter
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFE5D0), // Soft Orange
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.orange.withOpacity(0.3)),
+
+          if (!isLoading)
+            StreakWidget(
+              count: streakCount,
+              status: streakStatus,
+              onTap: () {
+                // Show a small tooltip or dialog explaining the streak
+              },
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.local_fire_department_rounded,
-                  color: Colors.orange,
-                  size: 18,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  l10n.dayStreak(streakCount),
-                  style: GoogleFonts.dynaPuff(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange[800],
-                  ),
-                ),
-              ],
-            ),
-          ).animate().scale(delay: 500.ms, curve: Curves.elasticOut),
 
           const SizedBox(width: 12),
         ],

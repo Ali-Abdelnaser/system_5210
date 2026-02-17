@@ -6,8 +6,10 @@ import 'package:system_5210/core/utils/injection_container.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:system_5210/core/widgets/app_shimmer.dart';
+import 'package:system_5210/core/widgets/app_loading_indicator.dart';
 import 'package:system_5210/features/specialists/presentation/views/doctor_details_view.dart';
 import 'package:system_5210/core/widgets/app_back_button.dart';
+import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
 
 class SpecialistsView extends StatefulWidget {
   const SpecialistsView({super.key});
@@ -21,6 +23,7 @@ class _SpecialistsViewState extends State<SpecialistsView> {
   List<Doctor> filteredDoctors = [];
   bool isLoading = true;
   final TextEditingController _searchController = TextEditingController();
+  int _titleTapCount = 0; // عداد الضغطات المخفي
 
   @override
   void initState() {
@@ -76,15 +79,27 @@ class _SpecialistsViewState extends State<SpecialistsView> {
       backgroundColor: const Color(0xFFF8FBFF),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(
-          l10n.specialistsTitle,
-          style:
-              (Localizations.localeOf(context).languageCode == 'ar'
-              ? GoogleFonts.cairo
-              : GoogleFonts.poppins)(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF2D3142),
-              ),
+        title: GestureDetector(
+          onTap: () {
+            _titleTapCount++;
+            if (_titleTapCount >= 4) {
+              _titleTapCount = 0; // تصدير العداد
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminLoginView()),
+              );
+            }
+          },
+          child: Text(
+            l10n.specialistsTitle,
+            style:
+                (Localizations.localeOf(context).languageCode == 'ar'
+                ? GoogleFonts.cairo
+                : GoogleFonts.poppins)(
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF2D3142),
+                ),
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -205,6 +220,13 @@ class _SpecialistsViewState extends State<SpecialistsView> {
                   child: Image.network(
                     doctor.imageUrl,
                     fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: const Color(0xFFF1F5F9),
+                        child: const AppLoadingIndicator(size: 24),
+                      );
+                    },
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         color: const Color(0xFFF1F5F9),
@@ -307,8 +329,10 @@ class _SpecialistsViewState extends State<SpecialistsView> {
                 color: AppTheme.appBlue.withOpacity(0.08),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.arrow_forward_ios_rounded,
+              child: Icon(
+                Localizations.localeOf(context).languageCode == 'ar'
+                    ? Icons.arrow_back_ios_rounded
+                    : Icons.arrow_forward_ios_rounded,
                 size: 14,
                 color: AppTheme.appBlue,
               ),

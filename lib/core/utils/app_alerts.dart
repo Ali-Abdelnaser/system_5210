@@ -23,6 +23,7 @@ class AppAlerts {
         duration: const Duration(seconds: 4),
         content: ClipRRect(
           borderRadius: BorderRadius.circular(20),
+          clipBehavior: Clip.antiAlias,
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
@@ -51,7 +52,8 @@ class AppAlerts {
                     child: Text(
                       message,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
+                      textDirection: TextDirection.rtl,
+                      style: GoogleFonts.cairo(
                         color: const Color(0xFF1E293B),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -75,9 +77,15 @@ class AppAlerts {
     return showDialog<T>(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: child,
+      builder: (context) => ClipRRect(
+        borderRadius: BorderRadius.circular(
+          30,
+        ), // Assuming a common dialog border radius
+        clipBehavior: Clip.antiAlias,
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: child,
+        ),
       ),
     );
   }
