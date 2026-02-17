@@ -93,7 +93,7 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
                 0,
                 (sum, s) => sum + s,
               );
-
+//android\app
               return SafeArea(
                 child: Column(
                   children: [
@@ -104,7 +104,7 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
                     Expanded(
                       child: SingleChildScrollView(
                         controller: _scrollController,
-                        padding: const EdgeInsets.only(top: 0, bottom: 50),
+                        padding: const EdgeInsets.only(top: 100, bottom: 50),
                         child: CustomPaint(
                           painter: _QuizPathPainter(
                             levelCount: totalLevels,

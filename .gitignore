@@ -60,6 +60,7 @@ app.*.map.json
 **/*.p12
 **/*.key
 **/android/key.properties
+publish_config.json
 
 # Fastlane
 **/fastlane/report.xml
