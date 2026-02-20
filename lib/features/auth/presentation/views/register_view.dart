@@ -16,6 +16,7 @@ import 'package:system_5210/features/auth/presentation/widgets/auth_header.dart'
 import 'package:system_5210/features/auth/presentation/widgets/contact_toggle.dart';
 import 'package:system_5210/features/auth/presentation/widgets/social_login_section.dart';
 import 'package:system_5210/features/auth/presentation/widgets/auth_footer_link.dart';
+import 'package:system_5210/core/utils/app_utils.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -71,6 +72,7 @@ class _RegisterViewState extends State<RegisterView> {
             arguments: {
               'isEmail': false,
               'verificationId': state.verificationId,
+              'phoneNumber': _phoneController.text.trim(),
             },
           );
         } else if (state is AuthEmailVerificationSent) {
@@ -201,7 +203,8 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
-  void _onRegister(BuildContext context) {
+  void _onRegister(BuildContext context) async {
+    if (!await AppUtils.checkInternet(context)) return;
     if (isEmailMode) {
       if (!_formKey.currentState!.validate()) return;
       context.read<AuthCubit>().register(

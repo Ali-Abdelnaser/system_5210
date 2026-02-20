@@ -8,6 +8,8 @@ import 'package:system_5210/features/profile/presentation/manager/profile_cubit.
 import 'package:system_5210/features/nutrition_scan/presentation/pages/scan_intro_view.dart';
 import '../manager/home_cubit.dart';
 import 'package:system_5210/features/games/presentation/views/games_list_view.dart';
+import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
 
 class MainLayoutView extends StatefulWidget {
   const MainLayoutView({super.key});
@@ -25,6 +27,8 @@ class _MainLayoutViewState extends State<MainLayoutView> {
       providers: [
         BlocProvider(create: (context) => sl<HomeCubit>()..loadUserProfile()),
         BlocProvider(create: (context) => sl<ProfileCubit>()..getProfile()),
+        BlocProvider(create: (context) => sl<BondingGameCubit>()..initGame()),
+        BlocProvider(create: (context) => sl<DailyTasksCubit>()..init()),
       ],
       child: PopScope(
         canPop: _currentIndex == 0,

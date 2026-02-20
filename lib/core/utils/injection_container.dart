@@ -60,6 +60,11 @@ import 'package:system_5210/features/games/quizGame/data/datasources/quiz_local_
 import 'package:system_5210/features/games/quizGame/data/datasources/quiz_remote_data_source.dart';
 import 'package:system_5210/features/games/quizGame/data/repositories/quiz_repository_impl.dart';
 import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:system_5210/core/network/network_info.dart';
+import 'package:system_5210/core/network/network_cubit.dart';
+import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
 
 import 'package:system_5210/core/services/notification_service.dart';
 import 'package:system_5210/core/services/streak_service.dart';
@@ -68,6 +73,8 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // Services
+  sl.registerLazySingleton(() => InternetConnection());
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton(() => NotificationService());
   sl.registerLazySingleton(() => StreakService(sl()));
   // Use cases
@@ -138,8 +145,11 @@ Future<void> init() async {
       verifyEmailOTPUseCase: sl(),
       updatePasswordUseCase: sl(),
       updateEmailUseCase: sl(),
+      networkInfo: sl(),
     ),
   );
+
+  sl.registerFactory(() => NetworkCubit(sl()));
 
   sl.registerFactory(() => NutritionScanCubit(repository: sl()));
   sl.registerFactory(() => RecipeCubit(getRecipesUseCase: sl()));
@@ -147,6 +157,8 @@ Future<void> init() async {
   sl.registerFactory(() => GameStatsCubit(repository: sl(), auth: sl()));
   sl.registerFactory(() => FoodMatchingCubit(repository: sl(), auth: sl()));
   sl.registerFactory(() => QuizCubit(repository: sl()));
+  sl.registerFactory(() => BondingGameCubit(sl()));
+  sl.registerFactory(() => DailyTasksCubit(sl()));
 
   // Repository
   // Repository

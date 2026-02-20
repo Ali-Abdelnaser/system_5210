@@ -452,6 +452,18 @@ abstract class AppLocalizations {
   /// **'We sent a verification link to your email. Open the link in your inbox, then tap Continue below.'**
   String get emailVerificationLinkSent;
 
+  /// No description provided for @verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified!'**
+  String get verified;
+
+  /// No description provided for @verifiedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Your identity has been confirmed successfully.'**
+  String get verifiedDesc;
+
   /// No description provided for @continueButton.
   ///
   /// In en, this message translates to:
@@ -1039,12 +1051,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Log Time'**
   String get logTime;
-
-  /// No description provided for @save.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
 
   /// No description provided for @servings.
   ///
@@ -2299,6 +2305,354 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Recipes'**
   String get recipes;
+
+  /// No description provided for @bondingGameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bonding Game'**
+  String get bondingGameTitle;
+
+  /// No description provided for @bondingGameSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Together'**
+  String get bondingGameSubtitle;
+
+  /// No description provided for @bondingHomeAnnouncement.
+  ///
+  /// In en, this message translates to:
+  /// **'Scratch to discover today\'s challenge! 🔥'**
+  String get bondingHomeAnnouncement;
+
+  /// No description provided for @bondingDiscoveryToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Discovery'**
+  String get bondingDiscoveryToday;
+
+  /// No description provided for @bondingTurnToChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s their turn to choose!'**
+  String get bondingTurnToChoose;
+
+  /// No description provided for @bondingScratchToDiscover.
+  ///
+  /// In en, this message translates to:
+  /// **'Scratch to discover'**
+  String get bondingScratchToDiscover;
+
+  /// No description provided for @bondingDiscoverChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Discover the challenge'**
+  String get bondingDiscoverChallenge;
+
+  /// No description provided for @bondingSelectedChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected Challenge'**
+  String get bondingSelectedChallenge;
+
+  /// No description provided for @bondingChooseDailyChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Today\'s Challenge'**
+  String get bondingChooseDailyChallenge;
+
+  /// No description provided for @bondingChallengeFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'Task set for today'**
+  String get bondingChallengeFixed;
+
+  /// No description provided for @bondingRoleTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Today is ({role})\'s turn to choose'**
+  String bondingRoleTurn(String role);
+
+  /// No description provided for @bondingConfirmChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Challenge'**
+  String get bondingConfirmChallenge;
+
+  /// No description provided for @bondingActiveChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s challenge is active'**
+  String get bondingActiveChallenge;
+
+  /// No description provided for @bondingCommitmentSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Commitment documented successfully'**
+  String get bondingCommitmentSuccess;
+
+  /// No description provided for @bondingRoleMission.
+  ///
+  /// In en, this message translates to:
+  /// **'{role}\'s mission'**
+  String bondingRoleMission(String role);
+
+  /// No description provided for @bondingEnjoyChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy this challenge today, you\'ll get a new one tomorrow!'**
+  String get bondingEnjoyChallenge;
+
+  /// No description provided for @bondingDocumentMoment.
+  ///
+  /// In en, this message translates to:
+  /// **'Document the moment ✨'**
+  String get bondingDocumentMoment;
+
+  /// No description provided for @bondingMissionFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission for: {role}'**
+  String bondingMissionFor(String role);
+
+  /// No description provided for @bondingFingerprintInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Please press the fingerprint together to activate the challenge'**
+  String get bondingFingerprintInstruction;
+
+  /// No description provided for @bondingPledgeParent.
+  ///
+  /// In en, this message translates to:
+  /// **'I commit to sharing this challenge with my child with love and care.'**
+  String get bondingPledgeParent;
+
+  /// No description provided for @bondingPledgeChild.
+  ///
+  /// In en, this message translates to:
+  /// **'I promise to do my best and enjoy my time with my family.'**
+  String get bondingPledgeChild;
+
+  /// No description provided for @bondingTapToFlip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the card to flip it'**
+  String get bondingTapToFlip;
+
+  /// No description provided for @bondingSwipeUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe one up'**
+  String get bondingSwipeUp;
+
+  /// No description provided for @bondingStartNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Now'**
+  String get bondingStartNow;
+
+  /// No description provided for @bondingConfirming.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming...'**
+  String get bondingConfirming;
+
+  /// No description provided for @bondingConfirmFromHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm here'**
+  String get bondingConfirmFromHere;
+
+  /// No description provided for @bondingCaptureMoment.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture the Moment ✨'**
+  String get bondingCaptureMoment;
+
+  /// No description provided for @bondingCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get bondingCamera;
+
+  /// No description provided for @bondingGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get bondingGallery;
+
+  /// No description provided for @bondingGoHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Home'**
+  String get bondingGoHome;
+
+  /// No description provided for @bondingTodayMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Mission 🎯'**
+  String get bondingTodayMission;
+
+  /// No description provided for @bondingWallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wall of Memories ✨'**
+  String get bondingWallTitle;
+
+  /// No description provided for @bondingNoMemories.
+  ///
+  /// In en, this message translates to:
+  /// **'No memories yet, start challenges and capture the moments!'**
+  String get bondingNoMemories;
+
+  /// No description provided for @bondingMissionAccomplished.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission Done for Today! 🏆'**
+  String get bondingMissionAccomplished;
+
+  /// No description provided for @bondingMemoriesDay.
+  ///
+  /// In en, this message translates to:
+  /// **'A day full of bonding 💖'**
+  String get bondingMemoriesDay;
+
+  /// No description provided for @bondingViewMemories.
+  ///
+  /// In en, this message translates to:
+  /// **'View Wall of Memories'**
+  String get bondingViewMemories;
+
+  /// No description provided for @bondingExploreMemories.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to view your happy memories'**
+  String get bondingExploreMemories;
+
+  /// No description provided for @bondingNoMemoriesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No memories yet'**
+  String get bondingNoMemoriesYet;
+
+  /// No description provided for @bondingStartFirstChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your first challenge and fill the wall with photos!'**
+  String get bondingStartFirstChallenge;
+
+  /// No description provided for @bondingViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
+  String get bondingViewAll;
+
+  /// No description provided for @bondingWhyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why Bonding Game?'**
+  String get bondingWhyTitle;
+
+  /// No description provided for @bondingWhyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Research shows that 15 minutes of shared activity daily strengthens a child\'s mental health and increases family bonding by 40%.'**
+  String get bondingWhyDesc;
+
+  /// No description provided for @bondingDoneBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get bondingDoneBadge;
+
+  /// No description provided for @bondingActiveBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get bondingActiveBadge;
+
+  /// No description provided for @bondingAvailableBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get bondingAvailableBadge;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @noInternet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Internet Connection'**
+  String get noInternet;
+
+  /// No description provided for @noInternetDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your network and try again.'**
+  String get noInternetDesc;
+
+  /// No description provided for @backOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Back Online'**
+  String get backOnline;
+
+  /// No description provided for @backOnlineDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection restored. You can continue now.'**
+  String get backOnlineDesc;
+
+  /// No description provided for @bondingActiveMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission in progress'**
+  String get bondingActiveMission;
+
+  /// No description provided for @bondingMissionRoleParent.
+  ///
+  /// In en, this message translates to:
+  /// **'Parents\' Mission'**
+  String get bondingMissionRoleParent;
+
+  /// No description provided for @bondingMissionRoleChild.
+  ///
+  /// In en, this message translates to:
+  /// **'Child\'s Mission'**
+  String get bondingMissionRoleChild;
+
+  /// No description provided for @bondingAddAnotherPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another photo'**
+  String get bondingAddAnotherPhoto;
+
+  /// No description provided for @bondingMissionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Mission completed successfully! 🎉'**
+  String get bondingMissionSuccess;
+
+  /// No description provided for @bondingWallSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Family Treasures 🖼️'**
+  String get bondingWallSubtitle;
+
+  /// No description provided for @bondingWallWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'The wall is waiting for your memories! ✨'**
+  String get bondingWallWaiting;
+
+  /// No description provided for @bondingStartFirstChallengeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Start first challenge now'**
+  String get bondingStartFirstChallengeNow;
 }
 
 class _AppLocalizationsDelegate

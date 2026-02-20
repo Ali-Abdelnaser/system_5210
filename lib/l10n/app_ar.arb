@@ -59,16 +59,18 @@
   "verify": "إرسال",
   "resendCode": "إعادة إرسال الكود",
   "emailVerificationLinkSent": "أرسلنا رابط تحقق إلى بريدك. افتح الرابط من صندوق الوارد ثم اضغط متابعة.",
+  "verified": "تم التحقق!",
+  "verifiedDesc": "تم تأكيد هويتك بنجاح.",
   "continueButton": "متابعة",
   "whoAreYou": "عرفنا عليك أكثر؟",
   "welcomeHero": "أهلاً بك معنا",
   "chooseRole": "اختر دورك",
   "chooseRoleDesc": "اختر دورك لتبدأ الرحلة معنا",
-  "roleParent": "ولي أمر",
+  "roleParent": "الأهل",
   "parent": "أنا ولي أمر",
   "parentDesc": "متابعة التقدم والإعدادات",
   "parentRoleDesc": "متابعة التقدم والإعدادات",
-  "roleChild": "عضو مستخدم",
+  "roleChild": "الطفل",
   "child": "أنا عضو مستخدم",
   "childDesc": "تفاعل، تعلم واستمتع",
   "childRoleDesc": "تفاعل، تعلم واستمتع",
@@ -122,7 +124,6 @@
   "favoriteHero": "شخصية الطفل المفضلة",
   "familyPriority": "الأولوية الصحية للأسرة",
   "selectDate": "اختر التاريخ",
-
   "navHome": "الرئيسية",
   "navScan": "فحص",
   "navGame": "اللعبة",
@@ -175,8 +176,6 @@
   "keepItUp": "استمر هكذا",
   "reduceThis": "قلل من هذا",
   "logTime": "تسجيل الوقت",
-  "cancel": "إلغاء",
-  "save": "حفظ",
   "servings": "حصص",
   "drinks": "مشروبات",
   "limit": "الحد الأقصى",
@@ -305,7 +304,6 @@
   "gallery": "المعرض",
   "chooseImageSource": "اختر مصدر الصورة",
   "change": "تغيير",
-  "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
   "noSpecialists": "لا يوجد أطباء متاحون حالياً",
   "noSpecialistsFound": "لم يتم العثور على أطباء بهذا الاسم",
   "supportTitle": "الدعم والمساعدة",
@@ -400,5 +398,84 @@
   "adminRecipeVideoUrl": "رابط الفيديو (اختياري)",
   "adminRecipePhoto": "صورة الوصفة",
   "specialists": "المتخصصين",
-  "recipes": "الوصفات"
+  "recipes": "الوصفات",
+  "bondingGameTitle": "لعبة الترابط",
+  "bondingGameSubtitle": "نلعب معاً",
+  "bondingHomeAnnouncement": "خربش الكارت لاكتشاف تحدي اليوم 🔥",
+  "bondingDiscoveryToday": "اكتشاف اليوم",
+  "bondingTurnToChoose": "هو اللي عليه الدور يختار!",
+  "bondingScratchToDiscover": "خربش للاكتشاف",
+  "bondingDiscoverChallenge": "اكتشف التحدي",
+  "bondingSelectedChallenge": "التحدي المختار",
+  "bondingChooseDailyChallenge": "اختيار تحدي اليوم",
+  "bondingChallengeFixed": "تم تحديد المهمة لليوم",
+  "bondingRoleTurn": "النهارده دور ({role}) في الاختيار 🎲",
+  "@bondingRoleTurn": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "bondingConfirmChallenge": "تأكيد التحدي",
+  "bondingActiveChallenge": "تحدي اليوم نشط",
+  "bondingCommitmentSuccess": "لقد تم توثيق الالتزام بنجاح",
+  "bondingRoleMission": "مهمة {role}",
+  "@bondingRoleMission": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "bondingDocumentMoment": "وثق هذه اللحظة ✨",
+  "bondingMissionFor": "مهمة لـ {role}",
+  "@bondingMissionFor": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "bondingFingerprintInstruction": "يرجى الضغط معاً على البصمة لتفعيل التحدي",
+  "bondingPledgeParent": "ألتزم بمشاركة طفلي هذا التحدي بكل مودة واهتمام.",
+  "bondingPledgeChild": "أعد بأن أبذل جهدي وأستمتع بوقتي مع عائلتي.",
+  "bondingTapToFlip": "المس الكارت عشان تقلبه",
+  "bondingSwipeUp": "اسحب واحد لفوق",
+  "bondingStartNow": "ابدأ الآن",
+  "bondingConfirming": "جاري التأكيد...",
+  "bondingConfirmFromHere": "أكد من هنا",
+  "bondingCaptureMoment": "وثّق اللحظة ✨",
+  "bondingCamera": "الكاميرا",
+  "bondingGallery": "المعرض",
+  "bondingGoHome": "العودة للرئيسية",
+  "bondingTodayMission": "مهمة اليوم 🎯",
+  "bondingEnjoyChallenge": "استمتعوا بوقتكم في تنفيذ التحدي!",
+  "bondingWallTitle": "حائط الذكريات ✨",
+  "bondingNoMemories": "لا توجد ذكريات بعد، ابدأوا التحديات ووثقوا اللحظات!",
+  "bondingMissionAccomplished": "تمت مهمة اليوم! 🏆",
+  "bondingMemoriesDay": "يوم مليء بالترابط 💖",
+  "bondingViewMemories": "عرض حائط الذكريات",
+  "bondingExploreMemories": "اضغط لعرض ذكرياتكم السعيدة",
+  "bondingNoMemoriesYet": "لا توجد ذكريات بعد",
+  "bondingStartFirstChallenge": "ابدأوا أول تحدي واملأوا الحائط بالصور!",
+  "bondingViewAll": "عرض الكل",
+  "bondingWhyTitle": "لماذا لعبة الترابط؟",
+  "bondingWhyDesc": "الأبحاث تقول أن 15 دقيقة من النشاط المشترك يومياً تقوي الصحة النفسية للطفل وتزيد من الترابط العائلي بنسبة 40%.",
+  "bondingDoneBadge": "تمت",
+  "bondingActiveBadge": "نشط",
+  "bondingAvailableBadge": "متاح",
+  "save": "حفظ",
+  "noInternet": "لا يوجد اتصال بالإنترنت",
+  "noInternetDesc": "يرجى التحقق من الشبكة والمحاولة مرة أخرى.",
+  "backOnline": "متصل الآن",
+  "backOnlineDesc": "تم استعادة الاتصال بنجاح. يمكنك المتابعة الآن.",
+  "bondingActiveMission": "مهمة قيد التنفيذ",
+  "bondingMissionRoleParent": "مهمة الأهل",
+  "bondingMissionRoleChild": "مهمة الطفل",
+  "bondingAddAnotherPhoto": "إضافة صورة أخرى",
+  "bondingMissionSuccess": "تمت المهمة بنجاح! 🎉",
+  "bondingWallSubtitle": "تحفنا العائلية 🖼️",
+  "bondingWallWaiting": "الحائط ينتظر ذكرياتكم! ✨",
+  "bondingStartFirstChallengeNow": "ابدأ أول تحدي الآن"
 }

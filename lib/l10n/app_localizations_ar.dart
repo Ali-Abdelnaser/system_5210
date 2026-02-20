@@ -195,6 +195,12 @@ class AppLocalizationsAr extends AppLocalizations {
       'أرسلنا رابط تحقق إلى بريدك. افتح الرابط من صندوق الوارد ثم اضغط متابعة.';
 
   @override
+  String get verified => 'تم التحقق!';
+
+  @override
+  String get verifiedDesc => 'تم تأكيد هويتك بنجاح.';
+
+  @override
   String get continueButton => 'متابعة';
 
   @override
@@ -210,7 +216,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get chooseRoleDesc => 'اختر دورك لتبدأ الرحلة معنا';
 
   @override
-  String get roleParent => 'ولي أمر';
+  String get roleParent => 'الأهل';
 
   @override
   String get parent => 'أنا ولي أمر';
@@ -222,7 +228,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get parentRoleDesc => 'متابعة التقدم والإعدادات';
 
   @override
-  String get roleChild => 'عضو مستخدم';
+  String get roleChild => 'الطفل';
 
   @override
   String get child => 'أنا عضو مستخدم';
@@ -498,9 +504,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get logTime => 'تسجيل الوقت';
 
   @override
-  String get save => 'حفظ';
-
-  @override
   String get servings => 'حصص';
 
   @override
@@ -581,7 +584,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get passwordTooShort => 'يجب أن تكون كلمة السر 6 أحرف على الأقل';
 
   @override
-  String get passwordsDoNotMatch => 'كلمات المرور غير متطابقة';
+  String get passwordsDoNotMatch => 'كلمات السر غير متطابقة';
 
   @override
   String get nameRequired => 'الاسم بالكامل مطلوب';
@@ -1157,4 +1160,189 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get recipes => 'الوصفات';
+
+  @override
+  String get bondingGameTitle => 'لعبة الترابط';
+
+  @override
+  String get bondingGameSubtitle => 'نلعب معاً';
+
+  @override
+  String get bondingHomeAnnouncement => 'خربش الكارت لاكتشاف تحدي اليوم 🔥';
+
+  @override
+  String get bondingDiscoveryToday => 'اكتشاف اليوم';
+
+  @override
+  String get bondingTurnToChoose => 'هو اللي عليه الدور يختار!';
+
+  @override
+  String get bondingScratchToDiscover => 'خربش للاكتشاف';
+
+  @override
+  String get bondingDiscoverChallenge => 'اكتشف التحدي';
+
+  @override
+  String get bondingSelectedChallenge => 'التحدي المختار';
+
+  @override
+  String get bondingChooseDailyChallenge => 'اختيار تحدي اليوم';
+
+  @override
+  String get bondingChallengeFixed => 'تم تحديد المهمة لليوم';
+
+  @override
+  String bondingRoleTurn(String role) {
+    return 'النهارده دور ($role) في الاختيار 🎲';
+  }
+
+  @override
+  String get bondingConfirmChallenge => 'تأكيد التحدي';
+
+  @override
+  String get bondingActiveChallenge => 'تحدي اليوم نشط';
+
+  @override
+  String get bondingCommitmentSuccess => 'لقد تم توثيق الالتزام بنجاح';
+
+  @override
+  String bondingRoleMission(String role) {
+    return 'مهمة $role';
+  }
+
+  @override
+  String get bondingEnjoyChallenge => 'استمتعوا بوقتكم في تنفيذ التحدي!';
+
+  @override
+  String get bondingDocumentMoment => 'وثق هذه اللحظة ✨';
+
+  @override
+  String bondingMissionFor(String role) {
+    return 'مهمة لـ $role';
+  }
+
+  @override
+  String get bondingFingerprintInstruction =>
+      'يرجى الضغط معاً على البصمة لتفعيل التحدي';
+
+  @override
+  String get bondingPledgeParent =>
+      'ألتزم بمشاركة طفلي هذا التحدي بكل مودة واهتمام.';
+
+  @override
+  String get bondingPledgeChild => 'أعد بأن أبذل جهدي وأستمتع بوقتي مع عائلتي.';
+
+  @override
+  String get bondingTapToFlip => 'المس الكارت عشان تقلبه';
+
+  @override
+  String get bondingSwipeUp => 'اسحب واحد لفوق';
+
+  @override
+  String get bondingStartNow => 'ابدأ الآن';
+
+  @override
+  String get bondingConfirming => 'جاري التأكيد...';
+
+  @override
+  String get bondingConfirmFromHere => 'أكد من هنا';
+
+  @override
+  String get bondingCaptureMoment => 'وثّق اللحظة ✨';
+
+  @override
+  String get bondingCamera => 'الكاميرا';
+
+  @override
+  String get bondingGallery => 'المعرض';
+
+  @override
+  String get bondingGoHome => 'العودة للرئيسية';
+
+  @override
+  String get bondingTodayMission => 'مهمة اليوم 🎯';
+
+  @override
+  String get bondingWallTitle => 'حائط الذكريات ✨';
+
+  @override
+  String get bondingNoMemories =>
+      'لا توجد ذكريات بعد، ابدأوا التحديات ووثقوا اللحظات!';
+
+  @override
+  String get bondingMissionAccomplished => 'تمت مهمة اليوم! 🏆';
+
+  @override
+  String get bondingMemoriesDay => 'يوم مليء بالترابط 💖';
+
+  @override
+  String get bondingViewMemories => 'عرض حائط الذكريات';
+
+  @override
+  String get bondingExploreMemories => 'اضغط لعرض ذكرياتكم السعيدة';
+
+  @override
+  String get bondingNoMemoriesYet => 'لا توجد ذكريات بعد';
+
+  @override
+  String get bondingStartFirstChallenge =>
+      'ابدأوا أول تحدي واملأوا الحائط بالصور!';
+
+  @override
+  String get bondingViewAll => 'عرض الكل';
+
+  @override
+  String get bondingWhyTitle => 'لماذا لعبة الترابط؟';
+
+  @override
+  String get bondingWhyDesc =>
+      'الأبحاث تقول أن 15 دقيقة من النشاط المشترك يومياً تقوي الصحة النفسية للطفل وتزيد من الترابط العائلي بنسبة 40%.';
+
+  @override
+  String get bondingDoneBadge => 'تمت';
+
+  @override
+  String get bondingActiveBadge => 'نشط';
+
+  @override
+  String get bondingAvailableBadge => 'متاح';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get noInternet => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get noInternetDesc => 'يرجى التحقق من الشبكة والمحاولة مرة أخرى.';
+
+  @override
+  String get backOnline => 'متصل الآن';
+
+  @override
+  String get backOnlineDesc => 'تم استعادة الاتصال بنجاح. يمكنك المتابعة الآن.';
+
+  @override
+  String get bondingActiveMission => 'مهمة قيد التنفيذ';
+
+  @override
+  String get bondingMissionRoleParent => 'مهمة الأهل';
+
+  @override
+  String get bondingMissionRoleChild => 'مهمة الطفل';
+
+  @override
+  String get bondingAddAnotherPhoto => 'إضافة صورة أخرى';
+
+  @override
+  String get bondingMissionSuccess => 'تمت المهمة بنجاح! 🎉';
+
+  @override
+  String get bondingWallSubtitle => 'تحفنا العائلية 🖼️';
+
+  @override
+  String get bondingWallWaiting => 'الحائط ينتظر ذكرياتكم! ✨';
+
+  @override
+  String get bondingStartFirstChallengeNow => 'ابدأ أول تحدي الآن';
 }

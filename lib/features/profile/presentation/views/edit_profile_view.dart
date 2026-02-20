@@ -220,70 +220,77 @@ class _EditProfileViewState extends State<EditProfileView> {
                   validator: (value) =>
                       AppValidators.validateName(value, context),
                 ),
-                const SizedBox(height: 20),
-                _buildModernTextField(
-                  controller: _cityController,
-                  label: l10n.city,
-                  iconPath: AppImages.iconLocation,
-                  validator: (value) =>
-                      AppValidators.validateRequired(value, context),
-                ),
-                const SizedBox(height: 32),
-                _buildSectionTitle(l10n.generalPreferences),
-                const SizedBox(height: 20),
-                _buildModernLabel(l10n.relationship),
-                const SizedBox(height: 10),
-                _buildChicGlassDropdown(
-                  label: l10n.selectField(l10n.relationship),
-                  value: _selectedRelationship,
-                  items: [
-                    {'val': 'Mother', 'label': l10n.mother},
-                    {'val': 'Father', 'label': l10n.father},
-                    {'val': 'Guardian', 'label': l10n.guardian},
-                  ],
-                  onSelect: (v) => setState(() {
-                    _selectedRelationship = v;
-                    _isRelationshipExpanded = false;
-                  }),
-                  iconPath: AppImages.iconUser,
-                  isExpanded: _isRelationshipExpanded,
-                  onToggle: () => setState(() {
-                    _isRelationshipExpanded = !_isRelationshipExpanded;
-                    _isPriorityExpanded = false;
-                  }),
-                ),
-                const SizedBox(height: 24),
-                _buildModernLabel(l10n.familyPriority),
-                const SizedBox(height: 10),
-                _buildChicGlassDropdown(
-                  label: "Select Priority",
-                  value: _selectedPriority,
-                  items: [
-                    {
-                      'val': "Healthy Eating",
-                      'label': l10n.healthPriorityHealthyEating,
+                if (profile?.role != 'child') ...[
+                  const SizedBox(height: 20),
+                  _buildModernTextField(
+                    controller: _cityController,
+                    label: l10n.city,
+                    iconPath: AppImages.iconLocation,
+                    validator: (value) {
+                      if (profile?.role == 'child') return null;
+                      return AppValidators.validateRequired(value, context);
                     },
-                    {
-                      'val': "Physical Activity",
-                      'label': l10n.healthPriorityPhysicalActivity,
-                    },
-                    {
-                      'val': "Reduced Screen Time",
-                      'label': l10n.healthPriorityReducedScreenTime,
-                    },
-                    {'val': "Zero Soda", 'label': l10n.healthPriorityZeroSoda},
-                  ],
-                  onSelect: (v) => setState(() {
-                    _selectedPriority = v;
-                    _isPriorityExpanded = false;
-                  }),
-                  iconPath: AppImages.iconFamily,
-                  isExpanded: _isPriorityExpanded,
-                  onToggle: () => setState(() {
-                    _isPriorityExpanded = !_isPriorityExpanded;
-                    _isRelationshipExpanded = false;
-                  }),
-                ),
+                  ),
+                  const SizedBox(height: 32),
+                  _buildSectionTitle(l10n.generalPreferences),
+                  const SizedBox(height: 20),
+                  _buildModernLabel(l10n.relationship),
+                  const SizedBox(height: 10),
+                  _buildChicGlassDropdown(
+                    label: l10n.selectField(l10n.relationship),
+                    value: _selectedRelationship,
+                    items: [
+                      {'val': 'Mother', 'label': l10n.mother},
+                      {'val': 'Father', 'label': l10n.father},
+                      {'val': 'Guardian', 'label': l10n.guardian},
+                    ],
+                    onSelect: (v) => setState(() {
+                      _selectedRelationship = v;
+                      _isRelationshipExpanded = false;
+                    }),
+                    iconPath: AppImages.iconUser,
+                    isExpanded: _isRelationshipExpanded,
+                    onToggle: () => setState(() {
+                      _isRelationshipExpanded = !_isRelationshipExpanded;
+                      _isPriorityExpanded = false;
+                    }),
+                  ),
+                  const SizedBox(height: 24),
+                  _buildModernLabel(l10n.familyPriority),
+                  const SizedBox(height: 10),
+                  _buildChicGlassDropdown(
+                    label: "Select Priority",
+                    value: _selectedPriority,
+                    items: [
+                      {
+                        'val': "Healthy Eating",
+                        'label': l10n.healthPriorityHealthyEating,
+                      },
+                      {
+                        'val': "Physical Activity",
+                        'label': l10n.healthPriorityPhysicalActivity,
+                      },
+                      {
+                        'val': "Reduced Screen Time",
+                        'label': l10n.healthPriorityReducedScreenTime,
+                      },
+                      {
+                        'val': "Zero Soda",
+                        'label': l10n.healthPriorityZeroSoda,
+                      },
+                    ],
+                    onSelect: (v) => setState(() {
+                      _selectedPriority = v;
+                      _isPriorityExpanded = false;
+                    }),
+                    iconPath: AppImages.iconFamily,
+                    isExpanded: _isPriorityExpanded,
+                    onToggle: () => setState(() {
+                      _isPriorityExpanded = !_isPriorityExpanded;
+                      _isRelationshipExpanded = false;
+                    }),
+                  ),
+                ],
                 const SizedBox(height: 32),
                 _buildSectionTitle(l10n.security),
                 const SizedBox(height: 20),
@@ -982,10 +989,15 @@ class _EditProfileViewState extends State<EditProfileView> {
         final updatedParentInfo = Map<String, dynamic>.from(
           profile.parentProfile ?? {},
         );
-        updatedParentInfo['fullName'] = _nameController.text;
-        updatedParentInfo['city'] = _cityController.text;
-        updatedParentInfo['relationship'] = _selectedRelationship;
-        updatedParentInfo['priority'] = _selectedPriority;
+
+        final String newName = _nameController.text;
+
+        if (profile.role == 'parent') {
+          updatedParentInfo['fullName'] = newName;
+          updatedParentInfo['city'] = _cityController.text;
+          updatedParentInfo['relationship'] = _selectedRelationship;
+          updatedParentInfo['priority'] = _selectedPriority;
+        }
 
         context.read<UserSetupCubit>().updateUserProfile(
           uid: profile.uid,
@@ -993,7 +1005,7 @@ class _EditProfileViewState extends State<EditProfileView> {
           parentProfileData: updatedParentInfo,
           quizAnswers: profile.quizAnswers,
           photoUrl: profile.photoUrl,
-          displayName: profile.displayName,
+          displayName: newName,
           email: profile.email,
           phoneNumber: profile.phoneNumber,
         );

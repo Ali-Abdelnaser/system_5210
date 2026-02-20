@@ -24,6 +24,11 @@ import 'package:system_5210/features/healthy_insights/presentation/widgets/insig
 import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
 import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
 import 'package:system_5210/core/utils/app_routes.dart';
+import 'package:system_5210/features/games/bonding_game/presentation/widgets/bonding_daily_card.dart';
+import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_state.dart';
+import 'package:system_5210/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
+import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -71,7 +76,6 @@ class _HomeViewState extends State<HomeView> {
       backgroundColor: const Color(0xFFF8FBFF),
       body: RefreshIndicator(
         onRefresh: () async {
-          // جلب كل البيانات الأساسية مرة أخرى (ريفريش للتطبيق بالكامل)
           await Future.wait([
             _loadSpecialists(),
             context.read<HomeCubit>().loadUserProfile(),
@@ -80,177 +84,277 @@ class _HomeViewState extends State<HomeView> {
           ]);
         },
         color: AppTheme.appBlue,
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: BlocConsumer<HomeCubit, HomeState>(
-                listener: (context, state) {
-                  if (state is HomeLoaded && state.streakResult != null) {
-                    final status = state.streakResult!['status'];
-                    final previousStreak =
-                        state.streakResult!['previousStreak'];
+        child: BlocBuilder<BondingGameCubit, BondingGameState>(
+          builder: (context, bondingState) {
+            bool isLocked = false;
+            if (bondingState is BondingGameReady) {
+              isLocked = bondingState.isScrollingLocked;
+            }
 
-                    if (status == 'reset' && previousStreak > 0) {
-                      AppAlerts.showCustomDialog(
-                        context,
-                        title: l10n.streakResetTitle,
-                        message: l10n.streakResetMessage(previousStreak),
-                        buttonText: l10n.streakContinue,
-                        isSuccess: false,
-                        icon: Icons.refresh_rounded,
-                        onPressed: () => Navigator.pop(context),
-                      );
-                    } else if (status == 'frozen') {
-                      // Optional: show a small info that it's frozen
-                    }
-                  }
-                },
-                builder: (context, state) {
-                  String name = l10n.heroName;
-                  int streakCount = 0;
-                  String streakStatus = 'active';
-                  if (state is HomeLoaded) {
-                    name = state.displayName;
-                    streakCount = state.userProfile.currentStreak;
-                    streakStatus = state.userProfile.streakStatus;
-                  }
-                  return HomeAppBar(
-                    displayName: name,
-                    streakCount: streakCount,
-                    streakStatus: streakStatus,
-                    isLoading: state is HomeInitial || state is HomeLoading,
-                  );
-                },
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: const Padding(
-                padding: EdgeInsets.only(bottom: 25),
-                child: PromoSlider(),
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
-            ),
-            SliverToBoxAdapter(
-              child: _buildSectionTitle(
-                title: l10n.specialistsTitle,
-                actionText: l10n.seeAll,
-                onActionTap: () => _navigateToSpecialists(context),
-              ).animate().fadeIn(delay: 300.ms),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 240,
-                child: isLoadingSpecialists
-                    ? ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 4,
-                        itemBuilder: (context, index) =>
-                            AppShimmer.specialistCard(),
-                      )
-                    : specialists.isEmpty
-                    ? Center(child: Text(l10n.noSpecialists))
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: specialists.length > 5
-                            ? 6
-                            : specialists.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index ==
-                              (specialists.length > 5
-                                  ? 5
-                                  : specialists.length)) {
-                            return _buildSeeAllCard(context, l10n, isAr);
-                          }
-                          return DoctorQuickCard(
-                            doctor: specialists[index],
-                            onTap: () => _navigateToDoctorDetails(
-                              context,
-                              specialists[index],
-                            ),
+            return CustomScrollView(
+              physics: isLocked
+                  ? const NeverScrollableScrollPhysics()
+                  : const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                // 1. App Bar
+                SliverToBoxAdapter(
+                  child: BlocConsumer<HomeCubit, HomeState>(
+                    listener: (context, state) {
+                      if (state is HomeLoaded && state.streakResult != null) {
+                        final status = state.streakResult!['status'];
+                        final previousStreak =
+                            state.streakResult!['previousStreak'];
+
+                        if (status == 'reset' && previousStreak > 0) {
+                          AppAlerts.showCustomDialog(
+                            context,
+                            title: l10n.streakResetTitle,
+                            message: l10n.streakResetMessage(previousStreak),
+                            buttonText: l10n.streakContinue,
+                            isSuccess: false,
+                            icon: Icons.refresh_rounded,
+                            onPressed: () => Navigator.pop(context),
                           );
-                        },
+                        }
+                      }
+                    },
+                    builder: (context, state) {
+                      String name = l10n.heroName;
+                      int streakCount = 0;
+                      String streakStatus = 'active';
+                      if (state is HomeLoaded) {
+                        name = state.displayName;
+                        streakCount = state.userProfile.currentStreak;
+                        streakStatus = state.userProfile.streakStatus;
+                      }
+                      return HomeAppBar(
+                        displayName: name,
+                        streakCount: streakCount,
+                        streakStatus: streakStatus,
+                        isLoading: state is HomeInitial || state is HomeLoading,
+                      );
+                    },
+                  ),
+                ),
+
+                // 2. Slider
+                SliverToBoxAdapter(
+                  child: const Padding(
+                    padding: EdgeInsets.only(bottom: 25),
+                    child: PromoSlider(),
+                  ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
+                ),
+
+                // Daily Tasks Game Entry
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 10,
+                    ),
+                    child: GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<DailyTasksCubit>(),
+                            child: const DailyTasksView(),
+                          ),
+                        ),
                       ),
-              ).animate().fadeIn(delay: 400.ms),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 25),
-                child: InsightPromoBanner(
-                  onTap: () =>
-                      Navigator.pushNamed(context, AppRoutes.healthyInsights),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(child: const RecipesSection()),
-            SliverToBoxAdapter(
-              child: _buildSectionTitle(
-                title: l10n.dailyTarget,
-                actionText: l10n.seeAll,
-                onActionTap: () => _navigateToDailyChallenge(context),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: DailySummaryCard(
-                completedTargets: 1,
-                totalTargets: 4,
-                onTap: () => _navigateToDailyChallenge(context),
-              ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: 20)),
-            SliverToBoxAdapter(
-              child: MysteryMissionCard(
-                onTap: () => _showSurpriseMissionDialog(context, l10n),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 30, 24, 15),
-                child: Text(
-                  l10n.funZone,
-                  style:
-                      (Localizations.localeOf(context).languageCode == 'ar'
-                      ? GoogleFonts.cairo
-                      : GoogleFonts.poppins)(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF2D3142),
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [AppTheme.appRed, Color(0xFFFF7676)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(25),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.appRed.withOpacity(0.3),
+                              blurRadius: 15,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.rocket_launch,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'رحلة اليوم',
+                                    style: GoogleFonts.cairo(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'خلص 6 مهام واكسب التحدي!',
+                                    style: GoogleFonts.cairo(
+                                      fontSize: 14,
+                                      color: Colors.white.withOpacity(0.9),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+                  ).animate().fadeIn(delay: 250.ms).slideY(begin: 0.2),
                 ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 160,
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    FunZoneActivityCard(
-                      title: l10n.quiz,
-                      icon: Icons.lightbulb_rounded,
-                      color: Colors.purple,
-                      onTap: () {},
-                    ),
-                    FunZoneActivityCard(
-                      title: l10n.videos,
-                      icon: Icons.play_circle_fill,
-                      color: Colors.orange,
-                      onTap: () {},
-                    ),
-                    FunZoneActivityCard(
-                      title: l10n.badges,
-                      icon: Icons.emoji_events_rounded,
-                      color: Colors.blue,
-                      onTap: () {},
-                    ),
-                  ],
+
+                SliverToBoxAdapter(
+                  child: BlocBuilder<BondingGameCubit, BondingGameState>(
+                    builder: (context, state) {
+                      final isDone =
+                          state is BondingGameReady &&
+                          state.isMissionAccomplished;
+                      return Column(
+                        children: [
+                          _buildSectionTitle(
+                            title: isDone
+                                ? l10n.missionComplete
+                                : l10n.bondingHomeAnnouncement,
+                            actionText: "",
+                            onActionTap: () {},
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 25),
+                            child: const BondingDailyCard()
+                                .animate()
+                                .fadeIn(delay: 300.ms)
+                                .slideY(begin: 0.2),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: 100)),
-          ],
+
+                // 4. Important Information (Insight Banner)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 25),
+                    child: InsightPromoBanner(
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.healthyInsights,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // 5. Specialists (Doctors)
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle(
+                    title: l10n.specialistsTitle,
+                    actionText: l10n.seeAll,
+                    onActionTap: () => _navigateToSpecialists(context),
+                  ).animate().fadeIn(delay: 400.ms),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 25),
+                    child: SizedBox(
+                      height: 240,
+                      child: isLoadingSpecialists
+                          ? ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 4,
+                              itemBuilder: (context, index) =>
+                                  AppShimmer.specialistCard(),
+                            )
+                          : specialists.isEmpty
+                          ? Center(child: Text(l10n.noSpecialists))
+                          : ListView.builder(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                              ),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: specialists.length > 5
+                                  ? 6
+                                  : specialists.length + 1,
+                              itemBuilder: (context, index) {
+                                if (index ==
+                                    (specialists.length > 5
+                                        ? 5
+                                        : specialists.length)) {
+                                  return _buildSeeAllCard(context, l10n, isAr);
+                                }
+                                return DoctorQuickCard(
+                                  doctor: specialists[index],
+                                  onTap: () => _navigateToDoctorDetails(
+                                    context,
+                                    specialists[index],
+                                  ),
+                                );
+                              },
+                            ),
+                    ).animate().fadeIn(delay: 450.ms),
+                  ),
+                ),
+
+                // 6. Healthy Recipes
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 25),
+                    child: const RecipesSection(),
+                  ),
+                ),
+
+                // 7. The Rest (Daily Target, Mystery Mission, Fun Zone)
+                SliverToBoxAdapter(
+                  child: _buildSectionTitle(
+                    title: l10n.dailyTarget,
+                    actionText: l10n.seeAll,
+                    onActionTap: () => _navigateToDailyChallenge(context),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: DailySummaryCard(
+                    completedTargets: 1,
+                    totalTargets: 4,
+                    onTap: () => _navigateToDailyChallenge(context),
+                  ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                SliverToBoxAdapter(
+                  child: MysteryMissionCard(
+                    onTap: () => _showSurpriseMissionDialog(context, l10n),
+                  ),
+                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              ],
+            );
+          },
         ),
       ),
     );
@@ -272,25 +376,26 @@ class _HomeViewState extends State<HomeView> {
                 (Localizations.localeOf(context).languageCode == 'ar'
                 ? GoogleFonts.cairo
                 : GoogleFonts.poppins)(
-                  fontSize: 18,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                   color: const Color(0xFF2D3142),
                 ),
           ),
-          TextButton(
-            onPressed: onActionTap,
-            child: Text(
-              actionText,
-              style:
-                  (Localizations.localeOf(context).languageCode == 'ar'
-                  ? GoogleFonts.cairo
-                  : GoogleFonts.poppins)(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.appBlue,
-                  ),
+          if (actionText.isNotEmpty)
+            TextButton(
+              onPressed: onActionTap,
+              child: Text(
+                actionText,
+                style:
+                    (Localizations.localeOf(context).languageCode == 'ar'
+                    ? GoogleFonts.cairo
+                    : GoogleFonts.poppins)(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.appBlue,
+                    ),
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -333,7 +438,7 @@ class _HomeViewState extends State<HomeView> {
       context,
       title: mission['title'],
       message: mission['text'],
-      buttonText: l10n.missionComplete, // e.g. "Awesome!"
+      buttonText: l10n.missionComplete,
       isSuccess: true,
       icon: mission['icon'],
       iconColor: const Color(0xFF8B5CF6),

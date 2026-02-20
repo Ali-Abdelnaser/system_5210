@@ -48,6 +48,11 @@ class AppImages {
   static const String island = '${_game1Path}island.png';
   static const String islandDark = '${_game1Path}island_dark.png';
   static const String cloud = '${_game1Path}cloud.png';
+  static const String card = '${_game1Path}card.png';
+  static const String challengeParent = '${_game1Path}challenge.png';
+  static const String challengeChild = '${_game1Path}challenge_Child.png';
+
+  static const String noInternet = 'assets/img/no_internet.png';
 
   // Game Characters (Success/Fail for 4 characters)
   static const String gameSuccess1 = '${_game1Path}success_character.webp';

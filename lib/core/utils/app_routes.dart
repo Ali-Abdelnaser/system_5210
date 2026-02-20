@@ -31,6 +31,7 @@ import 'package:system_5210/features/games/food_matching/presentation/views/matc
 import 'package:system_5210/features/games/food_matching/presentation/cubit/food_matching_cubit.dart';
 import 'package:system_5210/features/games/quizGame/presentation/views/quiz_levels_view.dart';
 import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+import 'package:system_5210/features/games/bonding_game/presentation/views/bonding_game_dashboard_view.dart';
 import 'package:system_5210/features/healthy_insights/presentation/views/healthy_insights_view.dart';
 
 class AppRoutes {
@@ -62,6 +63,7 @@ class AppRoutes {
   static const String matchingGame = '/matching-game';
   static const String matchingStats = '/matching-stats';
   static const String quizGame = '/quiz-game';
+  static const String bondingGame = '/bonding-game';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     Widget page;
@@ -87,6 +89,7 @@ class AppRoutes {
         page = VerificationView(
           isEmail: args['isEmail'] ?? false,
           email: args['email'],
+          phoneNumber: args['phoneNumber'],
           verificationId: args['verificationId'],
           isPasswordReset: args['isPasswordReset'] ?? false,
         );
@@ -166,6 +169,9 @@ class AppRoutes {
           create: (context) => sl<QuizCubit>()..loadLevels(),
           child: const QuizLevelsView(),
         );
+        break;
+      case bondingGame:
+        page = const BondingGameDashboardView();
         break;
       case healthyInsights:
         page = const HealthyInsightsView();

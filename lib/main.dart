@@ -15,6 +15,9 @@ import 'package:system_5210/features/nutrition_scan/presentation/manager/nutriti
 import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
 import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
 import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:system_5210/core/network/network_cubit.dart';
+import 'package:system_5210/core/widgets/offline_wrapper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('ar'));
@@ -104,6 +107,10 @@ class MyApp extends StatelessWidget {
             BlocProvider<ProfileCubit>(
               create: (_) => di.sl<ProfileCubit>()..getProfile(),
             ),
+            BlocProvider<BondingGameCubit>(
+              create: (_) => di.sl<BondingGameCubit>()..initGame(),
+            ),
+            BlocProvider<NetworkCubit>(create: (_) => di.sl<NetworkCubit>()),
           ],
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -117,10 +124,22 @@ class MyApp extends StatelessWidget {
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               onGenerateRoute: AppRoutes.onGenerateRoute,
               initialRoute: AppRoutes.splash,
+              builder: (context, child) => OfflineWrapper(child: child!),
             ),
           ),
         );
       },
     );
+  }
+}
+
+class GlobalScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    return child;
   }
 }

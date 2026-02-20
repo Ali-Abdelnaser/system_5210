@@ -14,10 +14,12 @@ import 'package:system_5210/features/auth/presentation/manager/auth_state.dart';
 import 'package:system_5210/features/auth/presentation/widgets/auth_header.dart';
 import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:system_5210/core/widgets/app_back_button.dart';
+import 'package:system_5210/core/utils/app_utils.dart';
 
 class VerificationView extends StatefulWidget {
   final bool isEmail;
   final String? email;
+  final String? phoneNumber;
   final String? verificationId;
   final bool isPasswordReset;
 
@@ -25,6 +27,7 @@ class VerificationView extends StatefulWidget {
     super.key,
     required this.isEmail,
     this.email,
+    this.phoneNumber,
     this.verificationId,
     this.isPasswordReset = false,
   });
@@ -137,7 +140,8 @@ class _VerificationViewState extends State<VerificationView> {
     }
   }
 
-  void _onVerify(BuildContext context) {
+  void _onVerify(BuildContext context) async {
+    if (!await AppUtils.checkInternet(context)) return;
     if (_isPhoneVerification) {
       final code = _controllers.map((c) => c.text).join();
       if (code.length != _codeLength) {
@@ -179,11 +183,12 @@ class _VerificationViewState extends State<VerificationView> {
   }
 
   void _showSuccessDialog(BuildContext context, AuthSuccess state) {
+    final l10n = AppLocalizations.of(context)!;
     AppAlerts.showCustomDialog(
       context,
-      title: "Verified!",
-      message: "Your identity is confirmed.",
-      buttonText: "Continue",
+      title: l10n.verified,
+      message: l10n.verifiedDesc,
+      buttonText: l10n.continueButton,
       isSuccess: true,
       onPressed: () {
         Navigator.pop(context); // Close dialog
@@ -360,14 +365,32 @@ class _VerificationViewState extends State<VerificationView> {
                       TextButton(
                         onPressed: _canResend
                             ? () {
-                                // Logic to resend would go here, usually requiring calling AuthCubit
+                                if (widget.isEmail) {
+                                  if (widget.isPasswordReset) {
+                                    context.read<AuthCubit>().forgotPassword(
+                                      widget.email!,
+                                    );
+                                  } else {
+                                    context
+                                        .read<AuthCubit>()
+                                        .sendEmailVerificationOTP(
+                                          widget.email!,
+                                        );
+                                  }
+                                } else if (_isPhoneVerification &&
+                                    widget.phoneNumber != null) {
+                                  context
+                                      .read<AuthCubit>()
+                                      .sendPhoneVerificationCode(
+                                        widget.phoneNumber!,
+                                      );
+                                }
                                 startTimer();
                                 AppAlerts.showAlert(
                                   context,
                                   message: "Verification code resent!",
                                   type: AlertType.success,
                                 );
-                                // TODO: Implement actual resend triggers in Cubit if needed
                               }
                             : null,
                         child: Text(

@@ -59,6 +59,8 @@
   "verify": "Verify",
   "resendCode": "Resend Code",
   "emailVerificationLinkSent": "We sent a verification link to your email. Open the link in your inbox, then tap Continue below.",
+  "verified": "Verified!",
+  "verifiedDesc": "Your identity has been confirmed successfully.",
   "continueButton": "Continue",
   "whoAreYou": "Who are you?",
   "welcomeHero": "Welcome",
@@ -122,7 +124,6 @@
   "favoriteHero": "Child's Favorite Character",
   "familyPriority": "Family Health Priority",
   "selectDate": "Select Date",
-
   "navHome": "Home",
   "navScan": "Scan",
   "navGame": "Game",
@@ -175,8 +176,6 @@
   "keepItUp": "Keep it up",
   "reduceThis": "Reduce this",
   "logTime": "Log Time",
-  "cancel": "Cancel",
-  "save": "Save",
   "servings": "Servings",
   "drinks": "Drinks",
   "limit": "Limit",
@@ -305,7 +304,6 @@
   "gallery": "Gallery",
   "chooseImageSource": "Choose Image Source",
   "change": "Change",
-  "passwordsDoNotMatch": "Passwords do not match",
   "noSpecialists": "No specialists available",
   "noSpecialistsFound": "No specialists found",
   "supportTitle": "Support & Help",
@@ -400,5 +398,84 @@
   "adminRecipeVideoUrl": "Video URL (Optional)",
   "adminRecipePhoto": "Recipe Photo",
   "specialists": "Specialists",
-  "recipes": "Recipes"
+  "recipes": "Recipes",
+  "bondingGameTitle": "Bonding Game",
+  "bondingGameSubtitle": "Play Together",
+  "bondingHomeAnnouncement": "Scratch to discover today's challenge! 🔥",
+  "bondingDiscoveryToday": "Today's Discovery",
+  "bondingTurnToChoose": "It's their turn to choose!",
+  "bondingScratchToDiscover": "Scratch to discover",
+  "bondingDiscoverChallenge": "Discover the challenge",
+  "bondingSelectedChallenge": "Selected Challenge",
+  "bondingChooseDailyChallenge": "Choose Today's Challenge",
+  "bondingChallengeFixed": "Task set for today",
+  "bondingRoleTurn": "Today is ({role})'s turn to choose",
+  "@bondingRoleTurn": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "bondingConfirmChallenge": "Confirm Challenge",
+  "bondingActiveChallenge": "Today's challenge is active",
+  "bondingCommitmentSuccess": "Commitment documented successfully",
+  "bondingRoleMission": "{role}'s mission",
+  "@bondingRoleMission": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "bondingEnjoyChallenge": "Enjoy this challenge today, you'll get a new one tomorrow!",
+  "bondingDocumentMoment": "Document the moment ✨",
+  "bondingMissionFor": "Mission for: {role}",
+  "@bondingMissionFor": {
+    "placeholders": {
+      "role": {
+        "type": "String"
+      }
+    }
+  },
+  "bondingFingerprintInstruction": "Please press the fingerprint together to activate the challenge",
+  "bondingPledgeParent": "I commit to sharing this challenge with my child with love and care.",
+  "bondingPledgeChild": "I promise to do my best and enjoy my time with my family.",
+  "bondingTapToFlip": "Tap the card to flip it",
+  "bondingSwipeUp": "Swipe one up",
+  "bondingStartNow": "Start Now",
+  "bondingConfirming": "Confirming...",
+  "bondingConfirmFromHere": "Confirm here",
+  "bondingCaptureMoment": "Capture the Moment ✨",
+  "bondingCamera": "Camera",
+  "bondingGallery": "Gallery",
+  "bondingGoHome": "Back to Home",
+  "bondingTodayMission": "Today's Mission 🎯",
+  "bondingWallTitle": "Wall of Memories ✨",
+  "bondingNoMemories": "No memories yet, start challenges and capture the moments!",
+  "bondingMissionAccomplished": "Mission Done for Today! 🏆",
+  "bondingMemoriesDay": "A day full of bonding 💖",
+  "bondingViewMemories": "View Wall of Memories",
+  "bondingExploreMemories": "Tap to view your happy memories",
+  "bondingNoMemoriesYet": "No memories yet",
+  "bondingStartFirstChallenge": "Start your first challenge and fill the wall with photos!",
+  "bondingViewAll": "View All",
+  "bondingWhyTitle": "Why Bonding Game?",
+  "bondingWhyDesc": "Research shows that 15 minutes of shared activity daily strengthens a child's mental health and increases family bonding by 40%.",
+  "bondingDoneBadge": "Done",
+  "bondingActiveBadge": "Active",
+  "bondingAvailableBadge": "Available",
+  "save": "Save",
+  "noInternet": "No Internet Connection",
+  "noInternetDesc": "Please check your network and try again.",
+  "backOnline": "Back Online",
+  "backOnlineDesc": "Connection restored. You can continue now.",
+  "bondingActiveMission": "Mission in progress",
+  "bondingMissionRoleParent": "Parents' Mission",
+  "bondingMissionRoleChild": "Child's Mission",
+  "bondingAddAnotherPhoto": "Add another photo",
+  "bondingMissionSuccess": "Mission completed successfully! 🎉",
+  "bondingWallSubtitle": "Our Family Treasures 🖼️",
+  "bondingWallWaiting": "The wall is waiting for your memories! ✨",
+  "bondingStartFirstChallengeNow": "Start first challenge now"
 }

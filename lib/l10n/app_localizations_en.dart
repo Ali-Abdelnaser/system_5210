@@ -195,6 +195,12 @@ class AppLocalizationsEn extends AppLocalizations {
       'We sent a verification link to your email. Open the link in your inbox, then tap Continue below.';
 
   @override
+  String get verified => 'Verified!';
+
+  @override
+  String get verifiedDesc => 'Your identity has been confirmed successfully.';
+
+  @override
   String get continueButton => 'Continue';
 
   @override
@@ -499,9 +505,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logTime => 'Log Time';
-
-  @override
-  String get save => 'Save';
 
   @override
   String get servings => 'Servings';
@@ -1167,4 +1170,192 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get recipes => 'Recipes';
+
+  @override
+  String get bondingGameTitle => 'Bonding Game';
+
+  @override
+  String get bondingGameSubtitle => 'Play Together';
+
+  @override
+  String get bondingHomeAnnouncement =>
+      'Scratch to discover today\'s challenge! 🔥';
+
+  @override
+  String get bondingDiscoveryToday => 'Today\'s Discovery';
+
+  @override
+  String get bondingTurnToChoose => 'It\'s their turn to choose!';
+
+  @override
+  String get bondingScratchToDiscover => 'Scratch to discover';
+
+  @override
+  String get bondingDiscoverChallenge => 'Discover the challenge';
+
+  @override
+  String get bondingSelectedChallenge => 'Selected Challenge';
+
+  @override
+  String get bondingChooseDailyChallenge => 'Choose Today\'s Challenge';
+
+  @override
+  String get bondingChallengeFixed => 'Task set for today';
+
+  @override
+  String bondingRoleTurn(String role) {
+    return 'Today is ($role)\'s turn to choose';
+  }
+
+  @override
+  String get bondingConfirmChallenge => 'Confirm Challenge';
+
+  @override
+  String get bondingActiveChallenge => 'Today\'s challenge is active';
+
+  @override
+  String get bondingCommitmentSuccess => 'Commitment documented successfully';
+
+  @override
+  String bondingRoleMission(String role) {
+    return '$role\'s mission';
+  }
+
+  @override
+  String get bondingEnjoyChallenge =>
+      'Enjoy this challenge today, you\'ll get a new one tomorrow!';
+
+  @override
+  String get bondingDocumentMoment => 'Document the moment ✨';
+
+  @override
+  String bondingMissionFor(String role) {
+    return 'Mission for: $role';
+  }
+
+  @override
+  String get bondingFingerprintInstruction =>
+      'Please press the fingerprint together to activate the challenge';
+
+  @override
+  String get bondingPledgeParent =>
+      'I commit to sharing this challenge with my child with love and care.';
+
+  @override
+  String get bondingPledgeChild =>
+      'I promise to do my best and enjoy my time with my family.';
+
+  @override
+  String get bondingTapToFlip => 'Tap the card to flip it';
+
+  @override
+  String get bondingSwipeUp => 'Swipe one up';
+
+  @override
+  String get bondingStartNow => 'Start Now';
+
+  @override
+  String get bondingConfirming => 'Confirming...';
+
+  @override
+  String get bondingConfirmFromHere => 'Confirm here';
+
+  @override
+  String get bondingCaptureMoment => 'Capture the Moment ✨';
+
+  @override
+  String get bondingCamera => 'Camera';
+
+  @override
+  String get bondingGallery => 'Gallery';
+
+  @override
+  String get bondingGoHome => 'Back to Home';
+
+  @override
+  String get bondingTodayMission => 'Today\'s Mission 🎯';
+
+  @override
+  String get bondingWallTitle => 'Wall of Memories ✨';
+
+  @override
+  String get bondingNoMemories =>
+      'No memories yet, start challenges and capture the moments!';
+
+  @override
+  String get bondingMissionAccomplished => 'Mission Done for Today! 🏆';
+
+  @override
+  String get bondingMemoriesDay => 'A day full of bonding 💖';
+
+  @override
+  String get bondingViewMemories => 'View Wall of Memories';
+
+  @override
+  String get bondingExploreMemories => 'Tap to view your happy memories';
+
+  @override
+  String get bondingNoMemoriesYet => 'No memories yet';
+
+  @override
+  String get bondingStartFirstChallenge =>
+      'Start your first challenge and fill the wall with photos!';
+
+  @override
+  String get bondingViewAll => 'View All';
+
+  @override
+  String get bondingWhyTitle => 'Why Bonding Game?';
+
+  @override
+  String get bondingWhyDesc =>
+      'Research shows that 15 minutes of shared activity daily strengthens a child\'s mental health and increases family bonding by 40%.';
+
+  @override
+  String get bondingDoneBadge => 'Done';
+
+  @override
+  String get bondingActiveBadge => 'Active';
+
+  @override
+  String get bondingAvailableBadge => 'Available';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get noInternet => 'No Internet Connection';
+
+  @override
+  String get noInternetDesc => 'Please check your network and try again.';
+
+  @override
+  String get backOnline => 'Back Online';
+
+  @override
+  String get backOnlineDesc => 'Connection restored. You can continue now.';
+
+  @override
+  String get bondingActiveMission => 'Mission in progress';
+
+  @override
+  String get bondingMissionRoleParent => 'Parents\' Mission';
+
+  @override
+  String get bondingMissionRoleChild => 'Child\'s Mission';
+
+  @override
+  String get bondingAddAnotherPhoto => 'Add another photo';
+
+  @override
+  String get bondingMissionSuccess => 'Mission completed successfully! 🎉';
+
+  @override
+  String get bondingWallSubtitle => 'Our Family Treasures 🖼️';
+
+  @override
+  String get bondingWallWaiting => 'The wall is waiting for your memories! ✨';
+
+  @override
+  String get bondingStartFirstChallengeNow => 'Start first challenge now';
 }

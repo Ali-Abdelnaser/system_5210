@@ -16,6 +16,7 @@ import '../../domain/usecases/verify_email_otp_usecase.dart';
 import '../../domain/usecases/update_password_usecase.dart';
 import '../../domain/usecases/update_email_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
+import 'package:system_5210/core/network/network_info.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -36,6 +37,7 @@ class AuthCubit extends Cubit<AuthState> {
   final VerifyEmailOTPUseCase verifyEmailOTPUseCase;
   final UpdatePasswordUseCase updatePasswordUseCase;
   final UpdateEmailUseCase updateEmailUseCase;
+  final NetworkInfo networkInfo;
 
   String? _pendingDisplayName;
 
@@ -57,6 +59,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.verifyEmailOTPUseCase,
     required this.updatePasswordUseCase,
     required this.updateEmailUseCase,
+    required this.networkInfo,
   }) : super(AuthInitial());
 
   void setPendingDisplayName(String name) {
@@ -65,6 +68,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> login({required String email, required String password}) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     final result = await loginWithEmailUseCase(
       email: email,
       password: password,
@@ -90,6 +101,14 @@ class AuthCubit extends Cubit<AuthState> {
     required String name,
   }) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     final result = await registerWithEmailUseCase(
       email: email,
       password: password,
@@ -103,6 +122,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> socialLogin(SocialType type) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     final result = await loginWithSocialUseCase(type);
     result.fold((failure) => emit(AuthFailure(failure.message)), (user) async {
       final existsResult = await checkUserDataExistsUseCase(user.uid);
@@ -141,6 +168,14 @@ class AuthCubit extends Cubit<AuthState> {
   /// Sends OTP to phone; on success emits [AuthPhoneCodeSent] with verificationId.
   Future<void> sendPhoneVerificationCode(String phoneNumber) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     final result = await sendPhoneCodeUseCase(phoneNumber);
     result.fold(
       (failure) => emit(AuthFailure(failure.message)),
@@ -154,6 +189,14 @@ class AuthCubit extends Cubit<AuthState> {
     required String smsCode,
   }) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     final result = await signInWithPhoneCodeUseCase(
       verificationId: verificationId,
       smsCode: smsCode,
@@ -219,6 +262,14 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> forgotPassword(String email) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     // 1. Check if email exists
     final checkResult = await checkEmailExistsUseCase(email);
 
@@ -287,6 +338,14 @@ class AuthCubit extends Cubit<AuthState> {
     required String code,
   }) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     final result = await verifyEmailOTPUseCase(email: email, code: code);
     result.fold((failure) => emit(AuthFailure(failure.message)), (_) async {
       emit(AuthEmailVerificationVerified());

@@ -16,6 +16,7 @@ import 'package:system_5210/features/auth/presentation/widgets/auth_header.dart'
 import 'package:system_5210/features/auth/presentation/widgets/contact_toggle.dart';
 import 'package:system_5210/features/auth/presentation/widgets/social_login_section.dart';
 import 'package:system_5210/features/auth/presentation/widgets/auth_footer_link.dart';
+import 'package:system_5210/core/utils/app_utils.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -74,6 +75,17 @@ class _LoginViewState extends State<LoginView> {
             arguments: {
               'isEmail': false,
               'verificationId': state.verificationId,
+              'phoneNumber': _phoneController.text.trim(),
+            },
+          );
+        } else if (state is AuthEmailVerificationSent) {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.verification,
+            arguments: {
+              'isEmail': true,
+              'verificationId': null,
+              'email': _emailController.text.trim(),
             },
           );
         } else if (state is AuthFailure) {
@@ -191,7 +203,8 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  void _onLogin(BuildContext context) {
+  void _onLogin(BuildContext context) async {
+    if (!await AppUtils.checkInternet(context)) return;
     if (isEmailMode) {
       if (!_formKey.currentState!.validate()) return;
       context.read<AuthCubit>().login(

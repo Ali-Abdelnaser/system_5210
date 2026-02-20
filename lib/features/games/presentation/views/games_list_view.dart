@@ -92,6 +92,27 @@ class GamesListView extends StatelessWidget {
                   duration: 600.ms,
                   curve: Curves.easeOutBack,
                 ),
+
+                const SizedBox(height: 20),
+
+                _buildGameCard(
+                  context,
+                  title: 'لعبة الترابط',
+                  description:
+                      'تحديات يومية تجمع الطفل والأهل لتعزيز الروابط الصحية',
+                  imagePath: AppImages
+                      .challengeParent, // Using header image or similar
+                  color: AppTheme.appBlue,
+                  routeName: AppRoutes.bondingGame,
+                  statsRouteName: AppRoutes.bondingGame,
+                  showStats: false,
+                ).animate().slideX(
+                  begin: 1,
+                  end: 0,
+                  delay: 600.ms,
+                  duration: 600.ms,
+                  curve: Curves.easeOutBack,
+                ),
               ],
             ),
           ),
