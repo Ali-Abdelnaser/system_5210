@@ -929,7 +929,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get liveChatSubtitle => 'تحدث مع أحد ممثلينا';
 
   @override
-  String get appName => 'تطبيق صحة العائلة';
+  String get appName => ' 5210EG ';
 
   @override
   String get appDescription =>
@@ -1345,4 +1345,44 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get bondingStartFirstChallengeNow => 'ابدأ أول تحدي الآن';
+
+  @override
+  String get aboutWhoWeAreTitle => 'من نحن';
+
+  @override
+  String get aboutWhoWeAreContent =>
+      'نحن فريق من طلاب السنة الرابعة كلية الإعلام ب Canadian International College (CIC)\nنحن نهتم بتعزيز الصحة الوقائية للأطفال، ونسعى إلى نشر ثقافة العادات الصحية اليومية داخل الأسرة المصرية بطريقة بسيطة وعملية.\nانطلقت فكرتنا من ملاحظة زيادة الاعتماد على الأطعمة المصنعة، قلة الحركة، وزيادة وقت الشاشات بين الأطفال، وما لذلك من تأثير مباشر على صحتهم الجسدية والنفسية.\nومن هنا جاءت فكرة إنشاء تطبيق يعتمد على مبدأ 5.2.1.0 كإطار سهل وواضح يساعد الأسرة على تنظيم يومها الصحي بدون تعقيد.';
+
+  @override
+  String get aboutAppConceptTitle => 'فكرة التطبيق';
+
+  @override
+  String get aboutAppConceptContent =>
+      'يعتمد التطبيق على مفهوم 5.2.1.0:\n5 حصص من الفاكهة والخضار\n2 ساعات شاشة كحد أقصى\n1 ساعة حركة يوميًا\n0 سكر زائد\nويقدم هذا المفهوم في صورة:\n– محتوى توعوي مبسّط\n– نصائح عملية للأمهات\n– تذكيرات يومية للأطفال\n– أنشطة مشتركة داخل الأسرة\nالتطبيق لا يقدم تشخيصات أو أنظمة علاجية، بل يهدف إلى دعم بناء عادات صحية مستدامة.';
+
+  @override
+  String get aboutVisionTitle => 'رؤيتنا';
+
+  @override
+  String get aboutVisionContent =>
+      'أن تصبح العادات الصحية جزءًا طبيعيًا من يوم كل طفل، وأن تكون الأسرة شريكًا أساسيًا في هذا التغيير.';
+
+  @override
+  String get aboutMissionTitle => 'رسالتنا';
+
+  @override
+  String get aboutMissionContent =>
+      'تقديم محتوى صحي موثوق، سهل التطبيق، وملائم لثقافة المجتمع، يساعد على تحسين جودة حياة الأطفال من خلال خطوات بسيطة ومستمرة.';
+
+  @override
+  String get aboutMediaCoverageTitle => 'التغطية الإعلامية';
+
+  @override
+  String get aboutSocialMediaTitle => 'تابعونا على';
+
+  @override
+  String get aboutFiveTwoTenDetail => '5 حصص • 2 ساعة • 1 ساعة • 0 سكر';
+
+  @override
+  String get aboutMeetOurTeamTitle => 'فريق العمل';
 }

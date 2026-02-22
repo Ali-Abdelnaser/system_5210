@@ -1,25 +1,18 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:intl/intl.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../widgets/glass_card.dart';
+import '../../../../core/widgets/app_back_button.dart';
+import '../manager/daily_tasks_cubit.dart';
+import '../manager/daily_tasks_state.dart';
+import '../../data/models/daily_task_model.dart';
 
 class SleepStageView extends StatefulWidget {
-  final DateTime? startTime;
-  final DateTime? wakeTime;
-  final Function(DateTime start) onStartSleep;
-  final Function(DateTime wake, String advice) onWakeUp;
-
-  const SleepStageView({
-    super.key,
-    this.startTime,
-    this.wakeTime,
-    required this.onStartSleep,
-    required this.onWakeUp,
-  });
+  const SleepStageView({super.key});
 
   @override
   State<SleepStageView> createState() => _SleepStageViewState();
@@ -28,40 +21,47 @@ class SleepStageView extends StatefulWidget {
 class _SleepStageViewState extends State<SleepStageView> {
   Timer? _timer;
   Duration _duration = Duration.zero;
-  String advice = '';
 
   @override
   void initState() {
     super.initState();
-    if (widget.startTime != null && widget.wakeTime == null) {
+    // Use addPostFrameCallback to ensure context is ready to read the cubit
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateDuration();
       _startTimer();
-    } else if (widget.wakeTime != null) {
-      _calculateFinalAdvice();
+    });
+  }
+
+  void _updateDuration() {
+    if (!mounted) return;
+    final state = context.read<DailyTasksCubit>().state;
+    if (state is DailyTasksLoaded) {
+      final sleepTask = state.tasks.firstWhere(
+        (t) => t.type == DailyTaskType.sleep,
+      );
+      if (sleepTask.sleepStartTime != null && sleepTask.wakeUpTime == null) {
+        setState(() {
+          _duration = DateTime.now().difference(sleepTask.sleepStartTime!);
+        });
+      }
     }
   }
 
   void _startTimer() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (widget.startTime != null) {
-        setState(() {
-          _duration = DateTime.now().difference(widget.startTime!);
-        });
-      }
+      _updateDuration();
     });
   }
 
-  void _calculateFinalAdvice() {
-    if (widget.startTime != null && widget.wakeTime != null) {
-      final hours = widget.wakeTime!.difference(widget.startTime!).inHours;
-      if (hours < 7) {
-        advice = 'نومك قليل يا بطل، حاول تنام بدري أكتر عشان جسمك يرتاح ويكبر.';
-      } else if (hours > 10) {
-        advice =
-            'نمت كتير النهاردة! النوم الكتير بيخلي الجسم كسلان، خير الأمور الوسط.';
-      } else {
-        advice = 'نوم مثالي! عاش يا بطل، كدة جسمك أخد وقته في الراحة.';
-      }
-      _duration = widget.wakeTime!.difference(widget.startTime!);
+  String _calculateAdvice(DateTime start, DateTime wake) {
+    final hours = wake.difference(start).inHours;
+    if (hours < 7) {
+      return 'نومك قليل يا بطل، حاول تنام بدري أكتر عشان جسمك يرتاح ويكبر.';
+    } else if (hours > 10) {
+      return 'نمت كتير النهاردة! النوم الكتير بيخلي الجسم كسلان، خير الأمور الوسط.';
+    } else {
+      return 'نوم مثالي! عاش يا بطل، كدة جسمك أخد وقته في الراحة.';
     }
   }
 
@@ -81,183 +81,285 @@ class _SleepStageViewState extends State<SleepStageView> {
 
   @override
   Widget build(BuildContext context) {
-    bool isSleeping = widget.startTime != null && widget.wakeTime == null;
-    bool isDone = widget.wakeTime != null;
+    return BlocBuilder<DailyTasksCubit, DailyTasksState>(
+      builder: (context, state) {
+        if (state is! DailyTasksLoaded) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
-          ),
+        final sleepTask = state.tasks.firstWhere(
+          (t) => t.type == DailyTaskType.sleep,
+        );
+        final bool isSleeping =
+            sleepTask.sleepStartTime != null && sleepTask.wakeUpTime == null;
+        final bool isDone = sleepTask.wakeUpTime != null;
 
-          SafeArea(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
-                ),
+        // Update duration if already done
+        if (isDone && sleepTask.sleepStartTime != null) {
+          _duration = sleepTask.wakeUpTime!.difference(
+            sleepTask.sleepStartTime!,
+          );
+        }
 
-                if (isSleeping)
-                  GlassCard(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'وقت النوم الآن',
-                          style: GoogleFonts.cairo(
-                            color: Colors.white70,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          _formatDuration(_duration),
-                          style: GoogleFonts.poppins(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn().slideY(begin: -0.5),
-
-                const Spacer(),
-
-                Center(
-                  child:
-                      Icon(
-                            isSleeping ? Icons.nights_stay : Icons.wb_sunny,
-                            size: 150,
-                            color: isSleeping
-                                ? Colors.indigoAccent
-                                : Colors.orangeAccent,
-                          )
-                          .animate(onPlay: (c) => c.repeat(reverse: true))
-                          .scale(
-                            duration: 2.seconds,
-                            begin: const Offset(1, 1),
-                            end: const Offset(1.1, 1.1),
-                          ),
-                ),
-
-                const Spacer(),
-
-                if (!isSleeping && !isDone)
-                  ElevatedButton(
-                    onPressed: () {
-                      widget.onStartSleep(DateTime.now());
-                      _startTimer();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo[900],
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 50,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+        return Scaffold(
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
+              ),
+              SafeArea(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [const AppBackButton(), const Spacer()],
                       ),
                     ),
-                    child: Text(
-                      'أنا هنام دلوقتي تصبحوا على خير',
+
+                    const SizedBox(height: 10),
+                    Text(
+                      'تحدي النوم الهادئ',
                       style: GoogleFonts.cairo(
-                        fontSize: 18,
+                        fontSize: 28,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: AppTheme.appGreen,
                       ),
+                      textDirection: TextDirection.rtl,
                     ),
-                  ),
 
-                if (isSleeping)
-                  ElevatedButton(
-                    onPressed: () {
-                      final wakeTime = DateTime.now();
-                      _timer?.cancel();
-                      _calculateFinalAdvice();
-                      widget.onWakeUp(wakeTime, advice);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 50,
-                        vertical: 15,
+                    if (isSleeping)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: GlassCard(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 15,
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'أنت الآن في عالم الأحلام',
+                                style: GoogleFonts.cairo(
+                                  color: AppTheme.appGreen.withOpacity(0.7),
+                                  fontSize: 16,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
+                              Text(
+                                _formatDuration(_duration),
+                                style: GoogleFonts.poppins(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.appGreen,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ).animate().fadeIn().slideY(begin: 0.2),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    child: Text(
-                      'أنا صحيت خلاص صباح الخير',
-                      style: GoogleFonts.cairo(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
 
-                if (isDone)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: GlassCard(
-                      child: Column(
-                        children: [
-                          Text(
-                            'وقت النوم الإجمالي: ${_formatDuration(_duration)}',
-                            style: GoogleFonts.cairo(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                    const Spacer(),
+
+                    Center(
+                      child: Container(
+                        height: 220,
+                        width: 220,
+                        decoration: BoxDecoration(
+                          color: (isSleeping ? Colors.indigo : Colors.orange)
+                              .withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child:
+                            Icon(
+                                  isSleeping
+                                      ? Icons.nights_stay_rounded
+                                      : Icons.wb_sunny_rounded,
+                                  size: 140,
+                                  color: isSleeping
+                                      ? Colors.indigoAccent
+                                      : Colors.orangeAccent,
+                                )
+                                .animate(onPlay: (c) => c.repeat(reverse: true))
+                                .scale(
+                                  duration: 2.seconds,
+                                  begin: const Offset(0.9, 0.9),
+                                  end: const Offset(1.1, 1.1),
+                                )
+                                .shimmer(delay: 3.seconds, duration: 2.seconds),
+                      ),
+                    ),
+
+                    const Spacer(),
+
+                    if (!isSleeping && !isDone)
+                      Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.read<DailyTasksCubit>().updateTask(
+                              sleepTask.copyWith(
+                                sleepStartTime: DateTime.now(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.appGreen,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 18,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            advice,
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.cairo(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.bed_rounded,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                ' تصبحوا على خير',
+                                style: GoogleFonts.cairo(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.appRed,
-                            ),
-                            child: Text(
-                              'رجوع للمهام',
-                              style: GoogleFonts.cairo(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ).animate().fadeIn().scale(),
+                        ),
+                      ).animate().slideY(begin: 0.5),
 
-                const SizedBox(height: 100),
-              ],
-            ),
+                    if (isSleeping)
+                      Padding(
+                        padding: const EdgeInsets.all(30),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.read<DailyTasksCubit>().updateTask(
+                              sleepTask.copyWith(
+                                wakeUpTime: DateTime.now(),
+                                isCompleted: true,
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.orange,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 18,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.wb_sunny_rounded,
+                                size: 24,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                ' صباح الخير',
+                                style: GoogleFonts.cairo(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ).animate().slideY(begin: 0.5),
+
+                    if (isDone)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: GlassCard(
+                          padding: const EdgeInsets.all(25),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.access_time_filled_rounded,
+                                    color: AppTheme.appGreen,
+                                    size: 24,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'وقت النوم الإجمالي: ${_formatDuration(_duration)}',
+                                    style: GoogleFonts.cairo(
+                                      color: AppTheme.appGreen,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 15),
+                              Text(
+                                _calculateAdvice(
+                                  sleepTask.sleepStartTime!,
+                                  sleepTask.wakeUpTime!,
+                                ),
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.cairo(
+                                  color: Colors.black87,
+                                  fontSize: 16,
+                                ),
+                                textDirection: TextDirection.rtl,
+                              ),
+                              const SizedBox(height: 25),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.appGreen,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'تم المهمة',
+                                    style: GoogleFonts.cairo(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textDirection: TextDirection.rtl,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ).animate().fadeIn().scale(),
+
+                    const SizedBox(height: 50),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

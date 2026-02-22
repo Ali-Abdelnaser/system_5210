@@ -17,6 +17,7 @@ import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
 import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
 import 'package:system_5210/core/network/network_cubit.dart';
+import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:system_5210/core/widgets/offline_wrapper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -111,6 +112,9 @@ class MyApp extends StatelessWidget {
               create: (_) => di.sl<BondingGameCubit>()..initGame(),
             ),
             BlocProvider<NetworkCubit>(create: (_) => di.sl<NetworkCubit>()),
+            BlocProvider<NotificationCubit>(
+              create: (_) => di.sl<NotificationCubit>()..loadNotifications(),
+            ),
           ],
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),

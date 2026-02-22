@@ -15,6 +15,7 @@ import 'edit_children_view.dart';
 import 'privacy_policy_view.dart';
 import 'support_view.dart';
 import 'about_app_view.dart';
+import 'developer_profile_view.dart';
 import '../widgets/profile_shimmer.dart';
 import 'package:system_5210/core/utils/app_routes.dart';
 import 'package:system_5210/core/utils/app_alerts.dart';
@@ -22,6 +23,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:ui';
 import 'package:system_5210/core/widgets/profile_image_loader.dart';
+import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -277,15 +279,13 @@ class ProfileView extends StatelessWidget {
 
                             _buildMenuCard(context, [
                               _ProfileMenuItem(
-                                icon: Icons.help_outline_rounded,
-                                title: l10n.support,
-                                iconColor: AppTheme.appGreen,
+                                icon: Icons.lightbulb_outline_rounded,
+                                title: l10n.healthyInsightsTitle,
+                                iconColor: AppTheme.appYellow,
                                 onTap: () {
-                                  Navigator.push(
+                                  Navigator.pushNamed(
                                     context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const SupportView(),
-                                    ),
+                                    AppRoutes.healthyInsights,
                                   );
                                 },
                               ),
@@ -294,16 +294,23 @@ class ProfileView extends StatelessWidget {
                                 indent: 70,
                                 color: Color(0xFFF1F5F9),
                               ),
+
                               _ProfileMenuItem(
-                                icon: Icons.info_outline_rounded,
-                                title: l10n.aboutApp,
-                                iconColor: AppTheme.appYellow,
+                                icon: Icons.code_rounded,
+                                title:
+                                    Localizations.localeOf(
+                                          context,
+                                        ).languageCode ==
+                                        'ar'
+                                    ? "تعرف على مطور التطبيق"
+                                    : "Meet the Developer",
+                                iconColor: AppTheme.appBlue,
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const AboutAppView(),
+                                          const DeveloperProfileView(),
                                     ),
                                   );
                                 },
@@ -325,13 +332,16 @@ class ProfileView extends StatelessWidget {
                                 color: Color(0xFFF1F5F9),
                               ),
                               _ProfileMenuItem(
-                                icon: Icons.lightbulb_outline_rounded,
-                                title: l10n.healthyInsightsTitle,
+                                icon: Icons.info_outline_rounded,
+                                title: l10n.aboutApp,
                                 iconColor: AppTheme.appYellow,
                                 onTap: () {
-                                  Navigator.pushNamed(
+                                  Navigator.push(
                                     context,
-                                    AppRoutes.healthyInsights,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AboutAppView(),
+                                    ),
                                   );
                                 },
                               ),
@@ -607,6 +617,9 @@ class ProfileView extends StatelessWidget {
         } catch (e) {
           debugPrint("ProfileCubit not found to reset: $e");
         }
+
+        // Reset notifications for current user
+        context.read<NotificationCubit>().setUserId(null);
 
         context.read<AuthCubit>().logout();
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);

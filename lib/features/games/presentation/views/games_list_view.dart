@@ -5,6 +5,10 @@ import 'package:system_5210/core/theme/app_theme.dart';
 import 'package:system_5210/core/utils/app_images.dart';
 import 'package:system_5210/core/utils/app_routes.dart';
 import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:provider/provider.dart';
+import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
+import 'package:system_5210/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GamesListView extends StatelessWidget {
   const GamesListView({super.key});
@@ -113,6 +117,34 @@ class GamesListView extends StatelessWidget {
                   duration: 600.ms,
                   curve: Curves.easeOutBack,
                 ),
+
+                const SizedBox(height: 20),
+
+                _buildGameCard(
+                  context,
+                  title: 'رحلة اليوم',
+                  description: 'خلص 6 مهام واكسب التحدي اليومي!',
+                  imagePath: AppImages.character4, // Placeholder character
+                  color: AppTheme.appRed,
+                  routeName: '', // Not used for custom navigation
+                  statsRouteName: '',
+                  showStats: false,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<DailyTasksCubit>(),
+                        child: const DailyTasksView(),
+                      ),
+                    ),
+                  ),
+                ).animate().slideX(
+                  begin: -1,
+                  end: 0,
+                  delay: 800.ms,
+                  duration: 600.ms,
+                  curve: Curves.easeOutBack,
+                ),
               ],
             ),
           ),
@@ -130,9 +162,10 @@ class GamesListView extends StatelessWidget {
     required String routeName,
     required String statsRouteName,
     required bool showStats,
+    VoidCallback? onTap,
   }) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, routeName),
+      onTap: onTap ?? () => Navigator.pushNamed(context, routeName),
       child: GlassContainer(
         blur: 10,
         opacity: 0.6,

@@ -27,8 +27,7 @@ import 'package:system_5210/core/utils/app_routes.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/widgets/bonding_daily_card.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_state.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
+import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -100,22 +99,34 @@ class _HomeViewState extends State<HomeView> {
                 SliverToBoxAdapter(
                   child: BlocConsumer<HomeCubit, HomeState>(
                     listener: (context, state) {
-                      if (state is HomeLoaded && state.streakResult != null) {
-                        final status = state.streakResult!['status'];
-                        final previousStreak =
-                            state.streakResult!['previousStreak'];
+                      if (state is HomeLoaded) {
+                        // Update NotificationCubit with the current user ID
+                        context.read<NotificationCubit>().setUserId(
+                          state.userProfile.uid,
+                        );
 
-                        if (status == 'reset' && previousStreak > 0) {
-                          AppAlerts.showCustomDialog(
-                            context,
-                            title: l10n.streakResetTitle,
-                            message: l10n.streakResetMessage(previousStreak),
-                            buttonText: l10n.streakContinue,
-                            isSuccess: false,
-                            icon: Icons.refresh_rounded,
-                            onPressed: () => Navigator.pop(context),
-                          );
+                        if (state.streakResult != null) {
+                          final status = state.streakResult!['status'];
+                          final previousStreak =
+                              state.streakResult!['previousStreak'];
+
+                          if (status == 'reset' && previousStreak > 0) {
+                            AppAlerts.showCustomDialog(
+                              context,
+                              title: l10n.streakResetTitle,
+                              message: l10n.streakResetMessage(previousStreak),
+                              buttonText: l10n.streakContinue,
+                              isSuccess: false,
+                              icon: Icons.refresh_rounded,
+                              onPressed: () => Navigator.pop(context),
+                            );
+                          }
                         }
+
+                        // Schedule daily tips if user is parent
+                        context
+                            .read<NotificationCubit>()
+                            .scheduleDailyTipsIfNeeded(state.userProfile.role);
                       }
                     },
                     builder: (context, state) {
@@ -143,89 +154,6 @@ class _HomeViewState extends State<HomeView> {
                     padding: EdgeInsets.only(bottom: 25),
                     child: PromoSlider(),
                   ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
-                ),
-
-                // Daily Tasks Game Entry
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 10,
-                    ),
-                    child: GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlocProvider.value(
-                            value: context.read<DailyTasksCubit>(),
-                            child: const DailyTasksView(),
-                          ),
-                        ),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [AppTheme.appRed, Color(0xFFFF7676)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.appRed.withOpacity(0.3),
-                              blurRadius: 15,
-                              offset: const Offset(0, 8),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.rocket_launch,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'رحلة اليوم',
-                                    style: GoogleFonts.cairo(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    'خلص 6 مهام واكسب التحدي!',
-                                    style: GoogleFonts.cairo(
-                                      fontSize: 14,
-                                      color: Colors.white.withOpacity(0.9),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: 250.ms).slideY(begin: 0.2),
                 ),
 
                 SliverToBoxAdapter(

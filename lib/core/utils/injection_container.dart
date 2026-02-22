@@ -65,6 +65,7 @@ import 'package:system_5210/core/network/network_info.dart';
 import 'package:system_5210/core/network/network_cubit.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
 import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
+import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 
 import 'package:system_5210/core/services/notification_service.dart';
 import 'package:system_5210/core/services/streak_service.dart';
@@ -159,6 +160,10 @@ Future<void> init() async {
   sl.registerFactory(() => QuizCubit(repository: sl()));
   sl.registerFactory(() => BondingGameCubit(sl()));
   sl.registerFactory(() => DailyTasksCubit(sl()));
+  sl.registerFactory(
+    () =>
+        NotificationCubit(localStorageService: sl(), notificationService: sl()),
+  );
 
   // Repository
   // Repository

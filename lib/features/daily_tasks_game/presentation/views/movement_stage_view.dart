@@ -6,6 +6,7 @@ import 'package:sensors_plus/sensors_plus.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../widgets/glass_card.dart';
+import '../../../../core/widgets/app_back_button.dart';
 
 class MovementStageView extends StatefulWidget {
   final VoidCallback onComplete;
@@ -78,19 +79,7 @@ class _MovementStageViewState extends State<MovementStageView> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
+                  child: Row(children: [const AppBackButton(), const Spacer()]),
                 ),
 
                 Text(
@@ -98,13 +87,16 @@ class _MovementStageViewState extends State<MovementStageView> {
                   style: GoogleFonts.cairo(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppTheme.appGreen,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
                   'نط في مكانك 20 نطة',
-                  style: GoogleFonts.cairo(fontSize: 18, color: Colors.white70),
+                  style: GoogleFonts.cairo(
+                    fontSize: 18,
+                    color: AppTheme.appGreen.withOpacity(0.7),
+                  ),
                 ),
 
                 const Spacer(),
@@ -115,14 +107,16 @@ class _MovementStageViewState extends State<MovementStageView> {
                     height: 200,
                     width: 200,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: AppTheme.appGreen.withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child:
                         Icon(
                               Icons.directions_run,
                               size: 100,
-                              color: isJumping ? AppTheme.appRed : Colors.white,
+                              color: isJumping
+                                  ? AppTheme.appRed
+                                  : AppTheme.appGreen,
                             )
                             .animate(target: isJumping ? 1 : 0)
                             .moveY(
@@ -152,8 +146,9 @@ class _MovementStageViewState extends State<MovementStageView> {
                         style: GoogleFonts.cairo(
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: AppTheme.appGreen,
                         ),
+                        textDirection: TextDirection.ltr,
                       ),
                       const SizedBox(height: 10),
                       ClipRRect(
@@ -161,9 +156,9 @@ class _MovementStageViewState extends State<MovementStageView> {
                         child: LinearProgressIndicator(
                           value: jumps / targetJumps,
                           minHeight: 15,
-                          backgroundColor: Colors.white.withOpacity(0.2),
+                          backgroundColor: AppTheme.appGreen.withOpacity(0.2),
                           valueColor: const AlwaysStoppedAnimation<Color>(
-                            AppTheme.appRed,
+                            AppTheme.appGreen,
                           ),
                         ),
                       ),
@@ -180,7 +175,7 @@ class _MovementStageViewState extends State<MovementStageView> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: AppTheme.appGreen,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 40,
                           vertical: 15,
@@ -194,8 +189,9 @@ class _MovementStageViewState extends State<MovementStageView> {
                         style: GoogleFonts.cairo(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: const Color.fromARGB(255, 255, 255, 255),
                         ),
+                        textDirection: TextDirection.rtl,
                       ),
                     ).animate().scale(),
                   ),

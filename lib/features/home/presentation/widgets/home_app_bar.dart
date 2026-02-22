@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:system_5210/core/widgets/streak_widget.dart';
+import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 
 class HomeAppBar extends StatelessWidget {
   final String displayName;
@@ -73,18 +75,57 @@ class HomeAppBar extends StatelessWidget {
           ),
           const SizedBox(width: 8),
 
-          if (!isLoading)
+          if (!isLoading) ...[
             StreakWidget(
               count: streakCount,
               status: streakStatus,
               onTap: () {
-                // Show a small tooltip or dialog explaining the streak
               },
             ),
-
-          const SizedBox(width: 12),
+            _buildNotificationIcon(context),
+          ],
         ],
       ),
+    );
+  }
+
+  Widget _buildNotificationIcon(BuildContext context) {
+    return BlocBuilder<NotificationCubit, NotificationState>(
+      builder: (context, state) {
+        bool hasUnread = false;
+        if (state is NotificationLoaded) {
+          hasUnread = state.notifications.any((n) => !n.isRead);
+        }
+
+        return Stack(
+          children: [
+            Container(
+              child: IconButton(
+                icon: const Icon(
+                  Icons.notifications_none_rounded,
+                  color: Color.fromARGB(255, 81, 81, 82),
+                  size: 26,
+                ),
+                onPressed: () => Navigator.pushNamed(context, '/notifications'),
+              ),
+            ),
+            if (hasUnread)
+              Positioned(
+                right: 8,
+                top: 8,
+                child: Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

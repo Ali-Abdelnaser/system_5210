@@ -33,6 +33,7 @@ import 'package:system_5210/features/games/quizGame/presentation/views/quiz_leve
 import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/views/bonding_game_dashboard_view.dart';
 import 'package:system_5210/features/healthy_insights/presentation/views/healthy_insights_view.dart';
+import 'package:system_5210/features/notifications/presentation/views/notifications_view.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -55,6 +56,7 @@ class AppRoutes {
   static const String recipeDetails = '/recipe-details';
   static const String uploader = '/data-uploader';
   static const String healthyInsights = '/healthy-insights';
+  static const String notifications = '/notifications';
 
   // Games
   static const String gamesList = '/games-list';
@@ -175,6 +177,9 @@ class AppRoutes {
         break;
       case healthyInsights:
         page = const HealthyInsightsView();
+        break;
+      case notifications:
+        page = const NotificationsView();
         break;
       default:
         return null;

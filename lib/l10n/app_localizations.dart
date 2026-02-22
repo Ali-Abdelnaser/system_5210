@@ -1865,7 +1865,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Family Health App'**
+  /// **'5210EG'**
   String get appName;
 
   /// No description provided for @appDescription.
@@ -2653,6 +2653,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start first challenge now'**
   String get bondingStartFirstChallengeNow;
+
+  /// No description provided for @aboutWhoWeAreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Who We Are'**
+  String get aboutWhoWeAreTitle;
+
+  /// No description provided for @aboutWhoWeAreContent.
+  ///
+  /// In en, this message translates to:
+  /// **'We are a team of fourth-year Mass Communication students at the Canadian International College (CIC). We are committed to promoting preventive health for children and spreading awareness of healthy daily habits within Egyptian families in a simple and practical way. Our idea was inspired by the noticeable increase in children’s reliance on processed foods, reduced physical activity, and excessive screen time, and the direct impact these habits have on their physical and mental well-being. From this observation, we developed an application based on the 5·2·1·0 principle as a clear and practical framework to help families organize a healthier daily routine without complexity.'**
+  String get aboutWhoWeAreContent;
+
+  /// No description provided for @aboutAppConceptTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The App Concept'**
+  String get aboutAppConceptTitle;
+
+  /// No description provided for @aboutAppConceptContent.
+  ///
+  /// In en, this message translates to:
+  /// **'The application is built around the 5·2·1·0 concept:\n• 5 servings of fruits and vegetables\n• 2 hours of screen time maximum\n• 1 hour of physical activity daily\n• 0 added sugar\nThe concept is delivered through:\n– Simplified educational content\n– Practical tips for mothers\n– Daily reminders for children\n– Interactive activities within the family\nThe application does not provide medical diagnoses or treatment plans. Instead, it aims to support the development of sustainable healthy habits.'**
+  String get aboutAppConceptContent;
+
+  /// No description provided for @aboutVisionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Vision'**
+  String get aboutVisionTitle;
+
+  /// No description provided for @aboutVisionContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To make healthy habits a natural part of every child’s daily life and to position families as essential partners in this positive change.'**
+  String get aboutVisionContent;
+
+  /// No description provided for @aboutMissionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Mission'**
+  String get aboutMissionTitle;
+
+  /// No description provided for @aboutMissionContent.
+  ///
+  /// In en, this message translates to:
+  /// **'To provide reliable, easy-to-apply, and culturally relevant health content that helps improve children’s quality of life through small, consistent steps.'**
+  String get aboutMissionContent;
+
+  /// No description provided for @aboutMediaCoverageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Coverage'**
+  String get aboutMediaCoverageTitle;
+
+  /// No description provided for @aboutSocialMediaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect With Us'**
+  String get aboutSocialMediaTitle;
+
+  /// No description provided for @aboutFiveTwoTenDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'5 Servings • 2 Hours • 1 Hour • 0 Sugar'**
+  String get aboutFiveTwoTenDetail;
+
+  /// No description provided for @aboutMeetOurTeamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet Our Team'**
+  String get aboutMeetOurTeamTitle;
 }
 
 class _AppLocalizationsDelegate

@@ -3,6 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/utils/app_images.dart';
 
+import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/app_back_button.dart';
+
 class WaterStageView extends StatefulWidget {
   final VoidCallback onComplete;
 
@@ -47,19 +50,7 @@ class _WaterStageViewState extends State<WaterStageView> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                      const Spacer(),
-                    ],
-                  ),
+                  child: Row(children: [const AppBackButton(), const Spacer()]),
                 ),
 
                 Text(
@@ -67,13 +58,18 @@ class _WaterStageViewState extends State<WaterStageView> {
                   style: GoogleFonts.cairo(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: AppTheme.appGreen,
                   ),
+                  textDirection: TextDirection.rtl,
                 ),
                 const SizedBox(height: 10),
                 Text(
                   'كل ما تشرب كوباية، دوس على الكوباية الكبيرة',
-                  style: GoogleFonts.cairo(fontSize: 16, color: Colors.white70),
+                  style: GoogleFonts.cairo(
+                    fontSize: 16,
+                    color: AppTheme.appGreen.withOpacity(0.7),
+                  ),
+                  textDirection: TextDirection.rtl,
                 ),
                 const Spacer(),
 
@@ -135,7 +131,7 @@ class _WaterStageViewState extends State<WaterStageView> {
                     style: GoogleFonts.cairo(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppTheme.appGreen,
                     ),
                   ),
                 ),
@@ -146,8 +142,9 @@ class _WaterStageViewState extends State<WaterStageView> {
                     style: GoogleFonts.cairo(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.greenAccent,
+                      color: AppTheme.appGreen,
                     ),
+                    textDirection: TextDirection.rtl,
                   ).animate().scale(duration: 400.ms, curve: Curves.bounceOut),
 
                 const SizedBox(height: 50),

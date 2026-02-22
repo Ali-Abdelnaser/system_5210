@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -13,6 +14,7 @@ import 'fruit_game_view.dart';
 import 'water_stage_view.dart';
 import 'movement_stage_view.dart';
 import 'sleep_stage_view.dart';
+import '../../../../core/widgets/app_back_button.dart';
 
 class DailyTasksView extends StatelessWidget {
   const DailyTasksView({super.key});
@@ -67,7 +69,7 @@ class DailyTasksView extends StatelessWidget {
                 style: GoogleFonts.cairo(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: AppTheme.appGreen,
                 ),
               ),
               const SizedBox(height: 20),
@@ -76,14 +78,14 @@ class DailyTasksView extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.cairo(
                   fontSize: 18,
-                  color: Colors.white.withOpacity(0.9),
+                  color: AppTheme.appGreen.withOpacity(0.8),
                 ),
               ),
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () => context.read<DailyTasksCubit>().startGame(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.appRed,
+                  backgroundColor: AppTheme.appGreen,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 50,
                     vertical: 15,
@@ -123,20 +125,14 @@ class DailyTasksView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      IconButton(
-                        onPressed: () => Navigator.pop(context),
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                        ),
-                      ),
+                      const AppBackButton(),
                       const Spacer(),
                       Text(
                         'مهام اليوم',
                         style: GoogleFonts.cairo(
                           fontSize: 28,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: AppTheme.appGreen,
                         ),
                       ).animate().fadeIn().slideY(begin: -0.2),
                       const Spacer(),
@@ -159,14 +155,14 @@ class DailyTasksView extends StatelessWidget {
                             Text(
                               'إنجاز اليوم',
                               style: GoogleFonts.cairo(
-                                color: Colors.white,
+                                color: AppTheme.appGreen,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             Text(
                               '${state.completedCount} / 6',
                               style: GoogleFonts.cairo(
-                                color: Colors.white,
+                                color: AppTheme.appGreen,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -178,9 +174,9 @@ class DailyTasksView extends StatelessWidget {
                           child: LinearProgressIndicator(
                             value: state.totalProgress,
                             minHeight: 12,
-                            backgroundColor: Colors.white.withOpacity(0.2),
+                            backgroundColor: AppTheme.appGreen.withOpacity(0.1),
                             valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppTheme.appRed,
+                              AppTheme.appGreen,
                             ),
                           ),
                         ),
@@ -217,6 +213,8 @@ class DailyTasksView extends StatelessWidget {
                 child: GlassCard(
                   color: Colors.green,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Icon(Icons.star, color: Colors.yellow, size: 50),
                       const SizedBox(height: 10),
@@ -225,8 +223,10 @@ class DailyTasksView extends StatelessWidget {
                         style: GoogleFonts.cairo(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Colors.green,
                         ),
+                        textAlign: TextAlign.center,
+                        textDirection: TextDirection.rtl,
                       ),
                     ],
                   ),
@@ -245,7 +245,9 @@ class DailyTasksView extends StatelessWidget {
       onTap: () => _onTaskTap(context, task),
       child: GlassCard(
         opacity: task.isCompleted ? 0.3 : 0.1,
-        color: task.isCompleted ? Colors.green : Colors.white,
+        color: task.isCompleted
+            ? AppTheme.appGreen.withOpacity(0.3)
+            : Colors.white,
         padding: const EdgeInsets.all(15),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -253,13 +255,13 @@ class DailyTasksView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: AppTheme.appGreen.withOpacity(0.05),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 _getTaskIcon(task.type),
                 size: 40,
-                color: Colors.white,
+                color: AppTheme.appGreen,
               ),
             ),
             const SizedBox(height: 15),
@@ -269,13 +271,13 @@ class DailyTasksView extends StatelessWidget {
               style: GoogleFonts.cairo(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppTheme.appGreen,
               ),
             ),
             if (task.isCompleted)
               const Icon(
                 Icons.check_circle,
-                color: Colors.greenAccent,
+                color: AppTheme.appGreen,
                 size: 24,
               ).animate().scale(duration: 300.ms, curve: Curves.bounceOut),
           ],
@@ -305,32 +307,26 @@ class DailyTasksView extends StatelessWidget {
     switch (task.type) {
       case DailyTaskType.breakfast:
       case DailyTaskType.lunch:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => TaskCameraView(
-              title: task.title,
-              onPhotoTaken: (path) {
-                context.read<DailyTasksCubit>().updateTask(
-                  task.copyWith(isCompleted: true, imagePath: path),
-                );
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        );
+        if (task.isCompleted && task.imagePath != null) {
+          _showPhotoSummary(context, task);
+        } else {
+          _openCamera(context, task);
+        }
         break;
       case DailyTaskType.fruitGame:
         if (task.isCompleted) return;
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => FruitGameView(
-              onWin: () {
-                context.read<DailyTasksCubit>().updateTask(
-                  task.copyWith(isCompleted: true),
-                );
-              },
+            builder: (_) => BlocProvider.value(
+              value: context.read<DailyTasksCubit>(),
+              child: FruitGameView(
+                onWin: () {
+                  context.read<DailyTasksCubit>().updateTask(
+                    task.copyWith(isCompleted: true),
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -340,12 +336,15 @@ class DailyTasksView extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => WaterStageView(
-              onComplete: () {
-                context.read<DailyTasksCubit>().updateTask(
-                  task.copyWith(isCompleted: true),
-                );
-              },
+            builder: (_) => BlocProvider.value(
+              value: context.read<DailyTasksCubit>(),
+              child: WaterStageView(
+                onComplete: () {
+                  context.read<DailyTasksCubit>().updateTask(
+                    task.copyWith(isCompleted: true),
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -355,12 +354,15 @@ class DailyTasksView extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => MovementStageView(
-              onComplete: () {
-                context.read<DailyTasksCubit>().updateTask(
-                  task.copyWith(isCompleted: true),
-                );
-              },
+            builder: (_) => BlocProvider.value(
+              value: context.read<DailyTasksCubit>(),
+              child: MovementStageView(
+                onComplete: () {
+                  context.read<DailyTasksCubit>().updateTask(
+                    task.copyWith(isCompleted: true),
+                  );
+                },
+              ),
             ),
           ),
         );
@@ -369,23 +371,165 @@ class DailyTasksView extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => SleepStageView(
-              startTime: task.sleepStartTime,
-              wakeTime: task.wakeUpTime,
-              onStartSleep: (start) {
-                context.read<DailyTasksCubit>().updateTask(
-                  task.copyWith(sleepStartTime: start),
-                );
-              },
-              onWakeUp: (wake, advice) {
-                context.read<DailyTasksCubit>().updateTask(
-                  task.copyWith(wakeUpTime: wake, isCompleted: true),
-                );
-              },
+            builder: (_) => BlocProvider.value(
+              value: context.read<DailyTasksCubit>(),
+              child: const SleepStageView(),
             ),
           ),
         );
         break;
     }
+  }
+
+  void _openCamera(BuildContext context, DailyTask task) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TaskCameraView(
+          title: task.title,
+          onPhotoTaken: (path) {
+            context.read<DailyTasksCubit>().updateTask(
+              task.copyWith(isCompleted: true, imagePath: path),
+            );
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showPhotoSummary(BuildContext context, DailyTask task) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        backgroundColor: Colors.white,
+        contentPadding: const EdgeInsets.all(20),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'شوف إنت أكلت إيه!',
+                style: GoogleFonts.cairo(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.appGreen,
+                ),
+                textDirection: TextDirection.rtl,
+              ),
+              const SizedBox(height: 20),
+
+              // Image in a Frame
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.appGreen.withOpacity(0.2),
+                      blurRadius: 15,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                  border: Border.all(color: AppTheme.appGreen, width: 3),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.file(
+                    File(task.imagePath!),
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ).animate().scale(duration: 400.ms, curve: Curves.easeInOut),
+
+              const SizedBox(height: 25),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        _openCamera(context, task);
+                      },
+                      icon: const Icon(
+                        Icons.refresh_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      label: Text(
+                        'تصوير تاني',
+                        style: GoogleFonts.cairo(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      icon: const Icon(
+                        Icons.check_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                      label: Text(
+                        'تمام',
+                        style: GoogleFonts.cairo(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 13,
+                        ),
+                        textDirection: TextDirection.rtl,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.appGreen,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 10),
+              TextButton(
+                onPressed: () {
+                  context.read<DailyTasksCubit>().updateTask(
+                    task.copyWith(isCompleted: false, imagePath: null),
+                  );
+                  Navigator.pop(dialogContext);
+                },
+                child: Text(
+                  'مسح الصورة',
+                  style: GoogleFonts.cairo(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

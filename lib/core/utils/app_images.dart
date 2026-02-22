@@ -5,11 +5,22 @@ class AppImages {
   static const String splashLogo = '${_imgPath}logo.png';
   static const String logo = '${_imgPath}app_logo.png';
   static const String authBackground = '${_imgPath}auth_bg.png';
+  static const String teamPhoto = '${_imgPath}team_photo.jpeg';
 
   // Social Icons (SVG in assets/svg/)
   static const String googleIcon = '${_svgPath}google.svg';
   static const String facebookIcon = '${_svgPath}facebook.svg';
   static const String appleIcon = '${_svgPath}apple.svg';
+
+  // Social Media Logos (Images)
+  static const String youtubeLogo = '${_imgPath}youtube_logo.png';
+  static const String facebookLogo = '${_imgPath}facebook_logo.png';
+  static const String instagramLogo = '${_imgPath}instagram_logo.png';
+  static const String tiktokLogo = '${_imgPath}tiktok_logo.png';
+  static const String linkedinLogo = '${_imgPath}linkedin_logo.png';
+  static const String githubLogo = '${_imgPath}github_logo.png';
+  static const String whatsappLogo = '${_imgPath}icon_WhatsApp.png';
+  static const String developerPhoto = '${_imgPath}ali.png';
 
   // Navigation Icons (SVGs)
   static const String navHome = '${_svgPath}nav_home.svg';

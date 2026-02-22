@@ -935,7 +935,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get liveChatSubtitle => 'Chat with a representative';
 
   @override
-  String get appName => 'Family Health App';
+  String get appName => '5210EG';
 
   @override
   String get appDescription =>
@@ -1358,4 +1358,44 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bondingStartFirstChallengeNow => 'Start first challenge now';
+
+  @override
+  String get aboutWhoWeAreTitle => 'Who We Are';
+
+  @override
+  String get aboutWhoWeAreContent =>
+      'We are a team of fourth-year Mass Communication students at the Canadian International College (CIC). We are committed to promoting preventive health for children and spreading awareness of healthy daily habits within Egyptian families in a simple and practical way. Our idea was inspired by the noticeable increase in children’s reliance on processed foods, reduced physical activity, and excessive screen time, and the direct impact these habits have on their physical and mental well-being. From this observation, we developed an application based on the 5·2·1·0 principle as a clear and practical framework to help families organize a healthier daily routine without complexity.';
+
+  @override
+  String get aboutAppConceptTitle => 'The App Concept';
+
+  @override
+  String get aboutAppConceptContent =>
+      'The application is built around the 5·2·1·0 concept:\n• 5 servings of fruits and vegetables\n• 2 hours of screen time maximum\n• 1 hour of physical activity daily\n• 0 added sugar\nThe concept is delivered through:\n– Simplified educational content\n– Practical tips for mothers\n– Daily reminders for children\n– Interactive activities within the family\nThe application does not provide medical diagnoses or treatment plans. Instead, it aims to support the development of sustainable healthy habits.';
+
+  @override
+  String get aboutVisionTitle => 'Our Vision';
+
+  @override
+  String get aboutVisionContent =>
+      'To make healthy habits a natural part of every child’s daily life and to position families as essential partners in this positive change.';
+
+  @override
+  String get aboutMissionTitle => 'Our Mission';
+
+  @override
+  String get aboutMissionContent =>
+      'To provide reliable, easy-to-apply, and culturally relevant health content that helps improve children’s quality of life through small, consistent steps.';
+
+  @override
+  String get aboutMediaCoverageTitle => 'Media Coverage';
+
+  @override
+  String get aboutSocialMediaTitle => 'Connect With Us';
+
+  @override
+  String get aboutFiveTwoTenDetail => '5 Servings • 2 Hours • 1 Hour • 0 Sugar';
+
+  @override
+  String get aboutMeetOurTeamTitle => 'Meet Our Team';
 }
