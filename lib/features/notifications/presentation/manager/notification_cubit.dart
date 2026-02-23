@@ -18,6 +18,10 @@ class NotificationCubit extends Cubit<NotificationState> {
   String get _boxName =>
       _userId != null ? 'notifications_$_userId' : 'notifications';
 
+  String get _deletedBoxName => _userId != null
+      ? 'deleted_notifications_$_userId'
+      : 'deleted_notifications';
+
   NotificationCubit({
     required this.localStorageService,
     required this.notificationService,
@@ -55,11 +59,14 @@ class NotificationCubit extends Cubit<NotificationState> {
           final notifications = await localStorageService.getAll(_boxName);
           final existingIds = notifications.map((e) => e['id']).toSet();
 
+          final deletedDocs = await localStorageService.getAll(_deletedBoxName);
+          final deletedIds = deletedDocs.map((e) => e['id']).toSet();
+
           for (var doc in snapshot.docs) {
             final data = doc.data();
             final id = doc.id;
 
-            if (!existingIds.contains(id)) {
+            if (!existingIds.contains(id) && !deletedIds.contains(id)) {
               // New broadcast notification found
               final timestamp =
                   (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now();
@@ -197,6 +204,8 @@ class NotificationCubit extends Cubit<NotificationState> {
       final newList = currentList.where((n) => n.id != id).toList();
 
       await localStorageService.delete(_boxName, id);
+      // Mark as deleted so it doesn't reappear from broadcast
+      await localStorageService.save(_deletedBoxName, id, {'id': id});
       emit(NotificationLoaded(newList));
     }
   }
@@ -205,7 +214,9 @@ class NotificationCubit extends Cubit<NotificationState> {
     try {
       final notifications = await localStorageService.getAll(_boxName);
       for (var n in notifications) {
-        await localStorageService.delete(_boxName, n['id']);
+        final id = n['id'];
+        await localStorageService.delete(_boxName, id);
+        await localStorageService.save(_deletedBoxName, id, {'id': id});
       }
       emit(const NotificationLoaded([]));
     } catch (e) {

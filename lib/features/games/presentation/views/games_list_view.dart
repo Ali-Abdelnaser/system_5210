@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
 import 'package:system_5210/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/core/widgets/app_back_button.dart';
 
 class GamesListView extends StatelessWidget {
   const GamesListView({super.key});
@@ -22,14 +23,15 @@ class GamesListView extends StatelessWidget {
           'أرض الألعاب',
           style: GoogleFonts.cairo(
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF2D3142), // Dark color for better contrast
+            color: const Color(0xFF2D3142),
             fontSize: 24,
           ),
         ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: Color(0xFF2D3142)),
+        automaticallyImplyLeading: false,
+        leading: const AppBackButton(),
       ),
       body: Stack(
         children: [
@@ -43,108 +45,122 @@ class GamesListView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               children: [
                 _buildGameCard(
-                  context,
-                  title: 'الطبق المتوازن',
-                  description: 'ساعد بطلنا في اختيار وجبة صحية ولذيذة',
-                  imagePath: AppImages.plate,
-                  color: AppTheme.appGreen,
-                  routeName: AppRoutes.balancedPlateGame,
-                  statsRouteName: AppRoutes.balancedPlateStats,
-                  showStats: true,
-                ).animate().slideX(
-                  begin: -1,
-                  end: 0,
-                  duration: 600.ms,
-                  curve: Curves.easeOutBack,
-                ),
-
-                const SizedBox(height: 20),
-
-                _buildGameCard(
-                  context,
-                  title: 'لعبة التوصيل الذكية',
-                  description: 'وصل الكلمات بصورها المناسبة بذكاء وسرعة',
-                  imagePath: AppImages.connect,
-                  color: AppTheme.appBlue,
-                  routeName: AppRoutes.matchingGame,
-                  statsRouteName: AppRoutes.matchingStats,
-                  showStats: true,
-                ).animate().slideX(
-                  begin: 1,
-                  end: 0,
-                  delay: 200.ms,
-                  duration: 600.ms,
-                  curve: Curves.easeOutBack,
-                ),
-
-                const SizedBox(height: 20),
-
-                _buildGameCard(
-                  context,
-                  title: 'مغامرة المعلومات',
-                  description: 'تحدى نفسك في 14 مستوي من الأسئلة المشوقة',
-                  imagePath: AppImages
-                      .quiz, // Using connect image for now or something else
-                  color: Colors.orange,
-                  routeName: AppRoutes.quizGame,
-                  statsRouteName: AppRoutes.quizGame,
-                  showStats: false,
-                ).animate().slideX(
-                  begin: -1,
-                  end: 0,
-                  delay: 400.ms,
-                  duration: 600.ms,
-                  curve: Curves.easeOutBack,
-                ),
-
-                const SizedBox(height: 20),
-
-                _buildGameCard(
-                  context,
-                  title: 'لعبة الترابط',
-                  description:
-                      'تحديات يومية تجمع الطفل والأهل لتعزيز الروابط الصحية',
-                  imagePath: AppImages
-                      .challengeParent, // Using header image or similar
-                  color: AppTheme.appBlue,
-                  routeName: AppRoutes.bondingGame,
-                  statsRouteName: AppRoutes.bondingGame,
-                  showStats: false,
-                ).animate().slideX(
-                  begin: 1,
-                  end: 0,
-                  delay: 600.ms,
-                  duration: 600.ms,
-                  curve: Curves.easeOutBack,
-                ),
-
-                const SizedBox(height: 20),
-
-                _buildGameCard(
-                  context,
-                  title: 'رحلة اليوم',
-                  description: 'خلص 6 مهام واكسب التحدي اليومي!',
-                  imagePath: AppImages.character4, // Placeholder character
-                  color: AppTheme.appRed,
-                  routeName: '', // Not used for custom navigation
-                  statsRouteName: '',
-                  showStats: false,
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BlocProvider.value(
-                        value: context.read<DailyTasksCubit>(),
-                        child: const DailyTasksView(),
-                      ),
+                      context,
+                      title: 'الطبق المتوازن',
+                      description: 'ساعد بطلنا في اختيار وجبة صحية ولذيذة',
+                      imagePath: AppImages.plate,
+                      color: AppTheme.appGreen,
+                      routeName: AppRoutes.balancedPlateGame,
+                      statsRouteName: AppRoutes.balancedPlateStats,
+                      showStats: true,
+                    )
+                    .animate()
+                    .fadeIn(duration: 600.ms)
+                    .slideY(
+                      begin: 0.3,
+                      end: 0,
+                      duration: 600.ms,
+                      curve: Curves.easeOutCubic,
                     ),
-                  ),
-                ).animate().slideX(
-                  begin: -1,
-                  end: 0,
-                  delay: 800.ms,
-                  duration: 600.ms,
-                  curve: Curves.easeOutBack,
-                ),
+
+                const SizedBox(height: 20),
+
+                _buildGameCard(
+                      context,
+                      title: 'لعبة التوصيل ',
+                      description:
+                          'وصل صور الأطعمة بفوائدها الصحية بذكاء وسرعة',
+                      imagePath: AppImages.connect,
+                      color: AppTheme.appBlue,
+                      routeName: AppRoutes.matchingGame,
+                      statsRouteName: AppRoutes.matchingStats,
+                      showStats: true,
+                    )
+                    .animate()
+                    .fadeIn(delay: 150.ms, duration: 600.ms)
+                    .slideY(
+                      begin: 0.3,
+                      end: 0,
+                      delay: 150.ms,
+                      duration: 600.ms,
+                      curve: Curves.easeOutCubic,
+                    ),
+
+                const SizedBox(height: 20),
+
+                _buildGameCard(
+                      context,
+                      title: 'مغامرة المعلومات',
+                      description: 'تحدى نفسك في 14 مستوي من الأسئلة المشوقة',
+                      imagePath: AppImages.quiz,
+                      color: Colors.orange,
+                      routeName: AppRoutes.quizGame,
+                      statsRouteName: AppRoutes.quizGame,
+                      showStats: false,
+                    )
+                    .animate()
+                    .fadeIn(delay: 300.ms, duration: 600.ms)
+                    .slideY(
+                      begin: 0.3,
+                      end: 0,
+                      delay: 300.ms,
+                      duration: 600.ms,
+                      curve: Curves.easeOutCubic,
+                    ),
+
+                const SizedBox(height: 20),
+
+                _buildGameCard(
+                      context,
+                      title: 'لعبة الترابط',
+                      description:
+                          'تحديات يومية تجمع الطفل والأهل لتعزيز الروابط الصحية',
+                      imagePath: AppImages.challengeParent,
+                      color: AppTheme.appBlue,
+                      routeName: AppRoutes.bondingGame,
+                      statsRouteName: AppRoutes.bondingGame,
+                      showStats: false,
+                    )
+                    .animate()
+                    .fadeIn(delay: 450.ms, duration: 600.ms)
+                    .slideY(
+                      begin: 0.3,
+                      end: 0,
+                      delay: 450.ms,
+                      duration: 600.ms,
+                      curve: Curves.easeOutCubic,
+                    ),
+
+                const SizedBox(height: 20),
+
+                _buildGameCard(
+                      context,
+                      title: 'رحلة اليوم',
+                      description: 'خلص 6 مهام واكسب التحدي اليومي!',
+                      imagePath: AppImages.character4,
+                      color: AppTheme.appRed,
+                      routeName: '',
+                      statsRouteName: '',
+                      showStats: false,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BlocProvider.value(
+                            value: context.read<DailyTasksCubit>(),
+                            child: const DailyTasksView(),
+                          ),
+                        ),
+                      ),
+                    )
+                    .animate()
+                    .fadeIn(delay: 600.ms, duration: 600.ms)
+                    .slideY(
+                      begin: 0.3,
+                      end: 0,
+                      delay: 600.ms,
+                      duration: 600.ms,
+                      curve: Curves.easeOutCubic,
+                    ),
               ],
             ),
           ),

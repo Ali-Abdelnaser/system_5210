@@ -18,6 +18,8 @@ import 'package:system_5210/features/profile/presentation/manager/profile_cubit.
 import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
 import 'package:system_5210/core/network/network_cubit.dart';
 import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
 import 'package:system_5210/core/widgets/offline_wrapper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -114,6 +116,12 @@ class MyApp extends StatelessWidget {
             BlocProvider<NetworkCubit>(create: (_) => di.sl<NetworkCubit>()),
             BlocProvider<NotificationCubit>(
               create: (_) => di.sl<NotificationCubit>()..loadNotifications(),
+            ),
+            BlocProvider<UserPointsCubit>(
+              create: (_) => di.sl<UserPointsCubit>()..init(),
+            ),
+            BlocProvider<DailyTasksCubit>(
+              create: (_) => di.sl<DailyTasksCubit>()..init(),
             ),
           ],
           child: GestureDetector(

@@ -327,7 +327,12 @@ class _SleepStageViewState extends State<SleepStageView> {
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () {
+                                    context
+                                        .read<DailyTasksCubit>()
+                                        .resetTasksManually();
+                                    Navigator.pop(context);
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppTheme.appGreen,
                                     padding: const EdgeInsets.symmetric(

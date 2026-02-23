@@ -10,12 +10,12 @@ import 'package:system_5210/l10n/app_localizations.dart';
 import '../manager/notification_cubit.dart';
 import '../../data/models/notification_model.dart';
 import 'package:intl/intl.dart';
-
 import 'package:system_5210/features/specialists/presentation/views/admin_broadcast_login_view.dart';
 import 'dart:async';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:system_5210/core/widgets/app_loading_indicator.dart';
 import 'package:flutter/services.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
 
 class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});
@@ -53,28 +53,6 @@ class _NotificationsViewState extends State<NotificationsView> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: GestureDetector(
-          onTap: _handleTitleTap,
-          child: Text(
-            l10n.notifications,
-            style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: const Color(0xFF1E293B),
-            ),
-          ),
-        ),
-        leading: const AppBackButton(),
-        actions: [
-          _buildDeleteAllButton(context, l10n, isAr),
-          const SizedBox(width: 16),
-        ],
-      ),
-
       body: Stack(
         children: [
           // Standard App Background
@@ -83,59 +61,120 @@ class _NotificationsViewState extends State<NotificationsView> {
           ),
 
           SafeArea(
-            child: BlocBuilder<NotificationCubit, NotificationState>(
-              builder: (context, state) {
-                if (state is NotificationLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (state is NotificationFailure) {
-                  return Center(child: Text(state.message));
-                }
-
-                if (state is NotificationLoaded) {
-                  final notifications = state.notifications;
-
-                  if (notifications.isEmpty) {
-                    return _buildEmptyState(context, l10n, isAr);
-                  }
-
-                  // Group notifications by date
-                  final grouped = _groupNotifications(notifications, isAr);
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: grouped.length,
-                    itemBuilder: (context, index) {
-                      final item = grouped[index];
-                      if (item is String) {
-                        return _buildSectionHeader(item, isAr);
-                      }
-
-                      final notification = item as AppNotification;
-                      return Dismissible(
-                        key: Key(notification.id),
-                        direction: DismissDirection.endToStart,
-                        onDismissed: (_) {
-                          HapticFeedback.mediumImpact();
-                          context.read<NotificationCubit>().deleteNotification(
-                            notification.id,
-                          );
-                        },
-                        background: _buildDismissBackground(isAr),
-                        child:
-                            _buildNotificationCard(context, notification, isAr)
-                                .animate()
-                                .fadeIn(delay: (index * 40).ms)
-                                .slideY(begin: 0.1),
-                      );
-                    },
-                  );
-                }
-
-                return const SizedBox();
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await context.read<NotificationCubit>().loadNotifications();
               },
+              color: AppTheme.appBlue,
+              backgroundColor: Colors.white,
+              edgeOffset: 10,
+              child: BlocBuilder<NotificationCubit, NotificationState>(
+                builder: (context, state) {
+                  return CustomScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    slivers: [
+                      // 1. Sliver App Bar
+                      SliverAppBar(
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        centerTitle: true,
+                        floating: true,
+                        pinned: true,
+                        title: GestureDetector(
+                          onTap: _handleTitleTap,
+                          child: Text(
+                            l10n.notifications,
+                            style:
+                                (isAr
+                                ? GoogleFonts.cairo
+                                : GoogleFonts.poppins)(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w900,
+                                  color: const Color(0xFF1E293B),
+                                ),
+                          ),
+                        ),
+                        leading: const AppBackButton(),
+                        actions: [
+                          _buildDeleteAllButton(context, l10n, isAr),
+                          const SizedBox(width: 16),
+                        ],
+                      ),
+
+                      // 2. Dynamic Content
+                      if (state is NotificationLoading)
+                        SliverPadding(
+                          padding: const EdgeInsets.only(top: 10),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) => AppShimmer.notificationCard(),
+                              childCount: 6,
+                            ),
+                          ),
+                        )
+                      else if (state is NotificationFailure)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: Text(state.message)),
+                        )
+                      else if (state is NotificationLoaded)
+                        if (state.notifications.isEmpty)
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: _buildEmptyState(context, l10n, isAr),
+                          )
+                        else
+                          SliverPadding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  final grouped = _groupNotifications(
+                                    state.notifications,
+                                    isAr,
+                                  );
+                                  final item = grouped[index];
+
+                                  if (item is String) {
+                                    return _buildSectionHeader(item, isAr);
+                                  }
+
+                                  final notification = item as AppNotification;
+                                  return Dismissible(
+                                    key: Key(notification.id),
+                                    direction: DismissDirection.endToStart,
+                                    onDismissed: (_) {
+                                      HapticFeedback.mediumImpact();
+                                      context
+                                          .read<NotificationCubit>()
+                                          .deleteNotification(notification.id);
+                                    },
+                                    background: _buildDismissBackground(isAr),
+                                    child:
+                                        _buildNotificationCard(
+                                              context,
+                                              notification,
+                                              isAr,
+                                            )
+                                            .animate()
+                                            .fadeIn(delay: (index * 40).ms)
+                                            .slideY(begin: 0.1),
+                                  );
+                                },
+                                childCount: _groupNotifications(
+                                  state.notifications,
+                                  isAr,
+                                ).length,
+                              ),
+                            ),
+                          ),
+                      const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -207,7 +246,6 @@ class _NotificationsViewState extends State<NotificationsView> {
               color: const Color(0xFF64748B),
             ),
           ),
-          const SizedBox(height: 140),
         ],
       ).animate().fadeIn(duration: 600.ms).scale(delay: 200.ms),
     );
@@ -242,7 +280,6 @@ class _NotificationsViewState extends State<NotificationsView> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Icon Section
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
@@ -270,7 +307,6 @@ class _NotificationsViewState extends State<NotificationsView> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  // Content Section
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -284,9 +320,6 @@ class _NotificationsViewState extends State<NotificationsView> {
                                     ? notification.title
                                     : (notification.titleEn ??
                                           notification.title),
-                                textAlign: isAr
-                                    ? TextAlign.center
-                                    : TextAlign.center,
                                 style:
                                     (isAr
                                     ? GoogleFonts.cairo
@@ -319,7 +352,6 @@ class _NotificationsViewState extends State<NotificationsView> {
                           isAr
                               ? notification.body
                               : (notification.bodyEn ?? notification.body),
-                          textAlign: isAr ? TextAlign.left : TextAlign.right,
                           style:
                               (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
                                 fontSize: 14,
@@ -355,10 +387,10 @@ class _NotificationsViewState extends State<NotificationsView> {
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.access_time_filled_rounded,
                               size: 14,
-                              color: const Color(0xFF94A3B8),
+                              color: Color(0xFF94A3B8),
                             ),
                             const SizedBox(width: 6),
                             Text(
@@ -398,15 +430,8 @@ class _NotificationsViewState extends State<NotificationsView> {
       builder: (context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.95),
+          color: Colors.white,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(35)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
-            ),
-          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -554,8 +579,6 @@ class _NotificationsViewState extends State<NotificationsView> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
-                    elevation: 5,
-                    shadowColor: AppTheme.appBlue.withOpacity(0.4),
                   ),
                 ),
               ),
@@ -622,7 +645,6 @@ class _NotificationsViewState extends State<NotificationsView> {
               fontSize: 14,
               fontWeight: FontWeight.w800,
               color: AppTheme.appBlue,
-              letterSpacing: 0.5,
             ),
           ),
           const SizedBox(width: 12),

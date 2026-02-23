@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import '../../data/repositories/quiz_repository_impl.dart';
 import 'quiz_state.dart';
 
 class QuizCubit extends Cubit<QuizState> {
   final QuizRepositoryImpl repository;
+  final UserPointsCubit pointsCubit;
   Timer? _timer;
   static const int questionDuration = 20;
 
@@ -14,7 +16,8 @@ class QuizCubit extends Cubit<QuizState> {
   Map<int, int> _levelScores = {};
   Map<int, int> _levelBonuses = {};
 
-  QuizCubit({required this.repository}) : super(QuizInitial());
+  QuizCubit({required this.repository, required this.pointsCubit})
+    : super(QuizInitial());
 
   Future<void> loadLevels() async {
     final unlockedResult = await repository.getLastUnlockedLevel();
@@ -280,6 +283,9 @@ class QuizCubit extends Cubit<QuizState> {
           _levelBonuses[currentProgress.level] = finalBonusScore;
           repository.saveLevelBonus(currentProgress.level, finalBonusScore);
         }
+
+        // Update centralized points system
+        pointsCubit.addPoints('quiz', totalFinalScore);
 
         emit(
           QuizGameFinished(

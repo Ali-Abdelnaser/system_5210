@@ -133,4 +133,7 @@ class AppImages {
   static const String basbousa = '${_game1Path}basbousa.webp';
   static const String cake = '${_game1Path}cake.webp';
   static const String friedChicken = '${_game1Path}fried_chicken.webp';
+
+  // UI Elements
+  static const String speechBubble = '${_imgPath}speech_bubble.png';
 }

@@ -163,4 +163,41 @@ class AppShimmer extends StatelessWidget {
       ),
     );
   }
+
+  static Widget notificationCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: Colors.grey[200]!),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppShimmer(
+              width: 50,
+              height: 50,
+              borderRadius: BorderRadius.circular(25),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppShimmer(width: 150, height: 16),
+                  const SizedBox(height: 10),
+                  AppShimmer(width: double.infinity, height: 14),
+                  const SizedBox(height: 6),
+                  AppShimmer(width: 200, height: 14),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

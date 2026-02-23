@@ -1,16 +1,19 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../data/models/daily_task_model.dart';
 import 'daily_tasks_state.dart';
 
 class DailyTasksCubit extends Cubit<DailyTasksState> {
   final LocalStorageService _storageService;
+  final UserPointsCubit pointsCubit;
   static const String _boxName = 'daily_tasks_box';
   static const String _tasksKey = 'daily_tasks_list';
   static const String _startedKey = 'is_game_started';
   static const String _lastResetKey = 'last_reset_time';
 
-  DailyTasksCubit(this._storageService) : super(DailyTasksInitial());
+  DailyTasksCubit(this._storageService, this.pointsCubit)
+    : super(DailyTasksInitial());
 
   Future<void> init() async {
     emit(DailyTasksLoading());
@@ -29,16 +32,18 @@ class DailyTasksCubit extends Cubit<DailyTasksState> {
         : DateTime(2000);
 
     final DateTime now = DateTime.now();
-    final DateTime today9AM = DateTime(now.year, now.month, now.day, 9);
+    final DateTime today12PM = DateTime(now.year, now.month, now.day, 12);
 
     bool needsReset = false;
-    if (now.isAfter(today9AM)) {
-      if (lastReset.isBefore(today9AM)) {
+    if (now.isAfter(today12PM)) {
+      if (lastReset.isBefore(today12PM)) {
         needsReset = true;
       }
     } else {
-      final DateTime yesterday9AM = today9AM.subtract(const Duration(days: 1));
-      if (lastReset.isBefore(yesterday9AM)) {
+      final DateTime yesterday12PM = today12PM.subtract(
+        const Duration(days: 1),
+      );
+      if (lastReset.isBefore(yesterday12PM)) {
         needsReset = true;
       }
     }
@@ -49,6 +54,14 @@ class DailyTasksCubit extends Cubit<DailyTasksState> {
         'time': now.millisecondsSinceEpoch,
       });
     }
+  }
+
+  Future<void> resetTasksManually() async {
+    await _resetTasks();
+    await _storageService.save(_boxName, _lastResetKey, {
+      'time': DateTime.now().millisecondsSinceEpoch,
+    });
+    await _loadState();
   }
 
   Future<void> _resetTasks() async {
@@ -100,9 +113,53 @@ class DailyTasksCubit extends Cubit<DailyTasksState> {
   Future<void> updateTask(DailyTask updatedTask) async {
     if (state is DailyTasksLoaded) {
       final currentState = state as DailyTasksLoaded;
+      final oldTask = currentState.tasks.firstWhere(
+        (t) => t.type == updatedTask.type,
+      );
+
+      // Points Logic
+      if (!oldTask.isCompleted && updatedTask.isCompleted) {
+        bool shouldAddPoints = true;
+        if (updatedTask.type == DailyTaskType.sleep) {
+          if (updatedTask.sleepStartTime != null &&
+              updatedTask.wakeUpTime != null) {
+            final hours = updatedTask.wakeUpTime!
+                .difference(updatedTask.sleepStartTime!)
+                .inHours;
+            if (hours < 6 || hours > 8) {
+              shouldAddPoints = false;
+            }
+          } else {
+            shouldAddPoints = false;
+          }
+        }
+
+        if (shouldAddPoints) {
+          pointsCubit.addPoints('daily_journey', 50);
+        }
+      }
+
       final newTasks = currentState.tasks.map((t) {
         return t.type == updatedTask.type ? updatedTask : t;
       }).toList();
+
+      // Bonus Logic (All 6 completed)
+      final wasAllCompleted = currentState.tasks.every((t) => t.isCompleted);
+      final isAllCompleted = newTasks.every((t) => t.isCompleted);
+
+      if (!wasAllCompleted && isAllCompleted) {
+        final sleepTask = newTasks.firstWhere(
+          (t) => t.type == DailyTaskType.sleep,
+        );
+        if (sleepTask.sleepStartTime != null && sleepTask.wakeUpTime != null) {
+          final hours = sleepTask.wakeUpTime!
+              .difference(sleepTask.sleepStartTime!)
+              .inHours;
+          if (hours >= 6 && hours <= 8) {
+            pointsCubit.addPoints('daily_journey', 200);
+          }
+        }
+      }
 
       await _saveTasks(newTasks);
       emit(

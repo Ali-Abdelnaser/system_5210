@@ -1,9 +1,9 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:system_5210/core/services/local_storage_service.dart';
+import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import 'package:system_5210/features/games/bonding_game/data/bonding_challenges_data.dart';
 
 import '../../data/models/bonding_challenge.dart';
@@ -12,6 +12,7 @@ import 'bonding_game_state.dart';
 
 class BondingGameCubit extends Cubit<BondingGameState> {
   final LocalStorageService storageService;
+  final UserPointsCubit pointsCubit;
   static const String _boxName = 'bonding_game_box';
   static const String _wallKey = 'bonding_wall';
   static const String _historyKey = 'turn_history';
@@ -20,7 +21,8 @@ class BondingGameCubit extends Cubit<BondingGameState> {
   static const String _streakKey = 'streak_count';
   static const String _lastStreakDateKey = 'last_streak_date';
 
-  BondingGameCubit(this.storageService) : super(BondingGameInitial());
+  BondingGameCubit(this.storageService, this.pointsCubit)
+    : super(BondingGameInitial());
 
   Future<void> initGame() async {
     emit(BondingGameLoading());
@@ -86,6 +88,15 @@ class BondingGameCubit extends Cubit<BondingGameState> {
           final isMissionAccomplished =
               lastSavedStateMap['isMissionAccomplished'] ?? false;
 
+          final rawPaths = lastSavedStateMap['scratchPaths'] as List? ?? [];
+          final scratchPaths = rawPaths.map((p) {
+            final list = p as List;
+            return list.map((point) {
+              final map = Map<String, dynamic>.from(point);
+              return Offset(map['x'], map['y']);
+            }).toList();
+          }).toList();
+
           savedState = BondingGameReady(
             currentTurn: currentTurn,
             isTurnRevealed: isTurnRevealed,
@@ -97,6 +108,7 @@ class BondingGameCubit extends Cubit<BondingGameState> {
             wallMemories: wallMemories,
             streakCount: streakCount,
             isMissionAccomplished: isMissionAccomplished,
+            scratchPaths: scratchPaths,
           );
         } catch (e) {
           debugPrint(
@@ -150,6 +162,19 @@ class BondingGameCubit extends Cubit<BondingGameState> {
     }
   }
 
+  Future<void> updateScratchPaths(List<List<Offset>> paths) async {
+    if (state is BondingGameReady) {
+      final currentState = state as BondingGameReady;
+      // We don't emit a full state on every point for performance,
+      // but we update the internal state and periodically save if needed.
+      // For now, let's emit to keep UI in sync, but we use copyWith.
+      final newState = currentState.copyWith(scratchPaths: paths);
+      emit(newState);
+      // Save it so it persists on restart
+      await _saveTodayState(newState);
+    }
+  }
+
   Future<void> signContract() async {
     if (state is BondingGameReady) {
       final currentState = state as BondingGameReady;
@@ -178,6 +203,8 @@ class BondingGameCubit extends Cubit<BondingGameState> {
         emit(newState);
         await _saveTodayState(newState);
         await _saveToWall(newState);
+        // Add points for completing the daily bonding challenge
+        pointsCubit.addPoints('bonding', 300);
       }
     }
   }
@@ -341,6 +368,9 @@ class BondingGameCubit extends Cubit<BondingGameState> {
       'isContractSigned': state.isContractSigned,
       'memoryPhotoPaths': state.memoryPhotoPaths,
       'isMissionAccomplished': state.isMissionAccomplished,
+      'scratchPaths': state.scratchPaths.map((path) {
+        return path.map((o) => {'x': o.dx, 'y': o.dy}).toList();
+      }).toList(),
     });
   }
 
@@ -350,18 +380,15 @@ class BondingGameCubit extends Cubit<BondingGameState> {
         ? List<int>.from(historyData['history'])
         : [];
 
-    if (history.length >= 2) {
-      final last = history.last;
-      final secondLast = history[history.length - 2];
-
-      if (last == secondLast) {
-        return last == BondingRole.parent.index
-            ? BondingRole.child
-            : BondingRole.parent;
-      }
+    if (history.isNotEmpty) {
+      // Direct alternation: if last was parent, now child, and vice versa.
+      return history.last == BondingRole.parent.index
+          ? BondingRole.child
+          : BondingRole.parent;
     }
 
-    return Random().nextBool() ? BondingRole.parent : BondingRole.child;
+    // Default starting role (e.g., child starts first)
+    return BondingRole.child;
   }
 
   Future<void> _addToHistory(BondingRole role) async {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import 'package:system_5210/features/games/balanced_diet/data/models/game_ingredients_data.dart';
 import 'package:system_5210/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,9 +11,13 @@ import 'package:system_5210/features/games/food_matching/presentation/cubit/food
 class FoodMatchingCubit extends Cubit<FoodMatchingState> {
   final GameRepository repository;
   final FirebaseAuth auth;
+  final UserPointsCubit pointsCubit;
 
-  FoodMatchingCubit({required this.repository, required this.auth})
-    : super(FoodMatchingInitial());
+  FoodMatchingCubit({
+    required this.repository,
+    required this.auth,
+    required this.pointsCubit,
+  }) : super(FoodMatchingInitial());
 
   void startGame() {
     emit(FoodMatchingLoading());
@@ -104,6 +109,12 @@ class FoodMatchingCubit extends Cubit<FoodMatchingState> {
         stars: stars,
       );
       await repository.saveGameResult(user.uid, result);
+
+      // Add points to centralized system
+      if (stars > 0) {
+        int points = stars == 3 ? 100 : (stars == 2 ? 75 : 50);
+        pointsCubit.addPoints('food_matching', points);
+      }
     }
 
     emit(

@@ -37,57 +37,10 @@ class QuizRepositoryImpl implements QuizRepository {
   @override
   Future<Either<String, int>> getLastUnlockedLevel() async {
     try {
-      // 1. Get local level immediately
       final localLevel = await localDataSource.getLastUnlockedLevel();
-
-      // 2. Start sync in background (non-blocking)
-      _syncWithRemote(localLevel);
-
       return Right(localLevel);
     } catch (e) {
       return Left(e.toString());
-    }
-  }
-
-  Future<void> _syncWithRemote(int localLevel) async {
-    try {
-      final remoteLevel = await remoteDataSource.getLastUnlockedLevel();
-      if (remoteLevel > localLevel) {
-        await localDataSource.unlockLevel(remoteLevel);
-      } else if (localLevel > remoteLevel) {
-        await remoteDataSource.unlockLevel(localLevel);
-      }
-
-      final remoteStars = await remoteDataSource.getAllLevelStars();
-      if (remoteStars.isNotEmpty) {
-        for (var entry in remoteStars.entries) {
-          final localStar = await localDataSource.getLevelStars(entry.key);
-          if (entry.value > localStar) {
-            await localDataSource.saveLevelStars(entry.key, entry.value);
-          }
-        }
-      }
-
-      final remoteScores = await remoteDataSource.getAllLevelScores();
-      if (remoteScores.isNotEmpty) {
-        for (var entry in remoteScores.entries) {
-          final localScore = await localDataSource.getLevelScore(entry.key);
-          if (entry.value > localScore) {
-            await localDataSource.saveLevelScore(entry.key, entry.value);
-          }
-        }
-      }
-      final remoteBonuses = await remoteDataSource.getAllLevelBonuses();
-      if (remoteBonuses.isNotEmpty) {
-        for (var entry in remoteBonuses.entries) {
-          final localBonus = await localDataSource.getLevelBonus(entry.key);
-          if (entry.value > localBonus) {
-            await localDataSource.saveLevelBonus(entry.key, entry.value);
-          }
-        }
-      }
-    } catch (_) {
-      // Ignore background sync errors
     }
   }
 
@@ -95,13 +48,8 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> unlockLevel(int level) async {
     try {
       await localDataSource.unlockLevel(level);
-      // Fire and forget remote update to avoid blocking UI?
-      // Or await it to ensure consistency? Await is safer for now.
-      try {
-        await remoteDataSource.unlockLevel(level);
-      } catch (_) {
-        // Prepare for offline sync later? For now just ignore if it fails
-      }
+      // Run remote update in background
+      _updateRemote((remote) => remote.unlockLevel(level));
       return const Right(null);
     } catch (e) {
       return Left(e.toString());
@@ -112,11 +60,8 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> saveLevelStars(int level, int stars) async {
     try {
       await localDataSource.saveLevelStars(level, stars);
-      try {
-        await remoteDataSource.saveLevelStars(level, stars);
-      } catch (_) {
-        // Ignore remote error
-      }
+      // Run remote update in background
+      _updateRemote((remote) => remote.saveLevelStars(level, stars));
       return const Right(null);
     } catch (e) {
       return Left(e.toString());
@@ -137,9 +82,8 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> saveLevelScore(int level, int score) async {
     try {
       await localDataSource.saveLevelScore(level, score);
-      try {
-        await remoteDataSource.saveLevelScore(level, score);
-      } catch (_) {}
+      // Run remote update in background
+      _updateRemote((remote) => remote.saveLevelScore(level, score));
       return const Right(null);
     } catch (e) {
       return Left(e.toString());
@@ -160,9 +104,8 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> saveLevelBonus(int level, int bonus) async {
     try {
       await localDataSource.saveLevelBonus(level, bonus);
-      try {
-        await remoteDataSource.saveLevelBonus(level, bonus);
-      } catch (_) {}
+      // Run remote update in background
+      _updateRemote((remote) => remote.saveLevelBonus(level, bonus));
       return const Right(null);
     } catch (e) {
       return Left(e.toString());
@@ -177,5 +120,15 @@ class QuizRepositoryImpl implements QuizRepository {
     } catch (e) {
       return Left(e.toString());
     }
+  }
+
+  // Helper for background remote updates
+  void _updateRemote(
+    Future<void> Function(QuizRemoteDataSource remote) action,
+  ) {
+    action(remoteDataSource).catchError((_) {
+      // Background remote update failed (e.g., offline)
+      // For now we just ignore it as the primary data is local
+    });
   }
 }

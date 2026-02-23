@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,17 +79,24 @@ class BondingDailyCard extends StatelessWidget {
   }
 
   Widget _buildScratchContent(BuildContext context, BondingGameReady state) {
-    if (state.selectedChallenge != null) {
+    if (state.selectedChallenge != null || state.isTurnRevealed) {
       return _buildUnderneathContent(context, state);
     }
     return CustomScratcher(
       brushSize: 35,
       coverImagePath: AppImages.card,
+      initialPaths: state.scratchPaths,
       onScratchStart: () {
         context.read<BondingGameCubit>().setScrollingLocked(true);
       },
       onScratchEnd: () {
         context.read<BondingGameCubit>().setScrollingLocked(false);
+      },
+      onPathsUpdate: (paths) {
+        context.read<BondingGameCubit>().updateScratchPaths(paths);
+      },
+      onThresholdReached: () {
+        context.read<BondingGameCubit>().revealTurn();
       },
       child: _buildUnderneathContent(context, state),
     );
@@ -101,7 +109,7 @@ class BondingDailyCard extends StatelessWidget {
     final primaryColor = isParent ? AppTheme.appBlue : AppTheme.appGreen;
     final hasSelected = state.selectedChallenge != null;
     final isDone = state.isMissionAccomplished;
-
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -147,87 +155,91 @@ class BondingDailyCard extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Status Badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: (isDone ? AppTheme.appGreen : primaryColor)
-                          .withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          isDone
-                              ? Icons.stars_rounded
-                              : (hasSelected
-                                    ? Icons.check_circle_rounded
-                                    : Icons.auto_awesome_rounded),
-                          size: 14,
-                          color: isDone ? AppTheme.appGreen : primaryColor,
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          isDone
-                              ? l10n.bondingMissionAccomplished
-                              : (hasSelected
-                                    ? l10n.bondingActiveChallenge
-                                    : l10n.bondingDiscoveryToday),
-                          style:
-                              (Localizations.localeOf(context).languageCode ==
-                                  'ar'
-                              ? GoogleFonts.cairo
-                              : GoogleFonts.poppins)(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: isDone
-                                    ? AppTheme.appGreen
-                                    : primaryColor,
-                              ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const Spacer(),
-
                   if (isDone) ...[
-                    // Done State
-                    const Icon(
-                          Icons.favorite_rounded,
-                          color: AppTheme.appRed,
-                          size: 40,
-                        )
-                        .animate(onPlay: (c) => c.repeat(reverse: true))
-                        .scale(duration: 1.seconds),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 5),
+                    // --- Compact Eye-catching Shockwave Checkmark ---
+                    Center(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Smaller Success Ripple
+                          Container(
+                                width: 60,
+                                height: 60,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: AppTheme.appGreen.withOpacity(0.4),
+                                    width: 2,
+                                  ),
+                                ),
+                              )
+                              .animate()
+                              .scale(
+                                begin: const Offset(0.5, 0.5),
+                                end: const Offset(1.8, 1.8),
+                                duration: 800.ms,
+                                curve: Curves.easeOutCirc,
+                              )
+                              .fadeOut(),
+
+                          // Compact Green Circle
+                          Container(
+                                width: 54,
+                                height: 54,
+                                decoration: const BoxDecoration(
+                                  color: AppTheme.appGreen,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: AppTheme.appGreen,
+                                      blurRadius: 12,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.check_rounded,
+                                  color: Colors.white,
+                                  size: 32,
+                                ),
+                              )
+                              .animate()
+                              .scale(
+                                begin: const Offset(0.0, 0.0),
+                                end: const Offset(1.0, 1.0),
+                                duration: 500.ms,
+                                curve: Curves.elasticOut,
+                              )
+                              .then(delay: 150.ms)
+                              .shake(duration: 400.ms, hz: 4),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Compact "Mission Accomplished" Text
                     Text(
-                      l10n.bondingMemoriesDay,
+                      l10n.bondingMissionAccomplished,
                       textAlign: TextAlign.center,
-                      style:
-                          (Localizations.localeOf(context).languageCode == 'ar'
-                          ? GoogleFonts.cairo
-                          : GoogleFonts.poppins)(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900,
-                            color: const Color(0xFF2D3142),
-                          ),
+                      style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.appGreen,
+                        height: 1.1,
+                      ),
                     ),
+
+                    const SizedBox(height: 2),
                     Text(
-                      l10n.bondingExploreMemories,
-                      style:
-                          (Localizations.localeOf(context).languageCode == 'ar'
-                          ? GoogleFonts.cairo
-                          : GoogleFonts.poppins)(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.bold,
-                          ),
+                      isAr ? "بطل المهمات!" : "Mission Hero!",
+                      style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
+                    const SizedBox(height: 8),
                   ] else if (hasSelected) ...[
                     // Selection Icon (Subtle)
                     Icon(
@@ -321,17 +333,27 @@ class BondingDailyCard extends StatelessWidget {
 
     return Container(
           width: double.infinity,
-          height: 48,
+          height: 52,
           decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: color.withOpacity(0.3),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
+            color: isDone ? Colors.transparent : color,
+            borderRadius: BorderRadius.circular(22),
+            border: isDone
+                ? Border.all(color: color.withOpacity(0.5), width: 1.5)
+                : null,
+            gradient: isDone
+                ? LinearGradient(
+                    colors: [color.withOpacity(0.1), color.withOpacity(0.05)],
+                  )
+                : null,
+            boxShadow: isDone
+                ? []
+                : [
+                    BoxShadow(
+                      color: color.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
           ),
           child: Material(
             color: Colors.transparent,
@@ -359,7 +381,7 @@ class BondingDailyCard extends StatelessWidget {
                   );
                 }
               },
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(22),
               child: Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -370,7 +392,7 @@ class BondingDailyCard extends StatelessWidget {
                           : (hasSelected
                                 ? Icons.camera_enhance_rounded
                                 : Icons.flash_on_rounded),
-                      color: Colors.white,
+                      color: isDone ? color : Colors.white,
                       size: 20,
                     ),
                     const SizedBox(width: 12),
@@ -386,7 +408,7 @@ class BondingDailyCard extends StatelessWidget {
                           : GoogleFonts.poppins)(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: isDone ? color : Colors.white,
                           ),
                     ),
                   ],

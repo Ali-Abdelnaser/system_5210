@@ -24,8 +24,8 @@ class MatchingCard extends StatelessWidget {
     return AnimatedContainer(
           duration: 400.ms,
           curve: Curves.easeOutQuart,
-          width: isImage ? 115 : 130, // Slightly wider images
-          height: 80, // Slightly taller cards
+          width: isImage ? 115 : 160, // Wider for benefits
+          height: 100, // Taller cards for text wrap
           margin: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
@@ -81,8 +81,8 @@ class MatchingCard extends StatelessWidget {
                   child: isImage
                       ? Padding(
                           padding: const EdgeInsets.all(
-                            4.0,
-                          ), // Smaller padding = larger image
+                            8.0,
+                          ), // Slightly more padding
                           child:
                               Image.asset(item.imagePath, fit: BoxFit.contain)
                                   .animate(target: isMatched ? 1 : 0)
@@ -94,13 +94,14 @@ class MatchingCard extends StatelessWidget {
                                   ),
                         )
                       : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: Text(
-                            item.name,
+                            item.benefit, // Use benefit instead of name
                             textAlign: TextAlign.center,
                             style: GoogleFonts.cairo(
-                              fontSize: 16,
+                              fontSize: 13, // Slightly smaller for longer text
                               fontWeight: FontWeight.w900,
+                              height: 1.2,
                               color: isMatched
                                   ? const Color(0xFF064E3B)
                                   : isSelected

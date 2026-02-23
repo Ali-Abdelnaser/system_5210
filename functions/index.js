@@ -11,7 +11,7 @@ const APP_COLOR = "#2D3142"; // Dark Navy (Premium & Professional)
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "alinaserhema60@gmail.com",
+    user: "five.two.ten5210eg@gmail.com",
     pass: "zbll etpa bdej osag",
   },
 });

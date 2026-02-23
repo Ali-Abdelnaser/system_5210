@@ -28,6 +28,7 @@ import 'package:system_5210/features/games/bonding_game/presentation/widgets/bon
 import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_state.dart';
 import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
+import '../widgets/daily_tip_overlay.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -100,6 +101,12 @@ class _HomeViewState extends State<HomeView> {
                   child: BlocConsumer<HomeCubit, HomeState>(
                     listener: (context, state) {
                       if (state is HomeLoaded) {
+                        // Show daily tip overlay for children
+                        DailyTipOverlay.showIfNeeded(
+                          context,
+                          state.userProfile.role,
+                        );
+
                         // Update NotificationCubit with the current user ID
                         context.read<NotificationCubit>().setUserId(
                           state.userProfile.uid,
@@ -156,6 +163,7 @@ class _HomeViewState extends State<HomeView> {
                   ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
                 ),
 
+                // 3. Bonding Game Section
                 SliverToBoxAdapter(
                   child: BlocBuilder<BondingGameCubit, BondingGameState>(
                     builder: (context, state) {

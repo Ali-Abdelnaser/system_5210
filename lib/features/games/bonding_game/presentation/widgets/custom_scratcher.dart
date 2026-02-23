@@ -15,6 +15,9 @@ class CustomScratcher extends StatefulWidget {
   final VoidCallback? onScratchEnd;
   final double threshold;
   final VoidCallback? onThresholdReached;
+  final Function(double)? onProgressUpdate;
+  final List<List<Offset>> initialPaths;
+  final Function(List<List<Offset>>)? onPathsUpdate;
 
   const CustomScratcher({
     super.key,
@@ -27,6 +30,9 @@ class CustomScratcher extends StatefulWidget {
     this.onScratchEnd,
     this.threshold = 0.96, // High threshold for "100%" feel
     this.onThresholdReached,
+    this.onProgressUpdate,
+    this.initialPaths = const [],
+    this.onPathsUpdate,
   });
 
   @override
@@ -48,6 +54,12 @@ class _CustomScratcherState extends State<CustomScratcher> {
     super.initState();
     if (widget.coverImagePath != null) {
       _loadImage(widget.coverImagePath!);
+    }
+    // Load initial paths if any
+    if (widget.initialPaths.isNotEmpty) {
+      paths = List<List<Offset>>.from(
+        widget.initialPaths.map((p) => List<Offset>.from(p)),
+      );
     }
   }
 
@@ -96,6 +108,7 @@ class _CustomScratcherState extends State<CustomScratcher> {
         _startScratchSound();
       }
       widget.onScratchUpdate?.call();
+      widget.onPathsUpdate?.call(paths);
     }
   }
 
@@ -112,6 +125,8 @@ class _CustomScratcherState extends State<CustomScratcher> {
     }
 
     double progress = _grid.where((e) => e).length / (columns * rows);
+    widget.onProgressUpdate?.call(progress);
+
     if (progress >= widget.threshold) {
       setState(() {
         _isFinished = true;

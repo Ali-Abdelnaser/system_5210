@@ -69,7 +69,7 @@ class MatchingResultOverlay extends StatelessWidget {
                 const SizedBox(height: 10),
 
                 Text(
-                  'عبقري التوصيل',
+                  'بطل المعرفة الصحية',
                   style: GoogleFonts.cairo(
                     fontSize: 30,
                     fontWeight: FontWeight.w900,

@@ -5,6 +5,7 @@ class IngredientModel extends IngredientEntity {
     required super.id,
     required super.name,
     required super.imagePath,
+    required super.benefit,
     required super.isHealthy,
   });
 
@@ -13,6 +14,7 @@ class IngredientModel extends IngredientEntity {
       id: json['id'],
       name: json['name'],
       imagePath: json['imagePath'],
+      benefit: json['benefit'] ?? '',
       isHealthy: json['isHealthy'],
     );
   }
@@ -22,6 +24,7 @@ class IngredientModel extends IngredientEntity {
       'id': id,
       'name': name,
       'imagePath': imagePath,
+      'benefit': benefit,
       'isHealthy': isHealthy,
     };
   }

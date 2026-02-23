@@ -53,7 +53,7 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
         elevation: 0,
         leading: const AppBackButton(),
         title: Text(
-          'لعبة التوصيل الذكية',
+          'تحدي الفوائد الصحية',
           style: GoogleFonts.cairo(
             fontWeight: FontWeight.w900,
             fontSize: 22,
@@ -76,7 +76,7 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
             child: Center(
               child:
                   Text(
-                        'اسحب الكلمة ووصلها بصورتها المناسبة',
+                        'اسحب الصورة ووصلها بالفائدة المناسبة',
                         textAlign: TextAlign.center,
                         style: GoogleFonts.cairo(
                           fontSize: 16,
@@ -134,15 +134,15 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
               child: CustomPaint(
                 painter: MatchingLinePainter(
                   completedLines: state.matches.entries.map((e) {
-                    final wordIndex = state.words.indexWhere(
-                      (w) => w.id == e.key,
-                    );
                     final imageIndex = state.images.indexWhere(
-                      (i) => i.id == e.value,
+                      (i) => i.id == e.key,
+                    );
+                    final benefitIndex = state.words.indexWhere(
+                      (w) => w.id == e.value,
                     );
                     return MatchingLine(
-                      start: _getPoint(_wordKeys[wordIndex], true),
-                      end: _getPoint(_imageKeys[imageIndex], false),
+                      start: _getPoint(_imageKeys[imageIndex], true),
+                      end: _getPoint(_wordKeys[benefitIndex], false),
                       isCompleted: true,
                     );
                   }).toList(),
@@ -159,24 +159,23 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Words Column
+                // Images Column (Left - Draggable)
                 Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(state.words.length, (index) {
-                      final item = state.words[index];
+                    children: List.generate(state.images.length, (index) {
+                      final item = state.images[index];
                       final isMatched = state.matches.containsKey(item.id);
                       final isSelected = state.activeWordIndex == index;
 
                       return Draggable<String>(
-                        key:
-                            _wordKeys[index], // Key moved to Draggable for stability
+                        key: _imageKeys[index],
                         data: item.id,
                         feedback: Material(
                           color: Colors.transparent,
                           child: MatchingCard(
                             item: item,
-                            isImage: false,
+                            isImage: true,
                             isSelected: true,
                             isMatched: false,
                           ),
@@ -185,23 +184,22 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
                           opacity: 0.3,
                           child: MatchingCard(
                             item: item,
-                            isImage: false,
+                            isImage: true,
                             isSelected: false,
                             isMatched: isMatched,
                           ),
                         ),
                         onDragStarted: () {
-                          final startPoint = _getPoint(_wordKeys[index], true);
+                          final startPoint = _getPoint(_imageKeys[index], true);
                           context.read<FoodMatchingCubit>().updateDrag(
                             startPoint,
-                            startPoint, // Start at word edge
+                            startPoint,
                             index,
                           );
                         },
                         onDragUpdate: (details) {
-                          // Note: We use the word handle center as start point
                           context.read<FoodMatchingCubit>().updateDrag(
-                            _getPoint(_wordKeys[index], true),
+                            _getPoint(_imageKeys[index], true),
                             (_stackKey.currentContext!.findRenderObject()!
                                     as RenderBox)
                                 .globalToLocal(details.globalPosition),
@@ -216,7 +214,7 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
                         },
                         child: MatchingCard(
                           item: item,
-                          isImage: false,
+                          isImage: true,
                           isSelected: isSelected,
                           isMatched: isMatched,
                         ),
@@ -225,18 +223,18 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
                   ),
                 ),
 
-                const SizedBox(width: 40),
-
-                // Images Column
+                const SizedBox(width: 20), // Reduced width to fit benefits
+                // Benefits Column (Right - DragTarget)
                 Expanded(
+                  flex: 1, // Give more room for text if needed
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: List.generate(state.images.length, (index) {
-                      final item = state.images[index];
+                    children: List.generate(state.words.length, (index) {
+                      final item = state.words[index];
                       final isMatched = state.matches.containsValue(item.id);
 
                       return DragTarget<String>(
-                        key: _imageKeys[index], // Key on DragTarget
+                        key: _wordKeys[index],
                         onWillAccept: (data) => !isMatched,
                         onAccept: (data) {
                           context.read<FoodMatchingCubit>().onDragEnd(
@@ -247,7 +245,7 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
                         builder: (context, candidateData, rejectedData) {
                           return MatchingCard(
                             item: item,
-                            isImage: true,
+                            isImage: false,
                             isSelected: candidateData.isNotEmpty,
                             isMatched: isMatched,
                           );

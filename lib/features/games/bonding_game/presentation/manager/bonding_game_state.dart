@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'dart:ui';
 import '../../data/models/bonding_challenge.dart';
 import '../../data/models/bonding_memory.dart';
 
@@ -25,6 +26,7 @@ class BondingGameReady extends BondingGameState {
   final List<BondingMemory> wallMemories;
   final int streakCount;
   final bool isMissionAccomplished;
+  final List<List<Offset>> scratchPaths;
 
   const BondingGameReady({
     required this.currentTurn,
@@ -38,6 +40,7 @@ class BondingGameReady extends BondingGameState {
     this.wallMemories = const [],
     this.streakCount = 0,
     this.isMissionAccomplished = false,
+    this.scratchPaths = const [],
   });
 
   BondingGameReady copyWith({
@@ -52,6 +55,7 @@ class BondingGameReady extends BondingGameState {
     List<BondingMemory>? wallMemories,
     int? streakCount,
     bool? isMissionAccomplished,
+    List<List<Offset>>? scratchPaths,
   }) {
     return BondingGameReady(
       currentTurn: currentTurn ?? this.currentTurn,
@@ -66,6 +70,7 @@ class BondingGameReady extends BondingGameState {
       streakCount: streakCount ?? this.streakCount,
       isMissionAccomplished:
           isMissionAccomplished ?? this.isMissionAccomplished,
+      scratchPaths: scratchPaths ?? this.scratchPaths,
     );
   }
 
@@ -82,6 +87,7 @@ class BondingGameReady extends BondingGameState {
     wallMemories,
     streakCount,
     isMissionAccomplished,
+    scratchPaths,
   ];
 }
 

@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import 'package:system_5210/core/utils/app_images.dart';
 import '../../data/models/game_result_model.dart';
 import '../../data/models/game_ingredients_data.dart';
@@ -13,10 +14,14 @@ import 'balanced_plate_state.dart';
 class BalancedPlateCubit extends Cubit<BalancedPlateState> {
   final GameRepository repository;
   final FirebaseAuth auth;
+  final UserPointsCubit pointsCubit;
   final AudioPlayer _audioPlayer = AudioPlayer();
 
-  BalancedPlateCubit({required this.repository, required this.auth})
-    : super(BalancedPlateInitial());
+  BalancedPlateCubit({
+    required this.repository,
+    required this.auth,
+    required this.pointsCubit,
+  }) : super(BalancedPlateInitial());
 
   void startGame() {
     // Pick 5 random healthy items
@@ -146,6 +151,12 @@ class BalancedPlateCubit extends Cubit<BalancedPlateState> {
           stars: stars,
         );
         await repository.saveGameResult(user.uid, result);
+
+        // Add points to centralized system
+        if (stars > 0) {
+          int points = stars == 3 ? 100 : (stars == 2 ? 75 : 50);
+          pointsCubit.addPoints('balanced_plate', points);
+        }
       }
 
       emit(
