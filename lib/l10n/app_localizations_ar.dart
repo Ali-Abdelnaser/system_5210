@@ -407,7 +407,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navProfile => 'بياناتي';
 
   @override
-  String get goodMorning => 'صباح النشاط،';
+  String get goodMorning => 'مرحبا،';
 
   @override
   String get yourProgress => 'التقدم الحالي';

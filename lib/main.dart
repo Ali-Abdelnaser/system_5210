@@ -20,6 +20,7 @@ import 'package:system_5210/core/network/network_cubit.dart';
 import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
+import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
 import 'package:system_5210/core/widgets/offline_wrapper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -123,11 +124,15 @@ class MyApp extends StatelessWidget {
             BlocProvider<DailyTasksCubit>(
               create: (_) => di.sl<DailyTasksCubit>()..init(),
             ),
+            BlocProvider<StepTrackerCubit>(
+              create: (_) => di.sl<StepTrackerCubit>()..init(),
+            ),
           ],
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
             child: MaterialApp(
               title: AppStrings.appName,
+              navigatorKey: AppRoutes.navigatorKey,
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
               scrollBehavior: GlobalScrollBehavior(),

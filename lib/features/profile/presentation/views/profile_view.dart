@@ -619,7 +619,11 @@ class ProfileView extends StatelessWidget {
         }
 
         // Reset notifications for current user
-        context.read<NotificationCubit>().setUserId(null);
+        context.read<NotificationCubit>().setUserContext(
+          null,
+          null,
+          role: null,
+        );
 
         context.read<AuthCubit>().logout();
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);

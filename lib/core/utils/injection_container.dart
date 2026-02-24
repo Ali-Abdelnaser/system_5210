@@ -41,6 +41,7 @@ import 'package:system_5210/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
 import 'package:system_5210/core/services/storage_service.dart';
 import 'package:system_5210/core/services/local_storage_service.dart';
+import 'package:system_5210/core/services/step_tracker_service.dart';
 import 'package:system_5210/features/healthy_recipes/data/datasources/recipe_remote_data_source.dart';
 import 'package:system_5210/features/healthy_recipes/data/repositories/recipe_repository_impl.dart';
 import 'package:system_5210/features/healthy_recipes/domain/repositories/recipe_repository.dart';
@@ -67,6 +68,7 @@ import 'package:system_5210/features/games/bonding_game/presentation/manager/bon
 import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
 import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
 
 import 'package:system_5210/core/services/notification_service.dart';
 import 'package:system_5210/core/services/streak_service.dart';
@@ -79,6 +81,7 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton(() => NotificationService());
   sl.registerLazySingleton(() => StreakService(sl()));
+  sl.registerLazySingleton(() => StepTrackerService());
   // Use cases
   sl.registerLazySingleton(() => GetSpecialists(sl()));
   sl.registerLazySingleton(() => LoginWithEmailUseCase(sl()));
@@ -170,6 +173,7 @@ Future<void> init() async {
         NotificationCubit(localStorageService: sl(), notificationService: sl()),
   );
   sl.registerLazySingleton(() => UserPointsCubit(sl(), sl(), sl()));
+  sl.registerFactory(() => StepTrackerCubit(sl()));
 
   // Repository
   // Repository

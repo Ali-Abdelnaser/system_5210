@@ -5,6 +5,7 @@ import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:system_5210/core/utils/app_routes.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -36,19 +37,9 @@ class NotificationService {
 
       await flutterLocalNotificationsPlugin.initialize(
         settings: initializationSettings,
-        onDidReceiveNotificationResponse: (details) async {
-          if (details.payload != null && details.payload!.startsWith('http')) {
-            final uri = Uri.parse(details.payload!);
-            try {
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-            } catch (e) {
-              debugPrint('Error launching from notification: $e');
-            }
-          }
-        },
+        onDidReceiveNotificationResponse: _handleNotificationTap,
       );
 
-      // طلب الأذونات للأندرويد
       final androidPlugin = flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
@@ -58,6 +49,31 @@ class NotificationService {
       await androidPlugin?.requestExactAlarmsPermission();
     } catch (e) {
       debugPrint("Error in Notification Init: $e");
+    }
+  }
+
+  void _handleNotificationTap(NotificationResponse details) async {
+    final String? payload = details.payload;
+    if (payload == null) return;
+
+    if (payload.startsWith('http')) {
+      final uri = Uri.parse(payload);
+      try {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } catch (e) {
+        debugPrint('Error launching from notification: $e');
+      }
+      return;
+    }
+
+    if (payload.startsWith('route:')) {
+      final route = payload.replaceFirst('route:', '');
+      AppRoutes.navigatorKey.currentState?.pushNamed(route);
+      return;
+    }
+
+    if (details.actionId == 'go_action') {
+      AppRoutes.navigatorKey.currentState?.pushNamed(AppRoutes.notifications);
     }
   }
 
@@ -90,28 +106,46 @@ class NotificationService {
   }
 
   Future<void> scheduleDailyTip({
+    required int id,
     required String title,
     required String body,
+    required DateTime scheduledDate,
+    String? payload,
   }) async {
     try {
+      final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
+
+      // التأكد إن الوقت مش في الماضي
+      if (tzScheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
+        debugPrint("Skipping scheduling for past date: $tzScheduledDate");
+        return;
+      }
+
       await flutterLocalNotificationsPlugin.zonedSchedule(
-        id: 1,
+        id: id,
         title: title,
         body: body,
-        scheduledDate: _nextInstance10AM(),
+        scheduledDate: tzScheduledDate,
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'daily_tips_channel',
-            'Daily Parent Tips',
+            'Daily Tips',
+            channelDescription: 'Daily healthy tips for parents',
             importance: Importance.max,
             priority: Priority.high,
             icon: 'ic_stat_name',
+            playSound: true,
           ),
-          iOS: DarwinNotificationDetails(),
+          iOS: DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+          ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        matchDateTimeComponents: DateTimeComponents.time,
+        payload: payload,
       );
+      debugPrint("Notification scheduled successfully at: $tzScheduledDate");
     } catch (e) {
       debugPrint("Error scheduling daily tip: $e");
     }
@@ -122,6 +156,8 @@ class NotificationService {
     required String body,
     String? imageUrl,
     String? actionUrl,
+    bool showAction = false,
+    int? badgeCount,
   }) async {
     try {
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000 % 0x7FFFFFFF;
@@ -148,7 +184,6 @@ class NotificationService {
         id: id,
         title: title,
         body: body,
-        payload: actionUrl,
         notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             'broadcast_channel',
@@ -159,16 +194,28 @@ class NotificationService {
             playSound: true,
             enableVibration: true,
             styleInformation: bigPictureStyleInformation,
+            number: badgeCount,
+            actions: showAction
+                ? [
+                    const AndroidNotificationAction(
+                      'go_action',
+                      'مشاهدة الآن',
+                      showsUserInterface: true,
+                    ),
+                  ]
+                : null,
           ),
           iOS: DarwinNotificationDetails(
             presentAlert: true,
             presentBadge: true,
             presentSound: true,
+            badgeNumber: badgeCount,
             attachments: imageUrl != null
                 ? [DarwinNotificationAttachment(imageUrl)]
                 : null,
           ),
         ),
+        payload: actionUrl,
       );
     } catch (e) {
       debugPrint("Error showing immediate notification: $e");
@@ -181,9 +228,8 @@ class NotificationService {
     final HttpClient httpClient = HttpClient();
     final HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
     final HttpClientResponse response = await request.close();
-    final List<int> bytes = await response.expand((chunk) => chunk).toList();
     final File file = File(filePath);
-    await file.writeAsBytes(bytes);
+    await response.pipe(file.openWrite());
     return filePath;
   }
 
@@ -195,24 +241,7 @@ class NotificationService {
       now.month,
       now.day,
       22,
-      15, // الساعة 10 وربع
-      0,
-    );
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    return scheduledDate;
-  }
-
-  tz.TZDateTime _nextInstance10AM() {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      10, // الساعة 10 صباحاً
-      0,
+      15,
       0,
     );
     if (scheduledDate.isBefore(now)) {

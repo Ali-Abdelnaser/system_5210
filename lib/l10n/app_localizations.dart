@@ -869,7 +869,7 @@ abstract class AppLocalizations {
   /// No description provided for @goodMorning.
   ///
   /// In en, this message translates to:
-  /// **'Good Morning,'**
+  /// **'Hi,'**
   String get goodMorning;
 
   /// No description provided for @yourProgress.
@@ -2321,7 +2321,7 @@ abstract class AppLocalizations {
   /// No description provided for @bondingHomeAnnouncement.
   ///
   /// In en, this message translates to:
-  /// **'Scratch to discover today\'s challenge! 🔥'**
+  /// **'Scratch to discover challenge! 🔥'**
   String get bondingHomeAnnouncement;
 
   /// No description provided for @bondingDiscoveryToday.

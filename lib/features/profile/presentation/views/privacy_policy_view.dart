@@ -87,6 +87,15 @@ class PrivacyPolicyView extends StatelessWidget {
                           isAr,
                         ),
                         _buildSection(
+                          isAr
+                              ? "بيانات الصحة والنشاط (Health Connect)"
+                              : "Health & Activity Data (Health Connect)",
+                          isAr
+                              ? "يستخدم تطبيقنا Health Connect للوصول إلى بيانات خطواتك اليومية. نحن نقوم بقراءة هذه البيانات فقط لعرض تقدمك نحو أهدافك الصحية (5210). لا نقوم بمشاركة هذه البيانات مع أي جهات خارجية ولا نستخدمها لأغراض إعلانية."
+                              : "Our app uses Health Connect to access your daily step count. We only read this data to display your progress towards your health goals (5210). We do not share this data with any third parties or use it for advertising purposes.",
+                          isAr,
+                        ),
+                        _buildSection(
                           l10n.policyChangesTitle,
                           l10n.policyChangesDesc,
                           isAr,

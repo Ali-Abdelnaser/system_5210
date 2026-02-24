@@ -375,20 +375,14 @@ class BondingGameCubit extends Cubit<BondingGameState> {
   }
 
   Future<BondingRole> _determineNextTurn() async {
-    final historyData = await storageService.get(_boxName, _historyKey);
-    List<int> history = historyData != null
-        ? List<int>.from(historyData['history'])
-        : [];
+    final now = DateTime.now();
+    // Using a fixed reference date (2024-01-01) to calculate days count.
+    // This ensures that the turn alternates predictably every day regardless of completion.
+    final referenceDate = DateTime(2024, 1, 1);
+    final daysCount = now.difference(referenceDate).inDays;
 
-    if (history.isNotEmpty) {
-      // Direct alternation: if last was parent, now child, and vice versa.
-      return history.last == BondingRole.parent.index
-          ? BondingRole.child
-          : BondingRole.parent;
-    }
-
-    // Default starting role (e.g., child starts first)
-    return BondingRole.child;
+    // Even days -> Parent (الأهل), Odd days -> Child (الطفل)
+    return (daysCount % 2 == 0) ? BondingRole.parent : BondingRole.child;
   }
 
   Future<void> _addToHistory(BondingRole role) async {

@@ -14,6 +14,7 @@ class UserProfileModel extends Equatable {
   final int maxStreak;
   final DateTime? lastLoginDate;
   final String streakStatus; // 'active', 'frozen'
+  final DateTime? createdAt;
 
   const UserProfileModel({
     required this.uid,
@@ -29,6 +30,7 @@ class UserProfileModel extends Equatable {
     this.maxStreak = 0,
     this.lastLoginDate,
     this.streakStatus = 'active',
+    this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -46,6 +48,8 @@ class UserProfileModel extends Equatable {
       'maxStreak': maxStreak,
       'lastLoginDate': lastLoginDate?.toIso8601String(),
       'streakStatus': streakStatus,
+      'createdAt':
+          createdAt?.toIso8601String() ?? DateTime.now().toIso8601String(),
       'updatedAt': DateTime.now().toIso8601String(),
     };
   }
@@ -69,6 +73,9 @@ class UserProfileModel extends Equatable {
           ? DateTime.parse(map['lastLoginDate'])
           : null,
       streakStatus: map['streakStatus'] ?? 'active',
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : null,
     );
   }
 
@@ -86,6 +93,7 @@ class UserProfileModel extends Equatable {
     int? maxStreak,
     DateTime? lastLoginDate,
     String? streakStatus,
+    DateTime? createdAt,
   }) {
     return UserProfileModel(
       uid: uid ?? this.uid,
@@ -101,6 +109,7 @@ class UserProfileModel extends Equatable {
       maxStreak: maxStreak ?? this.maxStreak,
       lastLoginDate: lastLoginDate ?? this.lastLoginDate,
       streakStatus: streakStatus ?? this.streakStatus,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -118,5 +127,6 @@ class UserProfileModel extends Equatable {
     maxStreak,
     lastLoginDate,
     streakStatus,
+    createdAt,
   ];
 }

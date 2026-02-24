@@ -11,6 +11,7 @@ import 'package:system_5210/features/games/bonding_game/presentation/manager/bon
 import 'package:system_5210/features/games/bonding_game/presentation/views/bonding_game_selection_view.dart';
 import 'package:system_5210/features/games/bonding_game/presentation/views/bonding_wall_view.dart';
 import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
 
 class BondingGameDashboardView extends StatelessWidget {
@@ -36,36 +37,52 @@ class BondingGameDashboardView extends StatelessWidget {
               child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
             ),
           ),
-          BlocBuilder<BondingGameCubit, BondingGameState>(
-            builder: (context, state) {
-              if (state is BondingGameReady) {
-                return SafeArea(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 10,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildWelcomeHeader(context, l10n, state),
-                        const SizedBox(height: 30),
-                        _buildMissionHero(context, state, l10n),
-                        const SizedBox(height: 35),
-                        _buildSectionHeader(context, l10n.bondingWallTitle),
-                        const SizedBox(height: 15),
-                        _buildWallPreview(context, state),
-                        const SizedBox(height: 40),
-                        _buildValueProposition(context),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
-                  ),
+          BlocListener<BondingGameCubit, BondingGameState>(
+            listenWhen: (previous, current) =>
+                previous is BondingGameReady &&
+                current is BondingGameReady &&
+                !previous.isMissionAccomplished &&
+                current.isMissionAccomplished,
+            listener: (context, state) {
+              if (state is BondingGameReady && state.isMissionAccomplished) {
+                context.read<NotificationCubit>().addGameRewardNotification(
+                  gameName: "مهمة الترابط",
+                  score: 500,
+                  reward: "وسام الترابط العائلي 👨‍👩‍👧‍👦",
                 );
               }
-              return const Center(child: CircularProgressIndicator());
             },
+            child: BlocBuilder<BondingGameCubit, BondingGameState>(
+              builder: (context, state) {
+                if (state is BondingGameReady) {
+                  return SafeArea(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 10,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildWelcomeHeader(context, l10n, state),
+                          const SizedBox(height: 30),
+                          _buildMissionHero(context, state, l10n),
+                          const SizedBox(height: 35),
+                          _buildSectionHeader(context, l10n.bondingWallTitle),
+                          const SizedBox(height: 15),
+                          _buildWallPreview(context, state),
+                          const SizedBox(height: 40),
+                          _buildValueProposition(context),
+                          const SizedBox(height: 30),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
           ),
         ],
       ),

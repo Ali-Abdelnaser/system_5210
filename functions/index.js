@@ -1,18 +1,19 @@
 const {onCall, HttpsError} = require("firebase-functions/v2/https");
-const functions = require("firebase-functions/v1"); // Explicitly use v1 for Auth triggers
+const {auth} = require("firebase-functions/v1"); // Use v1 for Auth triggers
 const admin = require("firebase-admin");
 const nodemailer = require("nodemailer");
 
 admin.initializeApp();
 
 // Configuration
-const APP_COLOR = "#2D3142"; // Dark Navy (Premium & Professional)
+const APP_COLOR = "#2D3142";
 
+// Create transporter once
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "five.two.ten5210eg@gmail.com",
-    pass: "zbll etpa bdej osag",
+    pass: "wmnb hxze wksh ljae",
   },
 });
 
@@ -167,7 +168,7 @@ exports.verifyEmailOTP = onCall(async (request) => {
 /**
  * 6. Welcome Email (V1)
  */
-exports.onUserCreated = functions.auth.user().onCreate(async (user) => {
+exports.onUserCreated = auth.user().onCreate(async (user) => {
   const email = user.email;
   const name = user.displayName || "Hero";
   if (!email) return null;

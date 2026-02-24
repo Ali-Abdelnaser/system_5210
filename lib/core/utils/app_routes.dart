@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:system_5210/features/specialists/presentation/views/data_uploader_view.dart';
+import 'package:system_5210/features/step_tracker/presentation/views/health_rationale_view.dart';
 import 'package:system_5210/core/utils/injection_container.dart';
 import 'package:system_5210/features/auth/presentation/views/forgot_password_view.dart';
 import 'package:system_5210/features/auth/presentation/views/login_view.dart';
@@ -36,6 +37,9 @@ import 'package:system_5210/features/healthy_insights/presentation/views/healthy
 import 'package:system_5210/features/notifications/presentation/views/notifications_view.dart';
 
 class AppRoutes {
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   static const String splash = '/';
   static const String language = '/language';
   static const String onboarding = '/onboarding';
@@ -57,6 +61,7 @@ class AppRoutes {
   static const String uploader = '/data-uploader';
   static const String healthyInsights = '/healthy-insights';
   static const String notifications = '/notifications';
+  static const String healthRationale = '/health-rationale';
 
   // Games
   static const String gamesList = '/games-list';
@@ -180,6 +185,9 @@ class AppRoutes {
         break;
       case notifications:
         page = const NotificationsView();
+        break;
+      case healthRationale:
+        page = const HealthRationaleView();
         break;
       default:
         return null;

@@ -80,6 +80,34 @@ class ProfileCubit extends Cubit<ProfileState> {
           emit(ProfileLoaded(updatedProfile));
         },
       );
+    } catch (e) {}
+  }
+
+  Future<void> updateBioData({
+    required double height,
+    required double weight,
+    required int age,
+  }) async {
+    if (state is! ProfileLoaded) return;
+    final currentProfile = (state as ProfileLoaded).profile;
+
+    try {
+      // We'll store these in quizAnswers or a custom map.
+      // For now, let's update quizAnswers since it's already supported in the model.
+      final updatedQuiz = Map<String, dynamic>.from(currentProfile.quizAnswers);
+      updatedQuiz['height'] = height;
+      updatedQuiz['weight'] = weight;
+      updatedQuiz['age'] = age;
+
+      final updatedProfile = currentProfile.copyWith(quizAnswers: updatedQuiz);
+
+      emit(ProfileLoading());
+      final result = await userSetupRepository.saveUserProfile(updatedProfile);
+
+      result.fold(
+        (failure) => emit(ProfileFailure(failure.message)),
+        (_) => emit(ProfileLoaded(updatedProfile)),
+      );
     } catch (e) {
       emit(ProfileFailure(e.toString()));
     }

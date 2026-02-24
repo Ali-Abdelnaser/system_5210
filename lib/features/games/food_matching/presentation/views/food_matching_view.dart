@@ -10,6 +10,7 @@ import 'package:system_5210/features/games/food_matching/presentation/cubit/food
 import 'package:system_5210/features/games/food_matching/presentation/cubit/food_matching_state.dart';
 import 'package:system_5210/features/games/food_matching/presentation/widgets/matching_card.dart';
 import 'package:system_5210/features/games/food_matching/presentation/widgets/matching_line_painter.dart';
+import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:system_5210/features/games/food_matching/presentation/widgets/matching_result_overlay.dart';
 
 class FoodMatchingView extends StatefulWidget {
@@ -92,28 +93,41 @@ class _FoodMatchingViewState extends State<FoodMatchingView> {
             ),
           ),
 
-          BlocBuilder<FoodMatchingCubit, FoodMatchingState>(
-            builder: (context, state) {
-              if (state is FoodMatchingLoading) {
-                return const Center(child: AppLoadingIndicator());
-              }
-
-              if (state is FoodMatchingGameInProgress) {
-                return _buildGameBoard(context, state);
-              }
-
+          BlocListener<FoodMatchingCubit, FoodMatchingState>(
+            listener: (context, state) {
               if (state is FoodMatchingSuccess) {
-                return MatchingResultOverlay(
-                  stars: state.stars,
-                  duration: state.duration,
-                  wrongAttempts: state.totalWrongAttempts,
-                  onRetry: () => context.read<FoodMatchingCubit>().startGame(),
-                  onExit: () => Navigator.pop(context),
+                final score = state.stars * 100;
+                context.read<NotificationCubit>().addGameRewardNotification(
+                  gameName: "تحدي الفوائد",
+                  score: score,
+                  reward: state.stars == 3 ? "وسام التميز 🥇" : "نقاط إضافية ⭐",
                 );
               }
-
-              return const SizedBox.shrink();
             },
+            child: BlocBuilder<FoodMatchingCubit, FoodMatchingState>(
+              builder: (context, state) {
+                if (state is FoodMatchingLoading) {
+                  return const Center(child: AppLoadingIndicator());
+                }
+
+                if (state is FoodMatchingGameInProgress) {
+                  return _buildGameBoard(context, state);
+                }
+
+                if (state is FoodMatchingSuccess) {
+                  return MatchingResultOverlay(
+                    stars: state.stars,
+                    duration: state.duration,
+                    wrongAttempts: state.totalWrongAttempts,
+                    onRetry: () =>
+                        context.read<FoodMatchingCubit>().startGame(),
+                    onExit: () => Navigator.pop(context),
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
           ),
         ],
       ),

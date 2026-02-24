@@ -410,7 +410,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navProfile => 'Profile';
 
   @override
-  String get goodMorning => 'Good Morning,';
+  String get goodMorning => 'Hi,';
 
   @override
   String get yourProgress => 'Your Progress';
@@ -1178,8 +1178,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bondingGameSubtitle => 'Play Together';
 
   @override
-  String get bondingHomeAnnouncement =>
-      'Scratch to discover today\'s challenge! 🔥';
+  String get bondingHomeAnnouncement => 'Scratch to discover challenge! 🔥';
 
   @override
   String get bondingDiscoveryToday => 'Today\'s Discovery';

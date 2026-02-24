@@ -34,25 +34,29 @@ class HomeAppBar extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
                   l10n.goodMorning,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style:
+                      (Localizations.localeOf(context).languageCode == 'ar'
+                      ? GoogleFonts.cairo
+                      : GoogleFonts.dynaPuff)(
+                        fontSize: 32,
+
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 0, 0, 0),
+                      ),
                 ),
+                const SizedBox(width: 8),
                 if (isLoading)
                   Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
                     child: Container(
-                      width: 150,
-                      height: 32,
-                      margin: const EdgeInsets.only(top: 4),
+                      width: 120,
+                      height: 30,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -60,15 +64,20 @@ class HomeAppBar extends StatelessWidget {
                     ),
                   )
                 else
-                  Text(
-                    displayName,
-                    style: GoogleFonts.dynaPuff(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2D3142),
+                  Expanded(
+                    child: Text(
+                      displayName,
+                      style:
+                          (Localizations.localeOf(context).languageCode == 'ar'
+                          ? GoogleFonts.cairo
+                          : GoogleFonts.dynaPuff)(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: const Color.fromARGB(255, 0, 0, 0),
+                          ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
               ],
             ),
@@ -79,8 +88,7 @@ class HomeAppBar extends StatelessWidget {
             StreakWidget(
               count: streakCount,
               status: streakStatus,
-              onTap: () {
-              },
+              onTap: () {},
             ),
             _buildNotificationIcon(context),
           ],

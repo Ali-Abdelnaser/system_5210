@@ -10,6 +10,7 @@ class AppNotification extends Equatable {
   final String? actionUrl;
   final DateTime timestamp;
   final bool isRead;
+  final bool isLiked;
   final String type; // 'tip', 'streak', 'broadcast', etc.
 
   const AppNotification({
@@ -22,6 +23,7 @@ class AppNotification extends Equatable {
     this.actionUrl,
     required this.timestamp,
     this.isRead = false,
+    this.isLiked = false,
     this.type = 'tip',
   });
 
@@ -35,6 +37,7 @@ class AppNotification extends Equatable {
     String? actionUrl,
     DateTime? timestamp,
     bool? isRead,
+    bool? isLiked,
     String? type,
   }) {
     return AppNotification(
@@ -47,6 +50,7 @@ class AppNotification extends Equatable {
       actionUrl: actionUrl ?? this.actionUrl,
       timestamp: timestamp ?? this.timestamp,
       isRead: isRead ?? this.isRead,
+      isLiked: isLiked ?? this.isLiked,
       type: type ?? this.type,
     );
   }
@@ -62,6 +66,7 @@ class AppNotification extends Equatable {
       'actionUrl': actionUrl,
       'timestamp': timestamp.toIso8601String(),
       'isRead': isRead,
+      'isLiked': isLiked,
       'type': type,
     };
   }
@@ -77,6 +82,7 @@ class AppNotification extends Equatable {
       actionUrl: map['actionUrl'] as String?,
       timestamp: DateTime.parse(map['timestamp'] as String),
       isRead: map['isRead'] as bool? ?? false,
+      isLiked: map['isLiked'] as bool? ?? false,
       type: map['type'] as String? ?? 'tip',
     );
   }
@@ -92,6 +98,7 @@ class AppNotification extends Equatable {
     actionUrl,
     timestamp,
     isRead,
+    isLiked,
     type,
   ];
 }
