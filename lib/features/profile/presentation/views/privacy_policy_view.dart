@@ -126,9 +126,7 @@ class PrivacyPolicyView extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
       child: Column(
-        crossAxisAlignment: isAr
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
@@ -141,7 +139,6 @@ class PrivacyPolicyView extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             content,
-            textAlign: isAr ? TextAlign.right : TextAlign.left,
             style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
               fontSize: 14,
               height: 1.5,
