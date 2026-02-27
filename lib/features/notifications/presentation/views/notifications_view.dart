@@ -396,7 +396,8 @@ class _NotificationsViewState extends State<NotificationsView>
                   ),
                   Positioned(
                     top: 10,
-                    right: 10,
+                    right: isAr ? null : 10,
+                    left: isAr ? 10 : null,
                     child: _buildReactionButton(notification),
                   ),
                 ],
@@ -758,18 +759,6 @@ class NotificationDetailsSheet extends StatelessWidget {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: Text(
-                        isAr ? 'إغلاق' : 'Close',
-                        style: GoogleFonts.cairo(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
                   IconButton(
                         onPressed: () {
                           context.read<NotificationCubit>().toggleLike(
@@ -787,6 +776,18 @@ class NotificationDetailsSheet extends StatelessWidget {
                       )
                       .animate(target: isLiked ? 1 : 0)
                       .scale(duration: 200.ms, curve: Curves.easeOutBack),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        isAr ? 'إغلاق' : 'Close',
+                        style: GoogleFonts.cairo(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],

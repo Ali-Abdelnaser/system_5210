@@ -148,126 +148,136 @@ class DailyTasksView extends StatelessWidget {
 
   Widget _buildProgressTracker(BuildContext context, DailyTasksLoaded state) {
     return SafeArea(
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      const AppBackButton(),
-                      const Spacer(),
-                      Text(
-                        'مهام اليوم',
-                        style: GoogleFonts.cairo(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.appGreen,
-                        ),
-                      ).animate().fadeIn().slideY(begin: -0.2),
-                      const Spacer(),
-                      const SizedBox(width: 48),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Progress Bar
-                  GlassCard(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 20,
-                      horizontal: 25,
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'إنجاز اليوم',
-                              style: GoogleFonts.cairo(
-                                color: AppTheme.appGreen,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              '${state.completedCount} / 6',
-                              style: GoogleFonts.cairo(
-                                color: AppTheme.appGreen,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 15),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: LinearProgressIndicator(
-                            value: state.totalProgress,
-                            minHeight: 12,
-                            backgroundColor: AppTheme.appGreen.withOpacity(0.1),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppTheme.appGreen,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn().scale(delay: 200.ms),
-
-                  const SizedBox(height: 30),
-                ],
-              ),
-            ),
+      child: RefreshIndicator(
+        onRefresh: () => context.read<DailyTasksCubit>().init(),
+        color: AppTheme.appGreen,
+        backgroundColor: Colors.white,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
           ),
-
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 15,
-                crossAxisSpacing: 15,
-                childAspectRatio: 0.85,
-              ),
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final task = state.tasks[index];
-                return _buildTaskCard(context, task, index);
-              }, childCount: state.tasks.length),
-            ),
-          ),
-
-          if (state.completedCount == 6)
+          slivers: [
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: GlassCard(
-                  color: Colors.green,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.star, color: Colors.yellow, size: 50),
-                      const SizedBox(height: 10),
-                      Text(
-                        'عاش يا بطل! خلصت كل مهام النهاردة',
-                        style: GoogleFonts.cairo(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green,
-                        ),
-                        textAlign: TextAlign.center,
-                        textDirection: TextDirection.rtl,
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        const AppBackButton(),
+                        const Spacer(),
+                        Text(
+                          'مهام اليوم',
+                          style: GoogleFonts.cairo(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.appGreen,
+                          ),
+                        ).animate().fadeIn().slideY(begin: -0.2),
+                        const Spacer(),
+                        const SizedBox(width: 48),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Progress Bar
+                    GlassCard(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 20,
+                        horizontal: 25,
                       ),
-                    ],
-                  ),
-                ).animate().shake(),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'إنجاز اليوم',
+                                style: GoogleFonts.cairo(
+                                  color: AppTheme.appGreen,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '${state.completedCount} / 6',
+                                style: GoogleFonts.cairo(
+                                  color: AppTheme.appGreen,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: state.totalProgress,
+                              minHeight: 12,
+                              backgroundColor: AppTheme.appGreen.withOpacity(
+                                0.1,
+                              ),
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppTheme.appGreen,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).animate().fadeIn().scale(delay: 200.ms),
+
+                    const SizedBox(height: 30),
+                  ],
+                ),
               ),
             ),
 
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
-        ],
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 15,
+                  crossAxisSpacing: 15,
+                  childAspectRatio: 0.85,
+                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final task = state.tasks[index];
+                  return _buildTaskCard(context, task, index);
+                }, childCount: state.tasks.length),
+              ),
+            ),
+
+            if (state.completedCount == 6)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: GlassCard(
+                    color: Colors.green,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.star, color: Colors.yellow, size: 50),
+                        const SizedBox(height: 10),
+                        Text(
+                          'عاش يا بطل! خلصت كل مهام النهاردة',
+                          style: GoogleFonts.cairo(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                          textAlign: TextAlign.center,
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ],
+                    ),
+                  ).animate().shake(),
+                ),
+              ),
+
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          ],
+        ),
       ),
     );
   }

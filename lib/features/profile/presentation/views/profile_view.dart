@@ -16,7 +16,7 @@ import 'privacy_policy_view.dart';
 import 'notification_settings_view.dart';
 import 'about_app_view.dart';
 import 'developer_profile_view.dart';
-import '../widgets/profile_shimmer.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
 import 'package:system_5210/core/utils/app_routes.dart';
 import 'package:system_5210/core/utils/app_alerts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -44,7 +44,7 @@ class ProfileView extends StatelessWidget {
           BlocBuilder<ProfileCubit, ProfileState>(
             builder: (context, state) {
               if (state is ProfileLoading) {
-                return const ProfileShimmer();
+                return SafeArea(child: AppShimmer.profileShimmer());
               }
 
               if (state is ProfileFailure) {

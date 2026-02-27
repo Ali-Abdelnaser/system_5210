@@ -6,7 +6,10 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:system_5210/core/widgets/streak_widget.dart';
 import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 
-class HomeAppBar extends StatelessWidget {
+import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
+import 'dart:async';
+
+class HomeAppBar extends StatefulWidget {
   final String displayName;
   final int streakCount;
   final String streakStatus;
@@ -19,6 +22,36 @@ class HomeAppBar extends StatelessWidget {
     this.streakStatus = 'active',
     this.isLoading = false,
   });
+
+  @override
+  State<HomeAppBar> createState() => _HomeAppBarState();
+}
+
+class _HomeAppBarState extends State<HomeAppBar> {
+  int _adminClicks = 0;
+  Timer? _clickTimer;
+
+  void _handleAdminAccess() {
+    _adminClicks++;
+    _clickTimer?.cancel();
+    _clickTimer = Timer(const Duration(seconds: 2), () {
+      _adminClicks = 0;
+    });
+
+    if (_adminClicks >= 6) {
+      _adminClicks = 0;
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminLoginView()),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _clickTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +83,7 @@ class HomeAppBar extends StatelessWidget {
                       ),
                 ),
                 const SizedBox(width: 8),
-                if (isLoading)
+                if (widget.isLoading)
                   Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
@@ -66,7 +99,7 @@ class HomeAppBar extends StatelessWidget {
                 else
                   Expanded(
                     child: Text(
-                      displayName,
+                      widget.displayName,
                       style:
                           (Localizations.localeOf(context).languageCode == 'ar'
                           ? GoogleFonts.cairo
@@ -84,11 +117,11 @@ class HomeAppBar extends StatelessWidget {
           ),
           const SizedBox(width: 8),
 
-          if (!isLoading) ...[
+          if (!widget.isLoading) ...[
             StreakWidget(
-              count: streakCount,
-              status: streakStatus,
-              onTap: () {},
+              count: widget.streakCount,
+              status: widget.streakStatus,
+              onTap: _handleAdminAccess,
             ),
             _buildNotificationIcon(context),
           ],

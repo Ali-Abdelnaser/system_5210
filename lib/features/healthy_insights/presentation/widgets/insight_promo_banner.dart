@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:system_5210/core/theme/app_theme.dart';
 import 'package:system_5210/core/utils/app_images.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
 
 class InsightPromoBanner extends StatelessWidget {
   final VoidCallback onTap;
@@ -21,41 +22,26 @@ class InsightPromoBanner extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          // 1. The Glassmorphic White Base
-          Container(
+          // 1. The Glassmorphic Base
+          GlassContainer(
             height: 125,
             width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: AppTheme.appBlue.withOpacity(0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+            borderRadius: BorderRadius.circular(30),
+            opacity: 0.1,
+            color: Colors.white,
+            child: Stack(
+              children: [
+                // Decorative accents
+                Positioned(
+                  right: isAr ? null : -20,
+                  left: isAr ? -20 : null,
+                  top: -20,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundColor: AppTheme.appBlue.withOpacity(0.04),
+                  ),
                 ),
               ],
-              border: Border.all(
-                color: AppTheme.appBlue.withOpacity(0.05),
-                width: 1.5,
-              ),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Stack(
-                children: [
-                  // Decorative accents
-                  Positioned(
-                    right: isAr ? null : -20,
-                    left: isAr ? -20 : null,
-                    top: -20,
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundColor: AppTheme.appBlue.withOpacity(0.04),
-                    ),
-                  ),
-                ],
-              ),
             ),
           ),
 
@@ -159,7 +145,7 @@ class InsightPromoBanner extends StatelessWidget {
           Positioned(
             left: isAr ? 20 : null,
             right: isAr ? null : 20,
-            top: 50,
+            top: 85,
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(

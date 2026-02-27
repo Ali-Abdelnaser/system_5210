@@ -11,6 +11,7 @@ import 'package:system_5210/features/games/presentation/views/games_list_view.da
 import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
 import 'package:system_5210/core/widgets/profile_image_loader.dart';
 import 'package:system_5210/features/games/presentation/views/wipe_progress_view.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
 
 class GameCenterView extends StatefulWidget {
   const GameCenterView({super.key});
@@ -100,7 +101,7 @@ class _GameCenterViewState extends State<GameCenterView> {
           BlocBuilder<UserPointsCubit, UserPointsState>(
             builder: (context, state) {
               if (state is UserPointsLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return SafeArea(child: AppShimmer.gameCenterShimmer());
               }
 
               if (state is UserPointsLoaded) {

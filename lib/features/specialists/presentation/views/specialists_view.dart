@@ -9,6 +9,10 @@ import 'package:system_5210/core/widgets/app_shimmer.dart';
 import 'package:system_5210/features/specialists/presentation/views/doctor_details_view.dart';
 import 'package:system_5210/core/widgets/app_back_button.dart';
 import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
+import 'package:system_5210/core/utils/app_images.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import '../widgets/doctor_quick_card.dart';
 
 class SpecialistsView extends StatefulWidget {
   const SpecialistsView({super.key});
@@ -22,12 +26,18 @@ class _SpecialistsViewState extends State<SpecialistsView> {
   List<Doctor> filteredDoctors = [];
   bool isLoading = true;
   final TextEditingController _searchController = TextEditingController();
-  int _titleTapCount = 0; // عداد الضغطات المخفي
+  int _titleTapCount = 0;
 
   @override
   void initState() {
     super.initState();
     _loadSpecialists();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadSpecialists() async {
@@ -55,290 +65,214 @@ class _SpecialistsViewState extends State<SpecialistsView> {
   void _filterDoctors(String query) {
     setState(() {
       final lang = Localizations.localeOf(context).languageCode;
-      filteredDoctors = allDoctors
-          .where(
-            (doctor) =>
-                doctor
-                    .getName(lang)
-                    .toLowerCase()
-                    .contains(query.toLowerCase()) ||
-                doctor
-                    .getSpecialty(lang)
-                    .toLowerCase()
-                    .contains(query.toLowerCase()),
-          )
-          .toList();
+      if (query.isEmpty) {
+        filteredDoctors = allDoctors;
+      } else {
+        filteredDoctors = allDoctors
+            .where(
+              (doctor) =>
+                  doctor
+                      .getName(lang)
+                      .toLowerCase()
+                      .contains(query.toLowerCase()) ||
+                  doctor
+                      .getSpecialty(lang)
+                      .toLowerCase()
+                      .contains(query.toLowerCase()),
+            )
+            .toList();
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8FBFF),
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        title: GestureDetector(
-          onTap: () {
-            _titleTapCount++;
-            if (_titleTapCount >= 4) {
-              _titleTapCount = 0; // تصدير العداد
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AdminLoginView()),
-              );
-            }
-          },
-          child: Text(
-            l10n.specialistsTitle,
-            style:
-                (Localizations.localeOf(context).languageCode == 'ar'
-                ? GoogleFonts.cairo
-                : GoogleFonts.poppins)(
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF2D3142),
-                ),
+      body: Stack(
+        children: [
+          // Background Image
+          Positioned.fill(
+            child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
           ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        toolbarHeight: 50,
-        leading: const AppBackButton(),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                controller: _searchController,
-                onChanged: _filterDoctors,
-                decoration: InputDecoration(
-                  hintText: l10n.specialistsSearchHint,
-                  hintStyle:
-                      (Localizations.localeOf(context).languageCode == 'ar'
-                      ? GoogleFonts.cairo
-                      : GoogleFonts.poppins)(
-                        fontSize: 14,
-                        color: const Color(0xFF94A3B8),
+
+          RefreshIndicator(
+            onRefresh: _loadSpecialists,
+            color: AppTheme.appBlue,
+            backgroundColor: Colors.white,
+            edgeOffset: 140,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              slivers: [
+                // Modern App Bar
+                SliverAppBar(
+                  expandedHeight: 140.0,
+                  floating: false,
+                  pinned: true,
+                  stretch: true,
+                  backgroundColor: Colors.transparent,
+                  surfaceTintColor: Colors.transparent,
+                  elevation: 0,
+                  leading: const AppBackButton(),
+                  centerTitle: true,
+                  actions: [
+                    GestureDetector(
+                      onTap: () {
+                        _titleTapCount++;
+                        if (_titleTapCount >= 4) {
+                          _titleTapCount = 0;
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AdminLoginView(),
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        color: Colors.transparent,
                       ),
-                  prefixIcon: const Icon(Icons.search, color: AppTheme.appBlue),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                style:
-                    (Localizations.localeOf(context).languageCode == 'ar'
-                    ? GoogleFonts.cairo
-                    : GoogleFonts.poppins)(
-                      fontSize: 15,
-                      color: const Color(0xFF1E293B),
                     ),
-              ),
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _loadSpecialists,
-                color: AppTheme.appBlue,
-                child: isLoading
-                    ? ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: 8,
-                        itemBuilder: (context, index) => AppShimmer.listTile(),
-                      )
-                    : filteredDoctors.isEmpty
-                    ? Center(child: Text(l10n.noSpecialistsFound))
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        itemCount: filteredDoctors.length,
-                        itemBuilder: (context, index) {
-                          final doctor = filteredDoctors[index];
-                          return _buildDoctorListItem(doctor, l10n);
-                        },
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    title: Text(
+                      l10n.specialistsTitle,
+                      style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        color: const Color(0xFF1E293B),
                       ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDoctorListItem(Doctor doctor, AppLocalizations l10n) {
-    final lang = Localizations.localeOf(context).languageCode;
-    final isAr = lang == 'ar';
-
-    return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DoctorDetailsView(doctor: doctor),
-        ),
-      ),
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF2D3142).withOpacity(0.06),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 90,
-              height: 90,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Hero(
-                  tag: 'doctor_image_${doctor.id}',
-                  child: Image.network(
-                    doctor.imageUrl,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return AppShimmer(
-                        width: double.infinity,
-                        height: double.infinity,
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        color: const Color(0xFFF1F5F9),
-                        child: const Icon(
-                          Icons.person,
-                          color: Color(0xFFCBD5E1),
-                        ),
-                      );
-                    },
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: isAr
-                    ? CrossAxisAlignment.end
-                    : CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          doctor.getName(lang),
-                          style:
-                              (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: const Color(0xFF1E293B),
-                              ),
-                        ),
+
+                // Search Bar Section
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                    child: _buildSearchField(l10n, isAr),
+                  ),
+                ),
+
+                // Content Section
+                if (isLoading)
+                  SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 220,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                            childAspectRatio: 0.72,
+                          ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => AppShimmer.specialistGridCard(),
+                        childCount: 6,
                       ),
-                      if (doctor.allowsOnlineConsultation)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
+                    ),
+                  )
+                else if (filteredDoctors.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.person_off_rounded,
+                            size: 64,
+                            color: Colors.grey[300],
                           ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.appGreen.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            l10n.onlineConsultation,
+                          const SizedBox(height: 16),
+                          Text(
+                            l10n.noSpecialistsFound,
                             style:
                                 (isAr
                                 ? GoogleFonts.cairo
                                 : GoogleFonts.poppins)(
-                                  fontSize: 10,
-                                  color: AppTheme.appGreen,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.grey[600],
+                                  fontWeight: FontWeight.w600,
                                 ),
                           ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    doctor.getSpecialty(lang),
-                    style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
-                      fontSize: 14,
-                      color: AppTheme.appBlue,
-                      fontWeight: FontWeight.w600,
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.all(20),
+                    sliver: SliverGrid(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 220,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                            childAspectRatio: 0.72,
+                          ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final doctor = filteredDoctors[index];
+                        return DoctorQuickCard(
+                              doctor: doctor,
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      DoctorDetailsView(doctor: doctor),
+                                ),
+                              ),
+                            )
+                            .animate()
+                            .fadeIn(delay: (index * 50).ms)
+                            .scale(
+                              begin: const Offset(0.95, 0.95),
+                              curve: Curves.easeOutBack,
+                            );
+                      }, childCount: filteredDoctors.length),
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: isAr
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
-                    children: [
-                      const Icon(
-                        Icons.location_on_rounded,
-                        size: 14,
-                        color: Color(0xFF94A3B8),
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          doctor.clinicLocation,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style:
-                              (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
-                                fontSize: 12,
-                                color: const Color(0xFF64748B),
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+
+                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              ],
             ),
-            const SizedBox(width: 8),
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppTheme.appBlue.withOpacity(0.08),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Localizations.localeOf(context).languageCode == 'ar'
-                    ? Icons.arrow_back_ios_rounded
-                    : Icons.arrow_forward_ios_rounded,
-                size: 14,
-                color: AppTheme.appBlue,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _buildSearchField(AppLocalizations l10n, bool isAr) {
+    return GlassContainer(
+      blur: 20,
+      opacity: 0.8,
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      child: TextField(
+        controller: _searchController,
+        onChanged: _filterDoctors,
+        decoration: InputDecoration(
+          hintText: l10n.specialistsSearchHint,
+          hintStyle: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+            fontSize: 14,
+            color: Colors.grey[400],
+          ),
+          prefixIcon: const Icon(Icons.search_rounded, color: AppTheme.appBlue),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 15,
+          ),
+        ),
+      ),
+    ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.1);
   }
 }

@@ -9,6 +9,7 @@ import '../../../../core/widgets/app_shimmer.dart';
 import '../manager/recipe_cubit.dart';
 import '../manager/recipe_state.dart';
 import '../widgets/recipe_card.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
 
 class RecipesSection extends StatelessWidget {
   const RecipesSection({super.key});
@@ -47,14 +48,21 @@ class RecipesSection extends StatelessWidget {
                   itemCount: recipes.length + 1,
                   itemBuilder: (context, index) {
                     if (index == recipes.length) {
-                      return _buildSeeAllCard(context, l10n, languageCode);
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: _buildSeeAllCard(context, l10n, languageCode),
+                      );
                     }
-                    return RecipeCard(
-                      recipe: recipes[index],
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.recipeDetails,
-                        arguments: recipes[index],
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: RecipeCard(
+                        recipe: recipes[index],
+                        width: 200,
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.recipeDetails,
+                          arguments: recipes[index],
+                        ),
                       ),
                     );
                   },
@@ -119,16 +127,11 @@ class RecipesSection extends StatelessWidget {
   ) {
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, AppRoutes.healthyRecipes),
-      child: Container(
+      child: GlassContainer(
         width: 140,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF0F7FF),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: AppTheme.appBlue.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
+        borderRadius: BorderRadius.circular(24),
+        opacity: 0.5,
+        color: AppTheme.appBlue,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -155,7 +158,7 @@ class RecipesSection extends StatelessWidget {
                   : GoogleFonts.poppins)(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.appBlue,
+                    color: Colors.white,
                   ),
             ),
           ],

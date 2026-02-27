@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:system_5210/core/theme/app_theme.dart';
 import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
 import 'package:system_5210/core/widgets/app_back_button.dart';
 import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
 import 'package:system_5210/features/specialists/data/models/doctor_model.dart';
@@ -18,6 +17,10 @@ import 'package:system_5210/core/utils/app_alerts.dart';
 import 'package:system_5210/core/utils/app_strings.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:system_5210/features/healthy_insights/domain/entities/healthy_insight.dart';
+import 'package:system_5210/features/healthy_insights/presentation/views/admin_edit_insight_view.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
+import 'package:system_5210/features/healthy_insights/data/models/healthy_insights_data.dart';
 
 class AdminDashboardView extends StatefulWidget {
   const AdminDashboardView({super.key});
@@ -36,8 +39,6 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
 
   @override
   void dispose() {
-    // Disable admin controls when leaving (optional but safer)
-    context.read<UserPointsCubit>().setAdminAuthenticated(false);
     super.dispose();
   }
 
@@ -48,7 +49,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     final textColor = const Color(0xFF1E293B);
 
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         backgroundColor: Colors.white,
         extendBodyBehindAppBar: true,
@@ -87,6 +88,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             tabs: [
               Tab(text: l10n.specialists),
               Tab(text: l10n.recipes),
+              Tab(text: isAr ? 'المعلومات' : 'Insights'),
               Tab(text: isAr ? 'المستخدمين' : 'Users'),
             ],
           ),
@@ -114,6 +116,12 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                   Column(
                     children: [
                       const SizedBox(height: 50),
+                      Expanded(child: _buildInsightsList(textColor, isAr)),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const SizedBox(height: 50),
                       Expanded(child: _buildUsersList(textColor)),
                     ],
                   ),
@@ -134,11 +142,18 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
                       builder: (context) => const AdminEditDoctorView(),
                     ),
                   );
-                } else {
+                } else if (tabIndex == 1) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const AdminEditRecipeView(),
+                    ),
+                  );
+                } else if (tabIndex == 2) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AdminEditInsightView(),
                     ),
                   );
                 }
@@ -160,254 +175,280 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
   }
 
   Widget _buildSpecialistsList(AppLocalizations l10n, Color textColor) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('specialists').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError)
-          return Center(
-            child: Text(
-              'Error: ${snapshot.error}',
-              style: TextStyle(color: textColor),
-            ),
-          );
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: AppLoadingIndicator());
-        }
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(const Duration(seconds: 1));
+        if (mounted) setState(() {});
+      },
+      color: AppTheme.appBlue,
+      backgroundColor: Colors.white,
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('specialists')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError)
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(color: textColor),
+              ),
+            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: 8,
+              itemBuilder: (context, index) => AppShimmer.listTile(),
+            );
+          }
 
-        final doctors = snapshot.data!.docs;
+          final doctors = snapshot.data!.docs;
 
-        if (doctors.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.person_off_rounded,
-                  size: 80,
-                  color: textColor.withOpacity(0.3),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.adminNoDoctors,
-                  style: GoogleFonts.cairo(color: textColor, fontSize: 18),
-                ),
-              ],
-            ),
-          );
-        }
+          if (doctors.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.person_off_rounded,
+                    size: 80,
+                    color: textColor.withOpacity(0.3),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.adminNoDoctors,
+                    style: GoogleFonts.cairo(color: textColor, fontSize: 18),
+                  ),
+                ],
+              ),
+            );
+          }
 
-        return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-          itemCount: doctors.length,
-          itemBuilder: (context, index) {
-            final doc = doctors[index];
-            final data = doc.data() as Map<String, dynamic>;
-            final doctor = DoctorModel.fromFirestore(data, doc.id);
+          return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+            itemCount: doctors.length,
+            itemBuilder: (context, index) {
+              final doc = doctors[index];
+              final data = doc.data() as Map<String, dynamic>;
+              final doctor = DoctorModel.fromFirestore(data, doc.id);
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: GlassContainer(
-                padding: const EdgeInsets.all(12),
-                borderRadius: BorderRadius.circular(24),
-                opacity: 0.05,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                          image: NetworkImage(doctor.imageUrl),
-                          fit: BoxFit.cover,
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: GlassContainer(
+                  padding: const EdgeInsets.all(12),
+                  borderRadius: BorderRadius.circular(24),
+                  opacity: 0.05,
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                            image: NetworkImage(doctor.imageUrl),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              doctor.nameAr,
+                              style: GoogleFonts.cairo(
+                                color: textColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              doctor.specialtyAr,
+                              style: GoogleFonts.cairo(
+                                color: textColor.withOpacity(0.7),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            doctor.nameAr,
-                            style: GoogleFonts.cairo(
-                              color: textColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          _buildActionButton(
+                            icon: Icons.edit_rounded,
+                            color: AppTheme.appBlue,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AdminEditDoctorView(doctor: doctor),
+                                ),
+                              );
+                            },
                           ),
-                          Text(
-                            doctor.specialtyAr,
-                            style: GoogleFonts.cairo(
-                              color: textColor.withOpacity(0.7),
-                              fontSize: 13,
-                            ),
+                          const SizedBox(width: 8),
+                          _buildActionButton(
+                            icon: Icons.delete_rounded,
+                            color: AppTheme.appRed,
+                            onTap: () =>
+                                _showDeleteDialog(l10n, 'specialists', doc.id),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildActionButton(
-                          icon: Icons.edit_rounded,
-                          color: AppTheme.appBlue,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AdminEditDoctorView(doctor: doctor),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        _buildActionButton(
-                          icon: Icons.delete_rounded,
-                          color: AppTheme.appRed,
-                          onTap: () =>
-                              _showDeleteDialog(l10n, 'specialists', doc.id),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
   Widget _buildRecipesList(AppLocalizations l10n, Color textColor) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance
-          .collection('healthy_recipes')
-          .snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError)
-          return Center(
-            child: Text(
-              'Error: ${snapshot.error}',
-              style: TextStyle(color: textColor),
-            ),
-          );
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: AppLoadingIndicator());
-        }
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(const Duration(seconds: 1));
+        if (mounted) setState(() {});
+      },
+      color: AppTheme.appBlue,
+      backgroundColor: Colors.white,
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('healthy_recipes')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError)
+            return Center(
+              child: Text(
+                'Error: ${snapshot.error}',
+                style: TextStyle(color: textColor),
+              ),
+            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: 8,
+              itemBuilder: (context, index) => AppShimmer.listTile(),
+            );
+          }
 
-        final recipesDocs = snapshot.data!.docs;
+          final recipesDocs = snapshot.data!.docs;
 
-        if (recipesDocs.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.restaurant_menu_rounded,
-                  size: 80,
-                  color: textColor.withOpacity(0.3),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.adminNoRecipes,
-                  style: GoogleFonts.cairo(color: textColor, fontSize: 18),
-                ),
-              ],
-            ),
-          );
-        }
+          if (recipesDocs.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.restaurant_menu_rounded,
+                    size: 80,
+                    color: textColor.withOpacity(0.3),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    l10n.adminNoRecipes,
+                    style: GoogleFonts.cairo(color: textColor, fontSize: 18),
+                  ),
+                ],
+              ),
+            );
+          }
 
-        return ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
-          itemCount: recipesDocs.length,
-          itemBuilder: (context, index) {
-            final doc = recipesDocs[index];
-            final data = doc.data() as Map<String, dynamic>;
-            final recipe = RecipeModel.fromFirestore(data, doc.id);
+          return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+            itemCount: recipesDocs.length,
+            itemBuilder: (context, index) {
+              final doc = recipesDocs[index];
+              final data = doc.data() as Map<String, dynamic>;
+              final recipe = RecipeModel.fromFirestore(data, doc.id);
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: GlassContainer(
-                padding: const EdgeInsets.all(12),
-                borderRadius: BorderRadius.circular(24),
-                opacity: 0.05,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                          image: NetworkImage(recipe.imageUrl),
-                          fit: BoxFit.cover,
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: GlassContainer(
+                  padding: const EdgeInsets.all(12),
+                  borderRadius: BorderRadius.circular(24),
+                  opacity: 0.05,
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                            image: NetworkImage(recipe.imageUrl),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            recipe.nameAr,
-                            style: GoogleFonts.cairo(
-                              color: textColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              recipe.nameAr,
+                              style: GoogleFonts.cairo(
+                                color: textColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            Text(
+                              '${recipe.ingredientsAr.length} ${l10n.ingredients}',
+                              style: GoogleFonts.cairo(
+                                color: textColor.withOpacity(0.7),
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildActionButton(
+                            icon: Icons.edit_rounded,
+                            color: AppTheme.appBlue,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AdminEditRecipeView(recipe: recipe),
+                                ),
+                              );
+                            },
                           ),
-                          Text(
-                            '${recipe.ingredientsAr.length} ${l10n.ingredients}',
-                            style: GoogleFonts.cairo(
-                              color: textColor.withOpacity(0.7),
-                              fontSize: 13,
+                          const SizedBox(width: 8),
+                          _buildActionButton(
+                            icon: Icons.delete_rounded,
+                            color: AppTheme.appRed,
+                            onTap: () => _showDeleteDialog(
+                              l10n,
+                              'healthy_recipes',
+                              doc.id,
+                              true,
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _buildActionButton(
-                          icon: Icons.edit_rounded,
-                          color: AppTheme.appBlue,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AdminEditRecipeView(recipe: recipe),
-                              ),
-                            );
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        _buildActionButton(
-                          icon: Icons.delete_rounded,
-                          color: AppTheme.appRed,
-                          onTap: () => _showDeleteDialog(
-                            l10n,
-                            'healthy_recipes',
-                            doc.id,
-                            true,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -423,7 +464,11 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: AppLoadingIndicator());
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: 8,
+              itemBuilder: (context, index) => AppShimmer.listTile(),
+            );
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -506,6 +551,193 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
         },
       ),
     );
+  }
+
+  Widget _buildInsightsList(Color textColor, bool isAr) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        await Future.delayed(const Duration(seconds: 1));
+        if (mounted) setState(() {});
+      },
+      color: AppTheme.appBlue,
+      backgroundColor: Colors.white,
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('healthy_insights')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError)
+            return Center(child: Text('Error: ${snapshot.error}'));
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: 8,
+              itemBuilder: (context, index) => AppShimmer.listTile(),
+            );
+          }
+
+          final insights = snapshot.data!.docs;
+
+          if (insights.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.lightbulb_outline_rounded,
+                    size: 80,
+                    color: textColor.withOpacity(0.3),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    isAr ? 'لا توجد معلومات صحية حالياً' : 'No insights found',
+                    style: GoogleFonts.cairo(color: textColor, fontSize: 18),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton.icon(
+                    onPressed: _migrateInsights,
+                    icon: const Icon(Icons.auto_awesome_rounded),
+                    label: Text(
+                      isAr ? 'جلب المعلومات الأساسية' : 'Import Default Data',
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.appBlue,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 80),
+            itemCount: insights.length,
+            itemBuilder: (context, index) {
+              final doc = insights[index];
+              final data = doc.data() as Map<String, dynamic>;
+              final insight = HealthyInsight.fromFirestore(data, doc.id);
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: GlassContainer(
+                  padding: const EdgeInsets.all(12),
+                  borderRadius: BorderRadius.circular(24),
+                  opacity: 0.05,
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: AppTheme.appBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.lightbulb_rounded,
+                          color: AppTheme.appBlue,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              insight.question,
+                              style: GoogleFonts.cairo(
+                                color: textColor,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              insight.category,
+                              style: GoogleFonts.cairo(
+                                color: AppTheme.appBlue,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          _buildActionButton(
+                            icon: Icons.edit_rounded,
+                            color: AppTheme.appBlue,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AdminEditInsightView(insight: insight),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          _buildActionButton(
+                            icon: Icons.delete_rounded,
+                            color: AppTheme.appRed,
+                            onTap: () => _showDeleteDialog(
+                              AppLocalizations.of(context)!,
+                              'healthy_insights',
+                              doc.id,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _migrateInsights() async {
+    try {
+      final batch = FirebaseFirestore.instance.batch();
+      final collection = FirebaseFirestore.instance.collection(
+        'healthy_insights',
+      );
+
+      for (var insight in HealthyInsightsData.insights) {
+        final docRef = collection.doc();
+        batch.set(docRef, insight.toFirestore());
+      }
+
+      await batch.commit();
+
+      if (mounted) {
+        AppAlerts.showAlert(
+          context,
+          message:
+              'تم استيراد ${HealthyInsightsData.insights.length} معلومة بنجاح',
+          type: AlertType.success,
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        AppAlerts.showAlert(context, message: 'خطأ: $e', type: AlertType.error);
+      }
+    }
   }
 
   void _showUserResetDialog(LeaderboardEntry player) {

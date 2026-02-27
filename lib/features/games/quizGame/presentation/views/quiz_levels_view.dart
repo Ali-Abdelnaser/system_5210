@@ -30,7 +30,6 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
     final cubit = context.read<QuizCubit>();
     cubit.loadLevels();
 
-    // Handle case where state is already loaded (from a previous visit)
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (cubit.state is QuizLevelsLoaded) {
         _scrollToCurrentLevel(
@@ -49,13 +48,10 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
   bool _isInitialScrollDone = false;
 
   void _scrollToCurrentLevel(int unlockedLevel, {bool immediate = false}) {
-    // Add a small delay to ensure the list is fully rendered and layout is stable
     Future.delayed(const Duration(milliseconds: 100), () {
       if (!mounted || !_scrollController.hasClients) return;
 
-      // Approximate height per item based on UI structure
       const double itemHeight = 280.0;
-      // Subtract half the screen height to center the level
       final double screenHeight = MediaQuery.of(context).size.height;
       final double scrollPosition =
           ((unlockedLevel - 1) * itemHeight) -
@@ -84,12 +80,10 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
     return Scaffold(
       body: Stack(
         children: [
-          // 1. App Background
           Positioned.fill(
             child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
           ),
 
-          // 2. Parallax Clouds Background
           _buildParallaxBackground(),
 
           BlocConsumer<QuizCubit, QuizState>(
@@ -160,8 +154,7 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
             },
           ),
 
-          // Back Button
-          const Positioned(top: 50, left: 20, child: AppBackButton()),
+          _buildParallaxBackground(),
         ],
       ),
     );
@@ -208,7 +201,6 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
 
         return Stack(
           children: [
-            // Layer 1: Far (Slowest, blurred)
             _buildParallaxCloud(
               top: 50,
               left: -40,
@@ -309,7 +301,6 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
               blur: 3,
             ),
 
-            // Layer 2: Mid (Medium speed)
             _buildParallaxCloud(
               top: 200,
               left: 250,
@@ -401,7 +392,6 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
               driftDistance: -140,
             ),
 
-            // Layer 3: Near (Fastest, clearest)
             _buildParallaxCloud(
               top: 450,
               left: 80,
@@ -499,8 +489,7 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
     required double driftDistance,
     double blur = 0.0,
   }) {
-    // Parallax Logic: Move UP as we scroll DOWN (scrollOffset increases)
-    // Applying a negative offset relative to scroll speed
+
     final double parallaxOffset = -scrollOffset * parallaxRate;
 
     return Positioned(
@@ -523,7 +512,7 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
               )
               .moveY(
                 begin: 0,
-                end: 30, // Gentle bobbing separate from parallax
+                end: 30, 
                 duration: (driftSpeed * 0.8).seconds,
                 curve: Curves.easeInOutSine,
               )
@@ -553,11 +542,10 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
                   color: const Color(0xFF1E293B),
                 ),
               ),
-              const SizedBox(width: 48), // Balanced spacing
+              const SizedBox(width: 44), 
             ],
           ),
           const SizedBox(height: 15),
-          // Stats Card
           ClipRRect(
             borderRadius: BorderRadius.circular(25),
             child: BackdropFilter(
@@ -585,7 +573,6 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Total Points
                     _buildStatItem(
                       label: 'مجموع النقاط',
                       value: '$totalScores',
@@ -593,14 +580,12 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
                       iconColor: Colors.amber,
                     ),
                     const SizedBox(width: 30),
-                    // Divider
                     Container(
                       height: 30,
                       width: 1.5,
                       color: const Color(0xFF1E293B).withOpacity(0.1),
                     ),
                     const SizedBox(width: 30),
-                    // Total Stars
                     _buildStatItem(
                       label: 'النجوم الكلية',
                       value: '$totalStars',

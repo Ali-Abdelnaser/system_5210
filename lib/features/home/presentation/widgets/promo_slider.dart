@@ -21,7 +21,7 @@ class PromoSlider extends StatelessWidget {
         "text": isAr
             ? "رتب طبقك بالأكل الصحي الملون!"
             : "Fill your plate with colorful healthy food!",
-        "badge": "GAME 1",
+        "badge": isAr ? "اللعبة 1" : "GAME 1",
         "colors": [AppTheme.appRed, const Color(0xFFFF6B6B)],
         "mainAsset": AppImages.plate,
         "floatingAssets": [
@@ -37,7 +37,7 @@ class PromoSlider extends StatelessWidget {
         "text": isAr
             ? "وصل الأكلات المتشابهة بأسرع وقت!"
             : "Match the similar foods as fast as you can!",
-        "badge": "GAME 2",
+        "badge": isAr ? "اللعبة 2" : "GAME 2",
         "colors": [AppTheme.appYellow, const Color(0xFFFDCB6E)],
         "mainAsset": AppImages.connect,
         "type": "connect",
@@ -48,7 +48,7 @@ class PromoSlider extends StatelessWidget {
         "text": isAr
             ? "خض غمار المغامرة في جزر المعرفة!"
             : "Embark on a journey through knowledge islands!",
-        "badge": "GAME 3",
+        "badge": isAr ? "اللعبة 3" : "GAME 3",
         "colors": [const Color(0xFF6C5CE7), const Color(0xFFA29BFE)],
         "mainAsset": AppImages.island,
         "type": "quiz",
@@ -59,7 +59,7 @@ class PromoSlider extends StatelessWidget {
         "text": isAr
             ? "تحديات ممتعة تجمعك أنت وأهلك!"
             : "Fun challenges for you and your family!",
-        "badge": "GAME 4",
+        "badge": isAr ? "اللعبة 4" : "GAME 4",
         "colors": [AppTheme.appGreen, const Color(0xFF55E6C1)],
         "mainAsset": AppImages.challengeParent,
         "secondaryAsset": AppImages.challengeChild,
@@ -71,7 +71,7 @@ class PromoSlider extends StatelessWidget {
         "text": isAr
             ? "أنجز مهامك الـ 6 لتبني عاداتك الصحية!"
             : "Complete 6 tasks to build your healthy habits!",
-        "badge": "GAME 5",
+        "badge": isAr ? "اللعبة 5" : "GAME 5",
         "colors": [AppTheme.appBlue, const Color.fromARGB(255, 83, 157, 231)],
         "mainAsset": AppImages.island,
         "secondaryAsset": AppImages.gameSuccess1,
@@ -304,7 +304,7 @@ class PromoSlider extends StatelessWidget {
           stops: const [0.0, 0.7],
         ),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -326,12 +326,12 @@ class PromoSlider extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
             child: Text(
               slide['title'],
-              style: GoogleFonts.dynaPuff(
+              style: (isAr ? GoogleFonts.cairo : GoogleFonts.dynaPuff)(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -354,8 +354,8 @@ class PromoSlider extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 14),
-          _buildPlayButton(slide['colors'][0]),
+          const SizedBox(height: 8),
+          _buildPlayButton(slide['colors'][0], isAr),
         ],
       ),
     );
@@ -374,7 +374,7 @@ class PromoSlider extends StatelessWidget {
     );
   }
 
-  Widget _buildPlayButton(Color color) {
+  Widget _buildPlayButton(Color color, bool isAr) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
@@ -394,8 +394,8 @@ class PromoSlider extends StatelessWidget {
           Icon(Icons.play_arrow_rounded, color: color, size: 20),
           const SizedBox(width: 4),
           Text(
-            "PLAY",
-            style: GoogleFonts.poppins(
+            isAr ? "العب الآن" : "PLAY",
+            style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
               color: color,
               fontWeight: FontWeight.w900,
               fontSize: 12,

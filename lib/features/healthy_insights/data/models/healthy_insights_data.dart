@@ -9,6 +9,7 @@ class HealthyInsightsData {
       sourceName: "منظمة الصحة العالمية",
       sourceLink:
           "https://www.who.int/news-room/questions-and-answers/item/noncommunicable-diseases-childhood-overweight-and-obesity",
+      category: "السمنة",
     ),
     HealthyInsight(
       question:
@@ -18,6 +19,7 @@ class HealthyInsightsData {
       sourceName: "منظمة الصحة العالمية",
       sourceLink:
           "https://www.who.int/news-room/questions-and-answers/item/noncommunicable-diseases-childhood-overweight-and-obesity",
+      category: "السمنة",
     ),
     HealthyInsight(
       question: "توصيات منظمة الصحة العالمية للوقاية من سمنة الأطفال",
@@ -26,6 +28,7 @@ class HealthyInsightsData {
       sourceName: "منظمة الصحة العالمية",
       sourceLink:
           "https://www.who.int/news-room/questions-and-answers/item/noncommunicable-diseases-childhood-overweight-and-obesity",
+      category: "السمنة",
     ),
     HealthyInsight(
       question: "أهمية الفاكهة والخضروات لصحتنا؟ (وزارة الصحة)",
@@ -33,6 +36,7 @@ class HealthyInsightsData {
           "• تساعد على نمو طفلك بالشكل الصحيح\n• تحد من خطر الإصابة بالأمراض غير المعدية\n• تقوي المناعة وصحة الأمعاء\n• تدعم الصحة العقلية والبدنية\n• تساعد في الوقاية من جميع أشكال سوء التغذية",
       sourceName: "وزارة الصحة (اليوم السابع)",
       sourceLink: "https://www.youm7.com/story/2025/12/29/7248812",
+      category: "التغذية",
     ),
     HealthyInsight(
       question: "علامات تنذر بإدمان الإنترنت عند طفلك",
@@ -41,6 +45,7 @@ class HealthyInsightsData {
       sourceName: "وزارة الصحة المصرية (العربية)",
       sourceLink:
           "https://www.alarabiya.net/arab-and-world/egypt/2026/02/07/وزارة-الصحة-المصرية-طفلك-في-خطر",
+      category: "الصحة الرقمية",
     ),
     HealthyInsight(
       question: "ضوابط الاستخدام الآمن للإنترنت للأطفال",
@@ -49,6 +54,7 @@ class HealthyInsightsData {
       sourceName: "وزارة الصحة المصرية (العربية)",
       sourceLink:
           "https://www.alarabiya.net/arab-and-world/egypt/2026/02/07/وزارة-الصحة-المصرية-طفلك-في-خطر",
+      category: "الصحة الرقمية",
     ),
     HealthyInsight(
       question: "الاستخدام الصحي للشاشات حسب الفئة العمرية",
@@ -57,6 +63,7 @@ class HealthyInsightsData {
       sourceName: "وزارة الصحة المصرية (العربية)",
       sourceLink:
           "https://www.alarabiya.net/arab-and-world/egypt/2026/02/07/وزارة-الصحة-المصرية-طفلك-في-خطر",
+      category: "الصحة الرقمية",
     ),
     HealthyInsight(
       question: "فوائد ممارسة النشاط البدني بانتظام (منظمة الصحة العالمية)",
@@ -65,6 +72,7 @@ class HealthyInsightsData {
       sourceName: "منظمة الصحة العالمية",
       sourceLink:
           "https://www.who.int/ar/news-room/fact-sheets/detail/physical-activity",
+      category: "النشاط البدني",
     ),
     HealthyInsight(
       question: "فوائد شرب الماء للأطفال (وزارة الصحة المصرية)",
@@ -72,6 +80,7 @@ class HealthyInsightsData {
           "• المساعدة في عمليات الهضم\n• تنظيم درجة حرارة جسم الطفل\n• التخلص من الإمساك\n• التخفيف من حدة نزلات البرد\n• توصيل العناصر الغذائية إلى خلايا الجسم",
       sourceName: "وزارة الصحة والسكان (المصري اليوم)",
       sourceLink: "https://www.almasryalyoum.com/news/details/3012891",
+      category: "التغذية",
     ),
     HealthyInsight(
       question: "إرشادات الحفاظ على وزن صحي للأطفال",
@@ -79,6 +88,7 @@ class HealthyInsightsData {
           "1. تناول الفواكه والخضروات والحبوب الكاملة\n2. ممارسة النشاط البدني واللعب الرياضي بانتظام\n3. تجنب الجلوس الطويل وقلة الحركة\n4. الحصول على قسط كافٍ من النوم المنتظم\n5. تقليل وقت الشاشات والأجهزة الإلكترونية\n6. الحد من المشروبات المحلاة بالسكر والأطعمة عالية السعرات",
       sourceName: "وزارة الصحة المصرية (اليوم السابع)",
       sourceLink: "https://www.youm7.com/story/2025/12/3/7219953",
+      category: "الصحة العامة",
     ),
   ];
 }

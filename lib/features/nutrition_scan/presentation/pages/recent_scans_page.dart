@@ -7,10 +7,10 @@ import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_re
 import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
 import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_state.dart';
 import 'package:system_5210/features/nutrition_scan/presentation/pages/scan_result_page.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
 
 class RecentScansPage extends StatefulWidget {
   const RecentScansPage({super.key});
@@ -475,21 +475,8 @@ class _RecentScansPageState extends State<RecentScansPage> {
   Widget _buildShimmerLoading() {
     return ListView.builder(
       padding: const EdgeInsets.all(20),
-      itemCount: 5,
-      itemBuilder: (context, index) {
-        return Shimmer.fromColors(
-          baseColor: Colors.grey[200]!,
-          highlightColor: Colors.grey[100]!,
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 16),
-            height: 120,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-            ),
-          ),
-        );
-      },
+      itemCount: 6,
+      itemBuilder: (context, index) => AppShimmer.recentScanCard(),
     );
   }
 }

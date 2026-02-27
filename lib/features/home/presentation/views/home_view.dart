@@ -32,6 +32,7 @@ import 'package:system_5210/features/step_tracker/presentation/manager/step_trac
 import 'package:system_5210/features/step_tracker/presentation/views/activity_details_view.dart';
 import 'package:system_5210/core/services/update_service.dart';
 import 'package:system_5210/core/utils/injection_container.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -78,282 +79,295 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
           Positioned.fill(
             child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
           ),
+          BlocListener<HomeCubit, HomeState>(
+            listener: (context, state) {
+              if (state is HomeLoaded) {
+                DailyTipOverlay.showIfNeeded(context, state.userProfile.role);
 
-          // 2. Decorative elements to match internal pages
-          // Positioned(
-          //   top: -100,
-          //   right: -100,
-          //   child: CircleAvatar(
-          //     radius: 200,
-          //     backgroundColor: AppTheme.appBlue.withOpacity(0.03),
-          //   ),
-          // ),
-          RefreshIndicator(
-            onRefresh: () async {
-              await Future.wait([
-                context
-                    .read<HomeCubit>()
-                    .loadUserProfile(), // Now loads specialists too
-                context.read<RecipeCubit>().getRecipes(),
-                context.read<ProfileCubit>().getProfile(),
-              ]);
-            },
-            color: AppTheme.appBlue,
-            child: BlocBuilder<BondingGameCubit, BondingGameState>(
-              builder: (context, bondingState) {
-                bool isLocked = false;
-                if (bondingState is BondingGameReady) {
-                  isLocked = bondingState.isScrollingLocked;
+                context.read<NotificationCubit>().setUserContext(
+                  state.userProfile.uid,
+                  state.userProfile.createdAt,
+                  role: state.userProfile.role,
+                );
+
+                if (state.streakResult != null) {
+                  final status = state.streakResult!['status'];
+                  final previousStreak = state.streakResult!['previousStreak'];
+
+                  if (status == 'reset' && previousStreak > 0) {
+                    AppAlerts.showCustomDialog(
+                      context,
+                      title: l10n.streakResetTitle,
+                      message: l10n.streakResetMessage(previousStreak),
+                      buttonText: l10n.streakContinue,
+                      isSuccess: false,
+                      icon: Icons.refresh_rounded,
+                      onPressed: () => Navigator.pop(context),
+                    );
+                  }
                 }
 
-                return CustomScrollView(
-                  physics: isLocked
-                      ? const NeverScrollableScrollPhysics()
-                      : const AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                    // 1. App Bar
-                    SliverToBoxAdapter(
-                      child: BlocConsumer<HomeCubit, HomeState>(
-                        listener: (context, state) {
-                          if (state is HomeLoaded) {
-                            DailyTipOverlay.showIfNeeded(
-                              context,
-                              state.userProfile.role,
-                            );
+                context.read<NotificationCubit>().scheduleDailyTipsIfNeeded(
+                  state.userProfile.role,
+                );
+              }
+            },
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await Future.wait([
+                  context
+                      .read<HomeCubit>()
+                      .loadUserProfile(), // Now loads specialists too
+                  context.read<RecipeCubit>().getRecipes(),
+                  context.read<ProfileCubit>().getProfile(),
+                ]);
+              },
+              color: AppTheme.appBlue,
+              child: BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, homeState) {
+                  final isHomeLoading =
+                      homeState is HomeInitial || homeState is HomeLoading;
 
-                            context.read<NotificationCubit>().setUserContext(
-                              state.userProfile.uid,
-                              state.userProfile.createdAt,
-                              role: state.userProfile.role,
-                            );
+                  return BlocBuilder<BondingGameCubit, BondingGameState>(
+                    builder: (context, bondingState) {
+                      bool isLocked = false;
+                      if (bondingState is BondingGameReady) {
+                        isLocked = bondingState.isScrollingLocked;
+                      }
 
-                            if (state.streakResult != null) {
-                              final status = state.streakResult!['status'];
-                              final previousStreak =
-                                  state.streakResult!['previousStreak'];
-
-                              if (status == 'reset' && previousStreak > 0) {
-                                AppAlerts.showCustomDialog(
-                                  context,
-                                  title: l10n.streakResetTitle,
-                                  message: l10n.streakResetMessage(
-                                    previousStreak,
-                                  ),
-                                  buttonText: l10n.streakContinue,
-                                  isSuccess: false,
-                                  icon: Icons.refresh_rounded,
-                                  onPressed: () => Navigator.pop(context),
+                      return CustomScrollView(
+                        physics: isLocked
+                            ? const NeverScrollableScrollPhysics()
+                            : const AlwaysScrollableScrollPhysics(),
+                        slivers: [
+                          // 1. App Bar
+                          SliverToBoxAdapter(
+                            child: Builder(
+                              builder: (context) {
+                                String name = l10n.heroName;
+                                int streakCount = 0;
+                                String streakStatus = 'active';
+                                if (homeState is HomeLoaded) {
+                                  name = homeState.displayName;
+                                  streakCount =
+                                      homeState.userProfile.currentStreak;
+                                  streakStatus =
+                                      homeState.userProfile.streakStatus;
+                                }
+                                return HomeAppBar(
+                                  displayName: name,
+                                  streakCount: streakCount,
+                                  streakStatus: streakStatus,
+                                  isLoading: isHomeLoading,
                                 );
-                              }
-                            }
-
-                            context
-                                .read<NotificationCubit>()
-                                .scheduleDailyTipsIfNeeded(
-                                  state.userProfile.role,
-                                );
-                          }
-                        },
-                        builder: (context, state) {
-                          String name = l10n.heroName;
-                          int streakCount = 0;
-                          String streakStatus = 'active';
-                          if (state is HomeLoaded) {
-                            name = state.displayName;
-                            streakCount = state.userProfile.currentStreak;
-                            streakStatus = state.userProfile.streakStatus;
-                          }
-                          return HomeAppBar(
-                            displayName: name,
-                            streakCount: streakCount,
-                            streakStatus: streakStatus,
-                            isLoading:
-                                state is HomeInitial || state is HomeLoading,
-                          );
-                        },
-                      ),
-                    ),
-
-                    // 2. Slider
-                    SliverToBoxAdapter(
-                      child: const Padding(
-                        padding: EdgeInsets.only(bottom: 25),
-                        child: PromoSlider(),
-                      ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
-                    ),
-
-                    // 3. Activity Section (Glassified)
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          _buildSectionTitle(
-                            title: isAr
-                                ? 'نشاط البطل اليومي'
-                                : 'Daily Hero Activity',
-                            actionText: isAr ? 'التفاصيل' : 'Details',
-                            onActionTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ActivityDetailsView(),
-                                ),
-                              );
-                            },
+                              },
+                            ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.only(bottom: 25),
-                            child: StepTrackerCard(),
+
+                          // 2. Slider
+                          SliverToBoxAdapter(
+                            child: isHomeLoading
+                                ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 25),
+                                    child: AppShimmer.promoSlider(),
+                                  )
+                                : const Padding(
+                                        padding: EdgeInsets.only(bottom: 25),
+                                        child: PromoSlider(),
+                                      )
+                                      .animate()
+                                      .fadeIn(delay: 200.ms)
+                                      .slideY(begin: 0.2),
+                          ),
+
+                          // 3. Activity Section (Glassified)
+                          SliverToBoxAdapter(
+                            child: Column(
+                              children: [
+                                if (!isHomeLoading)
+                                  _buildSectionTitle(
+                                    title: isAr
+                                        ? 'نشاط البطل اليومي'
+                                        : 'Daily Hero Activity',
+                                    actionText: isAr ? 'التفاصيل' : 'Details',
+                                    onActionTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ActivityDetailsView(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 25),
+                                  child: isHomeLoading
+                                      ? AppShimmer.activityCard()
+                                      : const StepTrackerCard(),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // 4. Bonding Game Section
+                          SliverToBoxAdapter(
+                            child: isHomeLoading
+                                ? Padding(
+                                    padding: const EdgeInsets.only(bottom: 25),
+                                    child: AppShimmer.bondingCard(),
+                                  )
+                                : BlocBuilder<
+                                    BondingGameCubit,
+                                    BondingGameState
+                                  >(
+                                    builder: (context, state) {
+                                      final isDone =
+                                          state is BondingGameReady &&
+                                          state.isMissionAccomplished;
+                                      return Column(
+                                        children: [
+                                          _buildSectionTitle(
+                                            title: isDone
+                                                ? l10n.missionComplete
+                                                : l10n.bondingHomeAnnouncement,
+                                            actionText: "",
+                                            onActionTap: () {},
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: 25,
+                                            ),
+                                            child: const BondingDailyCard()
+                                                .animate()
+                                                .fadeIn(delay: 300.ms)
+                                                .slideY(begin: 0.2),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                          ),
+
+                          // 5. Important Information (Insight Banner)
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 25),
+                              child: isHomeLoading
+                                  ? AppShimmer.insightBanner()
+                                  : InsightPromoBanner(
+                                      onTap: () => Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.healthyInsights,
+                                      ),
+                                    ),
+                            ),
+                          ),
+
+                          SliverToBoxAdapter(
+                            child: Column(
+                              children: [
+                                if (!isHomeLoading)
+                                  _buildSectionTitle(
+                                    title: l10n.specialistsTitle,
+                                    actionText: l10n.seeAll,
+                                    onActionTap: () =>
+                                        _navigateToSpecialists(context),
+                                  ).animate().fadeIn(delay: 400.ms),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 25),
+                                  child: SizedBox(
+                                    height: 240,
+                                    child: isHomeLoading
+                                        ? ListView.builder(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 24,
+                                            ),
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: 4,
+                                            itemBuilder: (context, index) =>
+                                                AppShimmer.specialistCard(),
+                                          )
+                                        : (homeState is HomeLoaded &&
+                                              homeState.specialists.isEmpty)
+                                        ? Center(
+                                            child: Text(l10n.noSpecialists),
+                                          )
+                                        : ListView.builder(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 24,
+                                            ),
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: (homeState is HomeLoaded)
+                                                ? (homeState
+                                                              .specialists
+                                                              .length >
+                                                          5
+                                                      ? 6
+                                                      : homeState
+                                                                .specialists
+                                                                .length +
+                                                            1)
+                                                : 0,
+                                            itemBuilder: (context, index) {
+                                              final specialists =
+                                                  (homeState as HomeLoaded)
+                                                      .specialists;
+                                              if (index ==
+                                                  (specialists.length > 5
+                                                      ? 5
+                                                      : specialists.length)) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                        right: 16,
+                                                      ),
+                                                  child: _buildSeeAllCard(
+                                                    context,
+                                                    l10n,
+                                                    isAr,
+                                                  ),
+                                                );
+                                              }
+                                              return Padding(
+                                                padding: const EdgeInsets.only(
+                                                  right: 16,
+                                                ),
+                                                child: DoctorQuickCard(
+                                                  doctor: specialists[index],
+                                                  width: 200,
+                                                  onTap: () =>
+                                                      _navigateToDoctorDetails(
+                                                        context,
+                                                        specialists[index],
+                                                      ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                  ),
+                                ).animate().fadeIn(delay: 450.ms),
+                              ],
+                            ),
+                          ),
+
+                          // 7. Healthy Recipes
+                          const SliverToBoxAdapter(
+                            child: Padding(
+                              padding: EdgeInsets.only(bottom: 25),
+                              child: RecipesSection(),
+                            ),
+                          ),
+
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 100),
                           ),
                         ],
-                      ),
-                    ),
-
-                    // 4. Bonding Game Section
-                    SliverToBoxAdapter(
-                      child: BlocBuilder<BondingGameCubit, BondingGameState>(
-                        builder: (context, state) {
-                          final isDone =
-                              state is BondingGameReady &&
-                              state.isMissionAccomplished;
-                          return Column(
-                            children: [
-                              _buildSectionTitle(
-                                title: isDone
-                                    ? l10n.missionComplete
-                                    : l10n.bondingHomeAnnouncement,
-                                actionText: "",
-                                onActionTap: () {},
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 25),
-                                child: const BondingDailyCard()
-                                    .animate()
-                                    .fadeIn(delay: 300.ms)
-                                    .slideY(begin: 0.2),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-
-                    // 5. Important Information (Insight Banner)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 25),
-                        child: InsightPromoBanner(
-                          onTap: () => Navigator.pushNamed(
-                            context,
-                            AppRoutes.healthyInsights,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    SliverToBoxAdapter(
-                      child: BlocBuilder<HomeCubit, HomeState>(
-                        builder: (context, state) {
-                          final isLoading =
-                              state is HomeInitial || state is HomeLoading;
-                          final specialists = (state is HomeLoaded)
-                              ? state.specialists
-                              : <Doctor>[];
-
-                          return Column(
-                            children: [
-                              _buildSectionTitle(
-                                title: l10n.specialistsTitle,
-                                actionText: l10n.seeAll,
-                                onActionTap: () =>
-                                    _navigateToSpecialists(context),
-                              ).animate().fadeIn(delay: 400.ms),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 25),
-                                child: SizedBox(
-                                  height: 240,
-                                  child: isLoading
-                                      ? ListView.builder(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 24,
-                                          ),
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: 4,
-                                          itemBuilder: (context, index) =>
-                                              AppShimmer.specialistCard(),
-                                        )
-                                      : specialists.isEmpty
-                                      ? Center(child: Text(l10n.noSpecialists))
-                                      : ListView.builder(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 24,
-                                          ),
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: specialists.length > 5
-                                              ? 6
-                                              : specialists.length + 1,
-                                          itemBuilder: (context, index) {
-                                            if (index ==
-                                                (specialists.length > 5
-                                                    ? 5
-                                                    : specialists.length)) {
-                                              return _buildSeeAllCard(
-                                                context,
-                                                l10n,
-                                                isAr,
-                                              );
-                                            }
-                                            return DoctorQuickCard(
-                                              doctor: specialists[index],
-                                              onTap: () =>
-                                                  _navigateToDoctorDetails(
-                                                    context,
-                                                    specialists[index],
-                                                  ),
-                                            );
-                                          },
-                                        ),
-                                ),
-                              ).animate().fadeIn(delay: 450.ms),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-
-                    // 7. Healthy Recipes
-                    const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 25),
-                        child: RecipesSection(),
-                      ),
-                    ),
-
-                    // // 8. The Rest (Daily Target, Mystery Mission)
-                    // SliverToBoxAdapter(
-                    //   child: _buildSectionTitle(
-                    //     title: l10n.dailyTarget,
-                    //     actionText: l10n.seeAll,
-                    //     onActionTap: () => _navigateToDailyChallenge(context),
-                    //   ),
-                    // ),
-                    // SliverToBoxAdapter(
-                    //   child: DailySummaryCard(
-                    //     completedTargets: 1,
-                    //     totalTargets: 4,
-                    //     onTap: () => _navigateToDailyChallenge(context),
-                    //   ).animate().fadeIn(delay: 500.ms).slideY(begin: 0.2),
-                    // ),
-                    // const SliverToBoxAdapter(child: SizedBox(height: 20)),
-                    // SliverToBoxAdapter(
-                    //   child: MysteryMissionCard(
-                    //     onTap: () => _showSurpriseMissionDialog(context, l10n),
-                    //   ),
-                    // ),
-                    const SliverToBoxAdapter(child: SizedBox(height: 100)),
-                  ],
-                );
-              },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],
@@ -471,16 +485,11 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   ) {
     return GestureDetector(
       onTap: () => _navigateToSpecialists(context),
-      child: Container(
+      child: GlassContainer(
         width: 140,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF0F7FF),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: AppTheme.appBlue.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
+        borderRadius: BorderRadius.circular(24),
+        opacity: 0.5,
+        color: AppTheme.appBlue,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -507,7 +516,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                   : GoogleFonts.poppins)(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.appBlue,
+                    color: Colors.white,
                   ),
             ),
           ],

@@ -39,7 +39,9 @@ void main() async {
     // Initialize App Check only if you need it, wrapped in try-catch to not block auth
     try {
       await FirebaseAppCheck.instance.activate(
+        // ignore: deprecated_member_use
         androidProvider: AndroidProvider.playIntegrity,
+        // ignore: deprecated_member_use
         appleProvider: AppleProvider.deviceCheck,
       );
     } catch (e) {
