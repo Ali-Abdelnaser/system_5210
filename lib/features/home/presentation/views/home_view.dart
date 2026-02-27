@@ -12,8 +12,6 @@ import 'package:system_5210/features/daily_challenge/presentation/views/daily_ch
 import 'package:system_5210/features/specialists/presentation/views/specialists_view.dart';
 import 'package:system_5210/features/specialists/presentation/widgets/doctor_quick_card.dart';
 import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
-import 'package:system_5210/features/specialists/domain/usecases/get_specialists.dart';
-import 'package:system_5210/core/utils/injection_container.dart';
 import 'package:system_5210/core/utils/app_alerts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:system_5210/core/widgets/app_shimmer.dart';
@@ -30,7 +28,10 @@ import 'package:system_5210/features/games/bonding_game/presentation/manager/bon
 import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
 import '../widgets/daily_tip_overlay.dart';
 import 'package:system_5210/features/step_tracker/presentation/widgets/step_tracker_card.dart';
+import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
 import 'package:system_5210/features/step_tracker/presentation/views/activity_details_view.dart';
+import 'package:system_5210/core/services/update_service.dart';
+import 'package:system_5210/core/utils/injection_container.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -39,33 +40,29 @@ class HomeView extends StatefulWidget {
   State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  List<Doctor> specialists = [];
-  bool isLoadingSpecialists = true;
-
+class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _loadSpecialists();
+    WidgetsBinding.instance.addObserver(this);
+
+    // Check for app updates
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sl<UpdateService>().checkForUpdate(context);
+    });
   }
 
-  Future<void> _loadSpecialists() async {
-    setState(() => isLoadingSpecialists = true);
-    final result = await sl<GetSpecialists>().call();
-    if (mounted) {
-      result.fold(
-        (failure) {
-          setState(() {
-            isLoadingSpecialists = false;
-          });
-        },
-        (data) {
-          setState(() {
-            specialists = data;
-            isLoadingSpecialists = false;
-          });
-        },
-      );
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // Re-init StepTracker to check permissions again
+      context.read<StepTrackerCubit>().init();
     }
   }
 
@@ -94,8 +91,9 @@ class _HomeViewState extends State<HomeView> {
           RefreshIndicator(
             onRefresh: () async {
               await Future.wait([
-                _loadSpecialists(),
-                context.read<HomeCubit>().loadUserProfile(),
+                context
+                    .read<HomeCubit>()
+                    .loadUserProfile(), // Now loads specialists too
                 context.read<RecipeCubit>().getRecipes(),
                 context.read<ProfileCubit>().getProfile(),
               ]);
@@ -253,60 +251,73 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
 
-                    // 6. Specialists (Doctors)
                     SliverToBoxAdapter(
-                      child: _buildSectionTitle(
-                        title: l10n.specialistsTitle,
-                        actionText: l10n.seeAll,
-                        onActionTap: () => _navigateToSpecialists(context),
-                      ).animate().fadeIn(delay: 400.ms),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 25),
-                        child: SizedBox(
-                          height: 240,
-                          child: isLoadingSpecialists
-                              ? ListView.builder(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                  ),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: 4,
-                                  itemBuilder: (context, index) =>
-                                      AppShimmer.specialistCard(),
-                                )
-                              : specialists.isEmpty
-                              ? Center(child: Text(l10n.noSpecialists))
-                              : ListView.builder(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
-                                  ),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: specialists.length > 5
-                                      ? 6
-                                      : specialists.length + 1,
-                                  itemBuilder: (context, index) {
-                                    if (index ==
-                                        (specialists.length > 5
-                                            ? 5
-                                            : specialists.length)) {
-                                      return _buildSeeAllCard(
-                                        context,
-                                        l10n,
-                                        isAr,
-                                      );
-                                    }
-                                    return DoctorQuickCard(
-                                      doctor: specialists[index],
-                                      onTap: () => _navigateToDoctorDetails(
-                                        context,
-                                        specialists[index],
-                                      ),
-                                    );
-                                  },
+                      child: BlocBuilder<HomeCubit, HomeState>(
+                        builder: (context, state) {
+                          final isLoading =
+                              state is HomeInitial || state is HomeLoading;
+                          final specialists = (state is HomeLoaded)
+                              ? state.specialists
+                              : <Doctor>[];
+
+                          return Column(
+                            children: [
+                              _buildSectionTitle(
+                                title: l10n.specialistsTitle,
+                                actionText: l10n.seeAll,
+                                onActionTap: () =>
+                                    _navigateToSpecialists(context),
+                              ).animate().fadeIn(delay: 400.ms),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 25),
+                                child: SizedBox(
+                                  height: 240,
+                                  child: isLoading
+                                      ? ListView.builder(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 24,
+                                          ),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: 4,
+                                          itemBuilder: (context, index) =>
+                                              AppShimmer.specialistCard(),
+                                        )
+                                      : specialists.isEmpty
+                                      ? Center(child: Text(l10n.noSpecialists))
+                                      : ListView.builder(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 24,
+                                          ),
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: specialists.length > 5
+                                              ? 6
+                                              : specialists.length + 1,
+                                          itemBuilder: (context, index) {
+                                            if (index ==
+                                                (specialists.length > 5
+                                                    ? 5
+                                                    : specialists.length)) {
+                                              return _buildSeeAllCard(
+                                                context,
+                                                l10n,
+                                                isAr,
+                                              );
+                                            }
+                                            return DoctorQuickCard(
+                                              doctor: specialists[index],
+                                              onTap: () =>
+                                                  _navigateToDoctorDetails(
+                                                    context,
+                                                    specialists[index],
+                                                  ),
+                                            );
+                                          },
+                                        ),
                                 ),
-                        ).animate().fadeIn(delay: 450.ms),
+                              ).animate().fadeIn(delay: 450.ms),
+                            ],
+                          );
+                        },
                       ),
                     ),
 
@@ -356,7 +367,7 @@ class _HomeViewState extends State<HomeView> {
     required VoidCallback onActionTap,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

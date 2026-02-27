@@ -13,6 +13,7 @@ abstract class QuizRepository {
   Future<Either<String, int>> getLevelScore(int level);
   Future<Either<String, void>> saveLevelBonus(int level, int bonus);
   Future<Either<String, int>> getLevelBonus(int level);
+  Future<void> syncProgress();
 }
 
 class QuizRepositoryImpl implements QuizRepository {
@@ -48,7 +49,6 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> unlockLevel(int level) async {
     try {
       await localDataSource.unlockLevel(level);
-      // Run remote update in background
       _updateRemote((remote) => remote.unlockLevel(level));
       return const Right(null);
     } catch (e) {
@@ -60,7 +60,6 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> saveLevelStars(int level, int stars) async {
     try {
       await localDataSource.saveLevelStars(level, stars);
-      // Run remote update in background
       _updateRemote((remote) => remote.saveLevelStars(level, stars));
       return const Right(null);
     } catch (e) {
@@ -82,7 +81,6 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> saveLevelScore(int level, int score) async {
     try {
       await localDataSource.saveLevelScore(level, score);
-      // Run remote update in background
       _updateRemote((remote) => remote.saveLevelScore(level, score));
       return const Right(null);
     } catch (e) {
@@ -104,7 +102,6 @@ class QuizRepositoryImpl implements QuizRepository {
   Future<Either<String, void>> saveLevelBonus(int level, int bonus) async {
     try {
       await localDataSource.saveLevelBonus(level, bonus);
-      // Run remote update in background
       _updateRemote((remote) => remote.saveLevelBonus(level, bonus));
       return const Right(null);
     } catch (e) {
@@ -122,13 +119,41 @@ class QuizRepositoryImpl implements QuizRepository {
     }
   }
 
+  @override
+  Future<void> syncProgress() async {
+    try {
+      final remoteLevel = await remoteDataSource.getLastUnlockedLevel();
+      final localLevel = await localDataSource.getLastUnlockedLevel();
+      if (remoteLevel > localLevel) {
+        await localDataSource.unlockLevel(remoteLevel);
+      }
+
+      final remoteStars = await remoteDataSource.getAllLevelStars();
+      for (var entry in remoteStars.entries) {
+        final localStars = await localDataSource.getLevelStars(entry.key);
+        if (entry.value > localStars) {
+          await localDataSource.saveLevelStars(entry.key, entry.value);
+        }
+      }
+
+      final remoteScores = await remoteDataSource.getAllLevelScores();
+      for (var entry in remoteScores.entries) {
+        final localScore = await localDataSource.getLevelScore(entry.key);
+        if (entry.value > localScore) {
+          await localDataSource.saveLevelScore(entry.key, entry.value);
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
   // Helper for background remote updates
   void _updateRemote(
     Future<void> Function(QuizRemoteDataSource remote) action,
   ) {
     action(remoteDataSource).catchError((_) {
       // Background remote update failed (e.g., offline)
-      // For now we just ignore it as the primary data is local
     });
   }
 }

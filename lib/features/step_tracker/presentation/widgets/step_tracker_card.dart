@@ -7,6 +7,7 @@ import 'package:system_5210/features/daily_tasks_game/presentation/widgets/glass
 import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
 import 'package:system_5210/features/profile/presentation/manager/profile_state.dart';
 import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:math' as math;
 
 class StepTrackerCard extends StatelessWidget {
@@ -20,6 +21,10 @@ class StepTrackerCard extends StatelessWidget {
       builder: (context, profileState) {
         return BlocBuilder<StepTrackerCubit, StepTrackerState>(
           builder: (context, stepState) {
+            if (stepState is StepTrackerPermissionDenied) {
+              return _buildPermissionDeniedCard(context);
+            }
+
             int steps = 0;
             if (stepState is StepTrackerLoaded) {
               steps = stepState.steps;
@@ -264,6 +269,60 @@ class StepTrackerCard extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildPermissionDeniedCard(BuildContext context) {
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
+    return GlassCard(
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.all(24),
+      opacity: 0.7,
+      blur: 25,
+      borderRadius: 35,
+      color: const Color.fromARGB(255, 255, 255, 255), // Subtle Red Tint
+      child: Column(
+        children: [
+          const Icon(
+            Icons.lock_person_rounded,
+            color: Colors.redAccent,
+            size: 40,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            isAr ? "تحتاج لصلاحية تتبع النشاط" : "Activity Tracking Required",
+            style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF1E293B),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            isAr
+                ? "من فضلك فعل صلاحية تتبع النشاط من إعدادات الهاتف لمتابعة خطواتك"
+                : "Please enable activity tracking permission in settings to track your steps",
+            textAlign: TextAlign.center,
+            style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+              fontSize: 14,
+              color: Colors.black54,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () => openAppSettings(),
+            icon: const Icon(Icons.settings_rounded, size: 18),
+            label: Text(isAr ? "إفتح الإعدادات" : "Open Settings"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.appBlue,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

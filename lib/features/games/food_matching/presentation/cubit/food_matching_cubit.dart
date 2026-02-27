@@ -89,11 +89,11 @@ class FoodMatchingCubit extends Cubit<FoodMatchingState> {
     final duration = DateTime.now().difference(currentState.startTime);
     final wrong = currentState.wrongAttempts;
 
-    // Star calculation logic
+    // Relaxed Star calculation logic for kids
     int stars = 1;
-    if (wrong == 0 && duration.inSeconds < 15) {
+    if (wrong <= 2 && duration.inSeconds <= 60) {
       stars = 3;
-    } else if (wrong <= 2 && duration.inSeconds < 25) {
+    } else if (wrong <= 5 && duration.inSeconds <= 90) {
       stars = 2;
     }
 

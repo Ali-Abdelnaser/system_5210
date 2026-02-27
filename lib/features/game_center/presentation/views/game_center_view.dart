@@ -8,27 +8,87 @@ import 'package:system_5210/core/utils/app_images.dart';
 import 'package:system_5210/features/game_center/data/models/user_points_model.dart';
 import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import 'package:system_5210/features/games/presentation/views/games_list_view.dart';
+import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
 import 'package:system_5210/core/widgets/profile_image_loader.dart';
+import 'package:system_5210/features/games/presentation/views/wipe_progress_view.dart';
 
-class GameCenterView extends StatelessWidget {
+class GameCenterView extends StatefulWidget {
   const GameCenterView({super.key});
+
+  @override
+  State<GameCenterView> createState() => _GameCenterViewState();
+}
+
+class _GameCenterViewState extends State<GameCenterView> {
+  int _tapCount = 0;
+  DateTime? _lastTapTime;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text(
-          'مركز الأبطال',
-          style: GoogleFonts.cairo(
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF2D3142),
-            fontSize: 24,
+        title: GestureDetector(
+          onTap: () {
+            final now = DateTime.now();
+            if (_lastTapTime == null ||
+                now.difference(_lastTapTime!) > const Duration(seconds: 2)) {
+              _tapCount = 1;
+            } else {
+              _tapCount++;
+            }
+            _lastTapTime = now;
+
+            if (_tapCount >= 4) {
+              _tapCount = 0;
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminLoginView()),
+              );
+            }
+          },
+          child: Text(
+            'مركز الأبطال',
+            style: GoogleFonts.cairo(
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF2D3142),
+              fontSize: 24,
+            ),
           ),
         ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WipeProgressView(),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.settings_rounded,
+                  color: Color(0xFF1565C0), // Blue color to make it pop
+                  size: 24,
+                ),
+                tooltip: 'الإعدادات وحذف التقدم',
+              ),
+            ),
+          ),
+          const SizedBox(width: 4),
+        ],
       ),
       body: Stack(
         children: [
@@ -59,7 +119,7 @@ class GameCenterView extends StatelessWidget {
                       ),
                       children: [
                         // Total Score Summary Card (Profile Style Glass)
-                        _buildSimpleSummary(state.points),
+                        _buildSimpleSummary(state.points, state.userRank),
 
                         const SizedBox(height: 30),
 
@@ -558,7 +618,7 @@ class GameCenterView extends StatelessWidget {
     return 'المبتدئ الطموح 🌱';
   }
 
-  Widget _buildSimpleSummary(UserPointsModel points) {
+  Widget _buildSimpleSummary(UserPointsModel points, int rank) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: BackdropFilter(
@@ -589,10 +649,23 @@ class GameCenterView extends StatelessWidget {
                   color: AppTheme.appBlue.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(14),
                 ),
-                child: const Icon(
-                  Icons.stars_rounded,
-                  color: AppTheme.appBlue,
-                  size: 24,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      Icons.emoji_events_rounded,
+                      color: AppTheme.appBlue,
+                      size: 20,
+                    ),
+                    Text(
+                      '#$rank',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.appBlue,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 16),

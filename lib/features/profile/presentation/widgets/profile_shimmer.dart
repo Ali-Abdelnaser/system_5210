@@ -13,8 +13,8 @@ class ProfileShimmer extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.only(top: 80, bottom: 40),
             child: Shimmer.fromColors(
-              baseColor: Colors.grey[300]!,
-              highlightColor: Colors.grey[100]!,
+              baseColor: const Color(0xFFE2E8F0),
+              highlightColor: const Color(0xFFF8FAFC),
               child: Column(
                 children: [
                   // Profile Image
@@ -69,8 +69,8 @@ class ProfileShimmer extends StatelessWidget {
 
   Widget _buildShimmerMenuCard() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: const Color(0xFFE2E8F0),
+      highlightColor: const Color(0xFFF8FAFC),
       child: Container(
         height: 180,
         decoration: BoxDecoration(

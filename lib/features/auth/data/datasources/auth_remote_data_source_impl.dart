@@ -99,40 +99,88 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         credential,
       );
       return _mapFirebaseUserToModel(userCredential.user!);
-    } on Exception catch (e) {
-      final msg = e.toString().toLowerCase();
-      if (msg.contains("sign in cancelled") ||
-          (msg.contains("canceled") && msg.contains("user")) ||
-          msg.contains("12501")) {
+    } catch (e) {
+      final String msg = e.toString().toLowerCase();
+
+      // 1. Handle user cancellation or common config errors (Code 12501)
+      if (msg.contains("12501") ||
+          (msg.contains("canceled") && msg.contains("user"))) {
+        throw Exception(
+          "Google sign in cancelled. If this persists on other devices, please check your SHA-1 fingerprints in Firebase.",
+        );
+      }
+
+      if (msg.contains("sign in cancelled")) {
         throw Exception("Google sign in cancelled");
       }
-      rethrow;
-    } catch (e) {
+
+      // 2. Handle Network or Server errors (Code 16, 7, 8, etc.)
+      if (msg.contains("16") ||
+          msg.contains("reauth failed") ||
+          msg.contains("network_error") ||
+          msg.contains("service_invalid")) {
+        throw Exception(
+          "Server error or weak connection. Please try again later.",
+        );
+      }
+
+      // 3. Fallback for other codes but keep it friendly
+      if (msg.contains("google") && msg.contains("exception")) {
+        throw Exception(
+          "Google services error. Please check your internet or try again later.",
+        );
+      }
+
+      // If it's already an Exception we recognize, rethrow it
       if (e is Exception) rethrow;
-      throw Exception("Google Sign-In Error: $e");
+
+      // General fallback
+      throw Exception("Authentication failed. Please try again later.");
     }
   }
 
   @override
   Future<String> sendPhoneVerificationCode(String phoneNumber) async {
     final completer = Completer<String>();
-    // E.164: assume Egypt +20 if no country code (strip leading 0 from local format)
+
+    // E.164 normalization
     final digits = phoneNumber.replaceAll(RegExp(r'[\s\-]'), '');
     final normalized = digits.startsWith('+')
         ? digits
         : (digits.startsWith('0') ? '+20${digits.substring(1)}' : '+20$digits');
 
-    firebaseAuth.verifyPhoneNumber(
+    await firebaseAuth.verifyPhoneNumber(
       phoneNumber: normalized,
-      verificationCompleted: (_) {},
-      verificationFailed: (e) {
-        if (!completer.isCompleted) completer.completeError(e);
+      // This is called when Android automatically reads the SMS and signs in
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        try {
+          await firebaseAuth.signInWithCredential(credential);
+          // If auto-verified, we can still complete the current flow if needed
+          // or handle it in the UI. For now, we still return the verificationId
+          // but the user will be signed in.
+        } catch (e) {
+          // Silent failure for auto-sign in
+        }
       },
-      codeSent: (verificationId, _) {
+      verificationFailed: (FirebaseAuthException e) {
+        String message = "Phone verification failed";
+        if (e.code == 'invalid-phone-number') {
+          message = "The provided phone number is not valid.";
+        } else if (e.code == 'too-many-requests') {
+          message = "Too many requests. Please try again later.";
+        } else if (e.code == 'app-not-authorized') {
+          message =
+              "App not authorized. Please check SHA-256 fingerprints in Firebase.";
+        }
+        if (!completer.isCompleted) completer.completeError(Exception(message));
+      },
+      codeSent: (String verificationId, int? resendToken) {
         if (!completer.isCompleted) completer.complete(verificationId);
       },
-      codeAutoRetrievalTimeout: (_) {},
-      timeout: const Duration(seconds: 120),
+      codeAutoRetrievalTimeout: (String verificationId) {
+        if (!completer.isCompleted) completer.complete(verificationId);
+      },
+      timeout: const Duration(seconds: 60),
     );
 
     return completer.future;

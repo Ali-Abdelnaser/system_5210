@@ -1790,6 +1790,90 @@ abstract class AppLocalizations {
   /// **'No specialists found'**
   String get noSpecialistsFound;
 
+  /// No description provided for @notificationSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Settings'**
+  String get notificationSettings;
+
+  /// No description provided for @permissionsStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Permissions Status'**
+  String get permissionsStatus;
+
+  /// No description provided for @allowAllNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow All Notifications'**
+  String get allowAllNotifications;
+
+  /// No description provided for @enableSounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable Sounds'**
+  String get enableSounds;
+
+  /// No description provided for @streakNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak Notifications (Daily)'**
+  String get streakNotifications;
+
+  /// No description provided for @taskNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Task Notifications'**
+  String get taskNotifications;
+
+  /// No description provided for @insightsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Health Insights & Tips'**
+  String get insightsNotifications;
+
+  /// No description provided for @storage.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage & Photos Access'**
+  String get storage;
+
+  /// No description provided for @granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Granted'**
+  String get granted;
+
+  /// No description provided for @denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Denied'**
+  String get denied;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get openSettings;
+
+  /// No description provided for @testNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Test Notification'**
+  String get testNotification;
+
+  /// No description provided for @testNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Successful! 🎉'**
+  String get testNotificationTitle;
+
+  /// No description provided for @testNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your notifications are working perfectly. Get ready for 5210 adventures!'**
+  String get testNotificationBody;
+
   /// No description provided for @supportTitle.
   ///
   /// In en, this message translates to:
@@ -2197,6 +2281,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Working Hours (En)'**
   String get adminWorkingHoursEn;
+
+  /// No description provided for @adminWorkingDaysAr.
+  ///
+  /// In en, this message translates to:
+  /// **'Working Days (Ar)'**
+  String get adminWorkingDaysAr;
+
+  /// No description provided for @adminWorkingDaysEn.
+  ///
+  /// In en, this message translates to:
+  /// **'Working Days (En)'**
+  String get adminWorkingDaysEn;
 
   /// No description provided for @adminOnlineConsultation.
   ///
@@ -2725,6 +2821,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Meet Our Team'**
   String get aboutMeetOurTeamTitle;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'New Update Available 🚀'**
+  String get updateAvailable;
+
+  /// No description provided for @updateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Critical Update Required ⚠️'**
+  String get updateRequired;
+
+  /// No description provided for @updateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A new version of 5210 is available. Please update now to get the latest features and best experience.'**
+  String get updateDesc;
+
+  /// No description provided for @updateButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Now'**
+  String get updateButton;
+
+  /// No description provided for @laterButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Later'**
+  String get laterButton;
 }
 
 class _AppLocalizationsDelegate

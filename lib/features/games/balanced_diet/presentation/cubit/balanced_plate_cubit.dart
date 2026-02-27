@@ -1,8 +1,8 @@
 import 'dart:math';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/core/services/sound_service.dart';
 import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 import 'package:system_5210/core/utils/app_images.dart';
 import '../../data/models/game_result_model.dart';
@@ -15,7 +15,6 @@ class BalancedPlateCubit extends Cubit<BalancedPlateState> {
   final GameRepository repository;
   final FirebaseAuth auth;
   final UserPointsCubit pointsCubit;
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   BalancedPlateCubit({
     required this.repository,
@@ -58,7 +57,7 @@ class BalancedPlateCubit extends Cubit<BalancedPlateState> {
       )..add(ingredient);
 
       HapticFeedback.mediumImpact();
-      _playSound('audio/games/game1/pop.mp3');
+      SoundService.playPop();
 
       // Tip based on healthiness
       final tip = ingredient.isHealthy
@@ -75,9 +74,11 @@ class BalancedPlateCubit extends Cubit<BalancedPlateState> {
       );
 
       // Auto-dismiss feedback after 3 seconds
+      // Using a local variable to capture the specific tip instance
       Future.delayed(const Duration(seconds: 3), () {
         if (!isClosed && state is BalancedPlateGameInProgress) {
           final nextState = state as BalancedPlateGameInProgress;
+          // Only clear if the current feedback is still the one we set
           if (nextState.feedbackMessage == tip) {
             emit(
               BalancedPlateGameInProgress(
@@ -132,9 +133,9 @@ class BalancedPlateCubit extends Cubit<BalancedPlateState> {
           : _getFailChar(charIndex);
 
       if (isBalanced) {
-        _playSound('audio/games/game1/success.mp3');
+        SoundService.playCorrect();
       } else {
-        _playSound('audio/games/game1/fail.mp3');
+        SoundService.playWrong();
       }
 
       emit(BalancedPlateLoading());
@@ -184,17 +185,8 @@ class BalancedPlateCubit extends Cubit<BalancedPlateState> {
     return AppImages.gameFail4;
   }
 
-  Future<void> _playSound(String path) async {
-    try {
-      await _audioPlayer.play(AssetSource(path));
-    } catch (e) {
-      /* ignore */
-    }
-  }
-
   @override
   Future<void> close() {
-    _audioPlayer.dispose();
     return super.close();
   }
 }

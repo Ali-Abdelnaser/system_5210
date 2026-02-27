@@ -20,6 +20,16 @@ class QuizCubit extends Cubit<QuizState> {
     : super(QuizInitial());
 
   Future<void> loadLevels() async {
+    emit(
+      QuizLoading(
+        lastUnlockedLevel: _lastUnlockedLevel,
+        levelStars: _levelStars,
+        levelScores: _levelScores,
+        levelBonuses: _levelBonuses,
+      ),
+    );
+
+    await repository.syncProgress();
     final unlockedResult = await repository.getLastUnlockedLevel();
 
     unlockedResult.fold((error) => emit(QuizError(message: error)), (
@@ -149,8 +159,9 @@ class QuizCubit extends Cubit<QuizState> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       final currentState = state;
       if (currentState is QuizGameInProgress) {
-        if (currentState.isTimeStopped || currentState.isTutorialVisible)
+        if (currentState.isTimeStopped || currentState.isTutorialVisible) {
           return;
+        }
 
         if (currentState.timerSeconds > 0) {
           emit(

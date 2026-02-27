@@ -28,7 +28,7 @@ class HealthRationaleView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // App Logo or Health Icon
+                  
                   Container(
                     width: 100,
                     height: 100,
@@ -91,8 +91,8 @@ class HealthRationaleView extends StatelessWidget {
                               icon: Icons.directions_run_rounded,
                               title: isAr ? "تتبع النشاط" : "Activity Tracking",
                               desc: isAr
-                                  ? "نحن نستخدم Health Connect لقراءة عدد خطواتك اليومي لنساعدك في الوصول لهدف الـ 5210 الصحي."
-                                  : "We use Health Connect to read your daily steps count to help you achieve your 5210 health goals.",
+                                  ? "نحن نستخدم حساسات الموبايل المباشرة لقراءة عدد خطواتك اليومي لنساعدك في الوصول لهدف الـ 5210 الصحي."
+                                  : "We use your phone's internal sensors to read your daily steps count to help you achieve your 5210 health goals.",
                               isAr: isAr,
                             ),
                             const Divider(height: 40),
@@ -109,8 +109,8 @@ class HealthRationaleView extends StatelessWidget {
                               icon: Icons.verified_user_rounded,
                               title: isAr ? "تحكم كامل" : "Full Control",
                               desc: isAr
-                                  ? "يمكنك دائماً إلغاء الوصول للبيانات من خلال إعدادات Health Connect في أي وقت."
-                                  : "You can always revoke data access through Health Connect settings at any time.",
+                                  ? "يمكنك دائماً إلغاء الوصول للبيانات من خلال إعدادات التطبيق أو الموبايل في أي وقت."
+                                  : "You can always revoke data access through app or phone settings at any time.",
                               isAr: isAr,
                             ),
                           ],

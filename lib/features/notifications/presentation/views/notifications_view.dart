@@ -35,7 +35,7 @@ class _NotificationsViewState extends State<NotificationsView>
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(() {
-      setState(() {}); // Refresh list on tab change
+      setState(() {});
     });
   }
 
@@ -306,9 +306,7 @@ class _NotificationsViewState extends State<NotificationsView>
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 35,
-                                    ), // مساحة للقلب
+                                    padding: const EdgeInsets.only(right: 35),
                                     child: Text(
                                       isAr
                                           ? notification.title
@@ -657,7 +655,6 @@ class NotificationDetailsSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NotificationCubit, NotificationState>(
       builder: (context, state) {
-        // البحث عن النسخة المحدثة من الإشعار في الـ State
         AppNotification notification = initialNotification;
         if (state is NotificationLoaded) {
           notification = state.notifications.firstWhere(

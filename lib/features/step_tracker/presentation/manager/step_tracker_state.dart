@@ -13,11 +13,20 @@ class StepTrackerLoading extends StepTrackerState {}
 
 class StepTrackerLoaded extends StepTrackerState {
   final int steps;
-  const StepTrackerLoaded({required this.steps});
+  final Map<String, int> weeklySteps;
+  final bool isGoalReached;
+
+  const StepTrackerLoaded({
+    required this.steps,
+    this.weeklySteps = const <String, int>{},
+    this.isGoalReached = false,
+  });
 
   @override
-  List<Object?> get props => [steps];
+  List<Object?> get props => [steps, weeklySteps, isGoalReached];
 }
+
+class StepTrackerPermissionDenied extends StepTrackerState {}
 
 class StepTrackerFailure extends StepTrackerState {
   final String message;

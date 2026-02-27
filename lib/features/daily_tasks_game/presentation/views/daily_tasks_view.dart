@@ -15,6 +15,7 @@ import 'water_stage_view.dart';
 import 'movement_stage_view.dart';
 import 'sleep_stage_view.dart';
 import '../../../../core/widgets/app_back_button.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
 
 class DailyTasksView extends StatelessWidget {
   const DailyTasksView({super.key});
@@ -35,7 +36,38 @@ class DailyTasksView extends StatelessWidget {
             BlocBuilder<DailyTasksCubit, DailyTasksState>(
               builder: (context, state) {
                 if (state is DailyTasksLoading) {
-                  return const Center(child: CircularProgressIndicator());
+                  return SafeArea(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Row(
+                            children: [
+                              const AppBackButton(),
+                              const Spacer(),
+                              AppShimmer(width: 150, height: 30),
+                              const Spacer(),
+                              const SizedBox(width: 48),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: GridView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 15,
+                                  crossAxisSpacing: 15,
+                                  childAspectRatio: 0.85,
+                                ),
+                            itemCount: 6,
+                            itemBuilder: (_, __) => AppShimmer.taskGridCard(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 } else if (state is DailyTasksLoaded) {
                   return AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),

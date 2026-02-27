@@ -4,17 +4,21 @@ import 'package:system_5210/features/user_setup/data/models/user_profile_model.d
 import 'package:system_5210/features/user_setup/domain/usecases/get_user_profile_usecase.dart';
 import 'package:system_5210/features/auth/domain/repositories/auth_repository.dart';
 
+import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
+import 'package:system_5210/features/specialists/domain/usecases/get_specialists.dart';
 import 'package:system_5210/core/services/streak_service.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   final GetUserProfileUseCase getUserProfileUseCase;
+  final GetSpecialists getSpecialists;
   final AuthRepository authRepository;
   final StreakService streakService;
 
   HomeCubit({
     required this.getUserProfileUseCase,
+    required this.getSpecialists,
     required this.authRepository,
     required this.streakService,
   }) : super(HomeInitial());
@@ -26,8 +30,18 @@ class HomeCubit extends Cubit<HomeState> {
       userOption.fold(() => emit(const HomeFailure("User not logged in")), (
         user,
       ) async {
-        final result = await getUserProfileUseCase(user.uid);
-        result.fold((failure) => emit(HomeFailure(failure.message)), (
+        // Fetch Profile and Specialists in parallel for speed
+        final results = await Future.wait([
+          getUserProfileUseCase(user.uid),
+          getSpecialists(),
+        ]);
+
+        final profileResult =
+            results[0] as dynamic; // Either<Failure, UserProfileModel>
+        final specialistsResult =
+            results[1] as dynamic; // Either<Failure, List<Doctor>>
+
+        profileResult.fold((failure) => emit(HomeFailure(failure.message)), (
           profile,
         ) async {
           // 1. Check and Update Streak
@@ -35,8 +49,14 @@ class HomeCubit extends Cubit<HomeState> {
             profile,
           );
 
-          // 2. Refresh profile after streak update to get latest data
+          // 2. Refresh profile after streak update
           final refreshedResult = await getUserProfileUseCase(user.uid);
+
+          // 3. Extract specialists
+          final List<Doctor> specialists = specialistsResult.fold(
+            (f) => [],
+            (s) => s,
+          );
 
           refreshedResult.fold((f) => emit(HomeFailure(f.message)), (
             refreshedProfile,
@@ -53,6 +73,7 @@ class HomeCubit extends Cubit<HomeState> {
               HomeLoaded(
                 displayName: name,
                 userProfile: refreshedProfile,
+                specialists: specialists, // Pre-fetched during splash!
                 streakResult: streakResult,
               ),
             );

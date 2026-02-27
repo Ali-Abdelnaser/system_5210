@@ -16,14 +16,13 @@ class OfflineWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NetworkCubit, NetworkState>(
       builder: (context, state) {
-        if (state == NetworkState.offline) {
-          return _NoInternetView();
-        }
-
         return Stack(
           children: [
             child,
-            if (state == NetworkState.backOnline) _BackOnlineView(),
+            if (state == NetworkState.offline)
+              const _NoInternetView(key: ValueKey('offline_view')),
+            if (state == NetworkState.backOnline)
+              const _BackOnlineView(key: ValueKey('back_online_view')),
           ],
         );
       },
@@ -32,14 +31,16 @@ class OfflineWrapper extends StatelessWidget {
 }
 
 class _NoInternetView extends StatelessWidget {
+  const _NoInternetView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
+    return Material(
+      color: Colors.white,
+      child: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
@@ -128,14 +129,16 @@ class _NoInternetView extends StatelessWidget {
 }
 
 class _BackOnlineView extends StatelessWidget {
+  const _BackOnlineView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
+    return Material(
+      color: Colors.white,
+      child: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),

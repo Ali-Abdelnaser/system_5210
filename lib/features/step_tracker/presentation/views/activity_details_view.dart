@@ -12,150 +12,204 @@ import 'package:system_5210/features/profile/presentation/manager/profile_state.
 import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
 import 'dart:math' as math;
 
-class ActivityDetailsView extends StatelessWidget {
+import 'package:confetti/confetti.dart';
+
+class ActivityDetailsView extends StatefulWidget {
   const ActivityDetailsView({super.key});
+
+  @override
+  State<ActivityDetailsView> createState() => _ActivityDetailsViewState();
+}
+
+class _ActivityDetailsViewState extends State<ActivityDetailsView> {
+  late ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController = ConfettiController(
+      duration: const Duration(seconds: 3),
+    );
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
-      body: Stack(
-        children: [
-          // 1. App Background
-          Positioned.fill(
-            child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
-          ),
+      body: BlocListener<StepTrackerCubit, StepTrackerState>(
+        listener: (context, state) {
+          if (state is StepTrackerLoaded && state.isGoalReached) {
+            _confettiController.play();
+          }
+        },
+        child: Stack(
+          children: [
+            // 1. App Background
+            Positioned.fill(
+              child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
+            ),
 
-          // 2. Main Content
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                leading: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: AppBackButton(),
-                ),
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                pinned: true,
-                centerTitle: true,
-                title: Text(
-                  isAr ? 'تفاصيل النشاط' : 'Activity Details',
-                  style: (isAr ? GoogleFonts.cairo : GoogleFonts.dynaPuff)(
-                    color: AppTheme.appBlue,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
+            // 2. Confetti
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: const [
+                  AppTheme.appBlue,
+                  Colors.amber,
+                  Colors.pink,
+                  Colors.green,
+                  Colors.orange,
+                ],
+              ),
+            ),
+
+            // 3. Main Content
+            CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                SliverAppBar(
+                  leading: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: AppBackButton(),
+                  ),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  pinned: true,
+                  centerTitle: true,
+                  title: Text(
+                    isAr ? 'تفاصيل النشاط' : 'Activity Details',
+                    style: (isAr ? GoogleFonts.cairo : GoogleFonts.dynaPuff)(
+                      color: AppTheme.appBlue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
                   ),
                 ),
-              ),
 
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: BlocBuilder<ProfileCubit, ProfileState>(
-                    builder: (context, profileState) {
-                      return BlocBuilder<StepTrackerCubit, StepTrackerState>(
-                        builder: (context, stepState) {
-                          int steps = 0;
-                          if (stepState is StepTrackerLoaded) {
-                            steps = stepState.steps;
-                          }
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: BlocBuilder<ProfileCubit, ProfileState>(
+                      builder: (context, profileState) {
+                        return BlocBuilder<StepTrackerCubit, StepTrackerState>(
+                          builder: (context, stepState) {
+                            if (stepState is StepTrackerLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
 
-                          double height = 120.0;
-                          double weight = 25.0;
+                            int steps = 0;
+                            if (stepState is StepTrackerLoaded) {
+                              steps = stepState.steps;
+                            }
 
-                          if (profileState is ProfileLoaded) {
-                            final quiz = profileState.profile.quizAnswers;
-                            height =
-                                double.tryParse(
-                                  quiz['height']?.toString() ?? '120.0',
-                                ) ??
-                                120.0;
-                            weight =
-                                double.tryParse(
-                                  quiz['weight']?.toString() ?? '25.0',
-                                ) ??
-                                25.0;
-                          }
+                            double height = 120.0;
+                            double weight = 25.0;
 
-                          final strideLengthCm = height * 0.413;
-                          final distanceKm = (steps * strideLengthCm) / 100000;
-                          final calories = weight * distanceKm * 0.75;
-                          final activeMinutes = (steps / 100).round();
+                            if (profileState is ProfileLoaded) {
+                              final quiz = profileState.profile.quizAnswers;
+                              height =
+                                  double.tryParse(
+                                    quiz['height']?.toString() ?? '120.0',
+                                  ) ??
+                                  120.0;
+                              weight =
+                                  double.tryParse(
+                                    quiz['weight']?.toString() ?? '25.0',
+                                  ) ??
+                                  25.0;
+                            }
 
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 20),
+                            final strideLengthCm = height * 0.413;
+                            final distanceKm =
+                                (steps * strideLengthCm) / 100000;
+                            final calories = weight * distanceKm * 0.75;
+                            final activeMinutes = (steps / 100).round();
 
-                              // 3. Main White Glass Summary Card
-                              _buildMainSummaryCard(steps, isAr),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
 
-                              const SizedBox(height: 30),
+                                // 3. Main White Glass Summary Card
+                                _buildMainSummaryCard(steps, isAr),
 
-                              // 5. Weekly Analysis White Glass Section
-                              _buildWeeklyGlassSection(isAr),
+                                const SizedBox(height: 30),
 
-                              const SizedBox(height: 30),
+                                // 5. Weekly Analysis White Glass Section
+                                _buildWeeklyGlassSection(isAr),
 
-                              // 4. Grid of detailed stats with White Glass effect
-                              GridView.count(
-                                crossAxisCount: 2,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                mainAxisSpacing: 15,
-                                crossAxisSpacing: 15,
-                                childAspectRatio: 1.1,
-                                children: [
-                                  _buildStatGlassCard(
-                                    isAr ? 'سعرة حرارية' : 'Calories',
-                                    calories.toStringAsFixed(0),
-                                    Icons.local_fire_department_rounded,
-                                    const Color(0xFFFF5F5F),
-                                    isAr,
-                                  ),
-                                  _buildStatGlassCard(
-                                    isAr ? 'كيلومتر' : 'Distance',
-                                    distanceKm.toStringAsFixed(1),
-                                    Icons.straighten_rounded,
-                                    const Color(0xFF2ECC71),
-                                    isAr,
-                                  ),
-                                  _buildStatGlassCard(
-                                    isAr ? 'دقيقة نشطة' : 'Active Time',
-                                    activeMinutes.toString(),
-                                    Icons.bolt_rounded,
-                                    const Color(0xFFF1C40F),
-                                    isAr,
-                                  ),
-                                  _buildStatGlassCard(
-                                    isAr ? 'معدل القوة' : 'Power Index',
-                                    'Level 4',
-                                    Icons.auto_awesome_rounded,
-                                    const Color(0xFF9B59B6),
-                                    isAr,
-                                  ),
-                                ],
-                              ),
+                                const SizedBox(height: 30),
 
-                              const SizedBox(height: 30),
+                                // 4. Grid of detailed stats with White Glass effect
+                                GridView.count(
+                                  crossAxisCount: 2,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  mainAxisSpacing: 15,
+                                  crossAxisSpacing: 15,
+                                  childAspectRatio: 1.1,
+                                  children: [
+                                    _buildStatGlassCard(
+                                      isAr ? 'سعرة حرارية' : 'Calories',
+                                      calories.toStringAsFixed(0),
+                                      Icons.local_fire_department_rounded,
+                                      const Color(0xFFFF5F5F),
+                                      isAr,
+                                    ),
+                                    _buildStatGlassCard(
+                                      isAr ? 'كيلومتر' : 'Distance',
+                                      distanceKm.toStringAsFixed(1),
+                                      Icons.straighten_rounded,
+                                      const Color(0xFF2ECC71),
+                                      isAr,
+                                    ),
+                                    _buildStatGlassCard(
+                                      isAr ? 'دقيقة نشطة' : 'Active Time',
+                                      activeMinutes.toString(),
+                                      Icons.bolt_rounded,
+                                      const Color(0xFFF1C40F),
+                                      isAr,
+                                    ),
+                                    _buildStatGlassCard(
+                                      isAr ? 'معدل القوة' : 'Power Index',
+                                      steps >= 5210 ? 'Level 5' : 'Level 4',
+                                      Icons.auto_awesome_rounded,
+                                      const Color(0xFF9B59B6),
+                                      isAr,
+                                    ),
+                                  ],
+                                ),
 
-                              // 6. Navigation CTA
-                              _buildUpgradeHeroCTA(context, isAr),
+                                const SizedBox(height: 30),
 
-                              const SizedBox(height: 50),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                                // 6. Navigation CTA
+                                _buildUpgradeHeroCTA(context, isAr),
+
+                                const SizedBox(height: 50),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -341,86 +395,112 @@ class ActivityDetailsView extends StatelessWidget {
   }
 
   Widget _buildWeeklyGlassSection(bool isAr) {
-    final weeklySteps = [4200, 5800, 8100, 7450, 9200, 6500, 5210];
-    final days = isAr
-        ? ['س', 'ح', 'ن', 'ث', 'ر', 'خ', 'ج']
-        : ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    return BlocBuilder<StepTrackerCubit, StepTrackerState>(
+      builder: (context, stepState) {
+        Map<String, int> history = <String, int>{};
+        if (stepState is StepTrackerLoaded) {
+          history = stepState.weeklySteps;
+        }
 
-    return GlassCard(
-      blur: 20,
-      opacity: 0.7,
-      borderRadius: 30,
-      color: Colors.white,
-      padding: const EdgeInsets.all(25),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            isAr ? 'تحليل الأسبوع' : 'Weekly Analysis',
-            style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
-              color: AppTheme.appBlue,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 25),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: List.generate(weeklySteps.length, (index) {
-              final hRatio = weeklySteps[index] / 10000;
-              final isToday = index == 6;
+        // Generate last 7 days
+        final List<int> weeklySteps = [];
+        final List<String> dayLabels = [];
+        final now = DateTime.now();
 
-              return Column(
-                children: [
-                  Container(
-                    width: 32,
-                    height: 140 * hRatio.clamp(0.15, 1.0),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: isToday
-                            ? [
-                                AppTheme.appBlue.withOpacity(0.7),
-                                AppTheme.appBlue,
-                              ]
-                            : [
-                                const Color(0xFFEDF2F7),
-                                const Color(0xFFCBD5E1),
-                              ],
+        for (int i = 6; i >= 0; i--) {
+          final date = now.subtract(Duration(days: i));
+          final dateStr = date.toIso8601String().split('T')[0];
+          weeklySteps.add(history[dateStr] ?? 0);
+
+          // Get day label (S, M, T... or Arabic equivalent)
+          if (isAr) {
+            final daysAr = ['ن', 'ث', 'ر', 'خ', 'ج', 'س', 'ح'];
+            dayLabels.add(daysAr[(date.weekday - 1) % 7]);
+          } else {
+            final daysEn = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+            dayLabels.add(daysEn[(date.weekday - 1) % 7]);
+          }
+        }
+
+        return GlassCard(
+          blur: 20,
+          opacity: 0.7,
+          borderRadius: 30,
+          color: Colors.white,
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isAr ? 'تحليل الأسبوع' : 'Weekly Analysis',
+                style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+                  color: AppTheme.appBlue,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 25),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: List.generate(weeklySteps.length, (index) {
+                  final hRatio = weeklySteps[index] / 10000;
+                  final isToday = index == 6;
+
+                  return Column(
+                    children: [
+                      Container(
+                        width: 32,
+                        height: 140 * hRatio.clamp(0.15, 1.0),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: isToday
+                                ? [
+                                    AppTheme.appBlue.withOpacity(0.7),
+                                    AppTheme.appBlue,
+                                  ]
+                                : [
+                                    const Color(0xFFEDF2F7),
+                                    const Color(0xFFCBD5E1),
+                                  ],
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: isToday
+                              ? [
+                                  BoxShadow(
+                                    color: AppTheme.appBlue.withOpacity(0.2),
+                                    blurRadius: 8,
+                                  ),
+                                ]
+                              : null,
+                        ),
+                      ).animate().scaleY(
+                        begin: 0,
+                        end: 1,
+                        duration: (400 + (index * 100)).ms,
+                        curve: Curves.easeOutBack,
                       ),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: isToday
-                          ? [
-                              BoxShadow(
-                                color: AppTheme.appBlue.withOpacity(0.2),
-                                blurRadius: 8,
-                              ),
-                            ]
-                          : null,
-                    ),
-                  ).animate().scaleY(
-                    begin: 0,
-                    end: 1,
-                    duration: (400 + (index * 100)).ms,
-                    curve: Curves.easeOutBack,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    days[index],
-                    style: GoogleFonts.poppins(
-                      color: isToday ? AppTheme.appBlue : Colors.black45,
-                      fontSize: 13,
-                      fontWeight: isToday ? FontWeight.bold : FontWeight.w600,
-                    ),
-                  ),
-                ],
-              );
-            }),
+                      const SizedBox(height: 12),
+                      Text(
+                        dayLabels[index],
+                        style: GoogleFonts.poppins(
+                          color: isToday ? AppTheme.appBlue : Colors.black45,
+                          fontSize: 13,
+                          fontWeight: isToday
+                              ? FontWeight.bold
+                              : FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

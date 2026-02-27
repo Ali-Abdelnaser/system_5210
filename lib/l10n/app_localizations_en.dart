@@ -896,6 +896,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noSpecialistsFound => 'No specialists found';
 
   @override
+  String get notificationSettings => 'Notification Settings';
+
+  @override
+  String get permissionsStatus => 'Permissions Status';
+
+  @override
+  String get allowAllNotifications => 'Allow All Notifications';
+
+  @override
+  String get enableSounds => 'Enable Sounds';
+
+  @override
+  String get streakNotifications => 'Streak Notifications (Daily)';
+
+  @override
+  String get taskNotifications => 'Daily Task Notifications';
+
+  @override
+  String get insightsNotifications => 'Health Insights & Tips';
+
+  @override
+  String get storage => 'Storage & Photos Access';
+
+  @override
+  String get granted => 'Granted';
+
+  @override
+  String get denied => 'Denied';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get testNotification => 'Send Test Notification';
+
+  @override
+  String get testNotificationTitle => 'Test Successful! 🎉';
+
+  @override
+  String get testNotificationBody =>
+      'Your notifications are working perfectly. Get ready for 5210 adventures!';
+
+  @override
   String get supportTitle => 'Support & Help';
 
   @override
@@ -1113,6 +1156,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get adminWorkingHoursEn => 'Working Hours (En)';
+
+  @override
+  String get adminWorkingDaysAr => 'Working Days (Ar)';
+
+  @override
+  String get adminWorkingDaysEn => 'Working Days (En)';
 
   @override
   String get adminOnlineConsultation => 'Online Consultation';
@@ -1397,4 +1446,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutMeetOurTeamTitle => 'Meet Our Team';
+
+  @override
+  String get updateAvailable => 'New Update Available 🚀';
+
+  @override
+  String get updateRequired => 'Critical Update Required ⚠️';
+
+  @override
+  String get updateDesc =>
+      'A new version of 5210 is available. Please update now to get the latest features and best experience.';
+
+  @override
+  String get updateButton => 'Update Now';
+
+  @override
+  String get laterButton => 'Later';
 }

@@ -16,8 +16,8 @@ class AppShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: const Color(0xFFE2E8F0),
+      highlightColor: const Color(0xFFF8FAFC),
       child: Container(
         width: width,
         height: height,
@@ -197,6 +197,28 @@ class AppShimmer extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  static Widget taskGridCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AppShimmer(
+            width: 70,
+            height: 70,
+            borderRadius: BorderRadius.circular(35),
+          ),
+          const SizedBox(height: 16),
+          AppShimmer(width: 100, height: 16),
+        ],
       ),
     );
   }

@@ -18,6 +18,8 @@ import 'package:system_5210/core/utils/app_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:system_5210/core/widgets/profile_image_loader.dart';
+import 'package:system_5210/core/widgets/app_loading_indicator.dart';
+import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -183,7 +185,7 @@ class _EditProfileViewState extends State<EditProfileView> {
             context: context,
             barrierDismissible: false,
             builder: (context) =>
-                const Center(child: CircularProgressIndicator()),
+                const Center(child: AppLoadingIndicator(size: 80)),
           );
         }
       },
@@ -311,6 +313,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   onTap: () => _showChangeEmailDialog(context),
                   actionText: l10n.change,
                 ),
+                const SizedBox(height: 32),
               ],
             ),
           ),

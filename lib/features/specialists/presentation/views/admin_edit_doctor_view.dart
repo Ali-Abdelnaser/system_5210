@@ -35,7 +35,9 @@ class _AdminEditDoctorViewState extends State<AdminEditDoctorView> {
       _whatsapp,
       _experience,
       _hoursAr,
-      _hoursEn;
+      _hoursEn,
+      _daysAr,
+      _daysEn;
   bool _allowsOnline = false;
   File? _imageFile;
   String? _existingImageUrl;
@@ -60,6 +62,12 @@ class _AdminEditDoctorViewState extends State<AdminEditDoctorView> {
     );
     _hoursAr = TextEditingController(text: widget.doctor?.workingHoursAr);
     _hoursEn = TextEditingController(text: widget.doctor?.workingHoursEn);
+    _daysAr = TextEditingController(
+      text: widget.doctor?.workingDaysAr.join(', '),
+    );
+    _daysEn = TextEditingController(
+      text: widget.doctor?.workingDaysEn.join(', '),
+    );
   }
 
   Future<void> _pickImage() async {
@@ -106,8 +114,18 @@ class _AdminEditDoctorViewState extends State<AdminEditDoctorView> {
         'experienceYears': int.tryParse(_experience.text) ?? 0,
         'workingHoursAr': _hoursAr.text.trim(),
         'workingHoursEn': _hoursEn.text.trim(),
-        'workingDaysAr': widget.doctor?.workingDaysAr ?? [],
-        'workingDaysEn': widget.doctor?.workingDaysEn ?? [],
+        'workingDaysAr': _daysAr.text
+            .trim()
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList(),
+        'workingDaysEn': _daysEn.text
+            .trim()
+            .split(',')
+            .map((e) => e.trim())
+            .where((e) => e.isNotEmpty)
+            .toList(),
         'certificates': widget.doctor?.certificates ?? [],
       };
 
@@ -244,6 +262,24 @@ class _AdminEditDoctorViewState extends State<AdminEditDoctorView> {
                                 child: AuthTextField(
                                   controller: _hoursEn,
                                   label: l10n.adminWorkingHoursEn,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AuthTextField(
+                                  controller: _daysAr,
+                                  label: l10n.adminWorkingDaysAr,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: AuthTextField(
+                                  controller: _daysEn,
+                                  label: l10n.adminWorkingDaysEn,
                                 ),
                               ),
                             ],

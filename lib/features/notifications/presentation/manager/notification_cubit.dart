@@ -49,9 +49,8 @@ class NotificationCubit extends Cubit<NotificationState> {
     _setupNotificationListeners();
     loadNotifications();
 
-    if (role == 'child') {
+    if (role == 'child' || role == 'parent') {
       scheduleMorningQuest(isAr: true);
-    } else if (role == 'parent') {
       scheduleDailyTipsIfNeeded(role!);
     }
   }
@@ -59,6 +58,9 @@ class NotificationCubit extends Cubit<NotificationState> {
   StreamSubscription? _broadcastSubscription;
   StreamSubscription? _personalSubscription;
   final DateTime _sessionStartTime = DateTime.now();
+  bool _initialBroadcastProcessed = false;
+  bool _initialPersonalProcessed = false;
+  bool _wasBoxEmptyOnStart = false;
 
   void _setupNotificationListeners() {
     _broadcastSubscription?.cancel();
@@ -85,13 +87,24 @@ class NotificationCubit extends Cubit<NotificationState> {
     QuerySnapshot snapshot, {
     required bool isBroadcast,
   }) async {
-    final notifications = await localStorageService.getAll(_boxName);
-    final existingIds = notifications.map((e) => e['id']).toSet();
+    final notificationsData = await localStorageService.getAll(_boxName);
+    final existingIds = notificationsData.map((e) => e['id']).toSet();
+
+    if (existingIds.isEmpty &&
+        !(_initialBroadcastProcessed || _initialPersonalProcessed)) {
+      _wasBoxEmptyOnStart = true;
+    }
 
     final deletedDocs = await localStorageService.getAll(_deletedBoxName);
     final deletedIds = deletedDocs.map((e) => e['id']).toSet();
 
     bool hasNewItems = false;
+    final bool isStreamInitial = isBroadcast
+        ? !_initialBroadcastProcessed
+        : !_initialPersonalProcessed;
+
+    // On fresh install, anything already in DB is "Read" unless DB explicitly says otherwise
+    final bool isPureInitialLoad = _wasBoxEmptyOnStart && isStreamInitial;
 
     for (var doc in snapshot.docs) {
       final data = doc.data() as Map<String, dynamic>;
@@ -104,6 +117,13 @@ class NotificationCubit extends Cubit<NotificationState> {
       }
 
       if (!existingIds.contains(id) && !deletedIds.contains(id)) {
+        final isOld = timestamp.isBefore(
+          DateTime.now().subtract(const Duration(hours: 24)),
+        );
+
+        final bool isReadValue =
+            data['isRead'] ?? (isPureInitialLoad ? true : isOld);
+
         final notification = AppNotification(
           id: id,
           title: data['titleAr'] ?? data['title'] ?? '',
@@ -113,25 +133,33 @@ class NotificationCubit extends Cubit<NotificationState> {
           imageUrl: data['imageUrl'],
           actionUrl: data['actionUrl'],
           timestamp: timestamp,
+          isRead: isReadValue,
           type: data['type'] ?? (isBroadcast ? 'broadcast' : 'personal'),
         );
 
         await localStorageService.save(_boxName, id, notification.toMap());
         hasNewItems = true;
 
-        if (timestamp.isAfter(
-          _sessionStartTime.subtract(const Duration(seconds: 10)),
-        )) {
+        if (!isPureInitialLoad &&
+            timestamp.isAfter(
+              _sessionStartTime.subtract(const Duration(seconds: 10)),
+            )) {
           notificationService.showImmediateNotification(
             title: notification.title,
             body: notification.body,
             imageUrl: notification.imageUrl,
             actionUrl: notification.actionUrl,
             showAction: true,
-            badgeCount: _getUnreadCount(notifications),
+            badgeCount: _getUnreadCount(notificationsData),
           );
         }
       }
+    }
+
+    if (isBroadcast) {
+      _initialBroadcastProcessed = true;
+    } else {
+      _initialPersonalProcessed = true;
     }
 
     if (hasNewItems || snapshot.docs.isEmpty) {
@@ -152,6 +180,11 @@ class NotificationCubit extends Cubit<NotificationState> {
       final notifications = await localStorageService.getAll(_boxName);
       final list = notifications
           .map((e) => AppNotification.fromMap(e))
+          .where(
+            (n) => n.timestamp.isBefore(
+              DateTime.now().add(const Duration(minutes: 1)),
+            ),
+          )
           .toList();
       list.sort((a, b) => b.timestamp.compareTo(a.timestamp));
       emit(NotificationLoaded(list));
@@ -182,7 +215,8 @@ class NotificationCubit extends Cubit<NotificationState> {
         id: 9999,
         title: title,
         body: body,
-        scheduledDate: _nextMorning8AM(),
+        scheduledDate: _nextMorning10AM(),
+        category: 'tasks',
         payload: 'route:${AppRoutes.home}',
       );
 
@@ -192,9 +226,9 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  DateTime _nextMorning8AM() {
+  DateTime _nextMorning10AM() {
     final now = DateTime.now();
-    DateTime scheduled = DateTime(now.year, now.month, now.day, 8, 0);
+    DateTime scheduled = DateTime(now.year, now.month, now.day, 10, 0);
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(const Duration(days: 1));
     }
@@ -202,7 +236,7 @@ class NotificationCubit extends Cubit<NotificationState> {
   }
 
   Future<void> scheduleDailyTipsIfNeeded(String role) async {
-    if (role != 'parent' || _userId == null) return;
+    if (_userId == null) return;
 
     try {
       final tipKey = 'last_tip_scheduled_date_$_userId';
@@ -230,8 +264,12 @@ class NotificationCubit extends Cubit<NotificationState> {
         final random = Random(
           dayOfYear + scheduledDate.year + (_userId.hashCode),
         );
-        final tipIndex = random.nextInt(AppTipsData.parentTips.length);
-        final tip = AppTipsData.parentTips[tipIndex];
+        final tipsList = role == 'parent'
+            ? AppTipsData.parentTips
+            : AppTipsData.childTips;
+        if (tipsList.isEmpty) continue;
+        final tipIndex = random.nextInt(tipsList.length);
+        final tip = tipsList[tipIndex];
 
         final uniqueIntId =
             1000 +
@@ -244,20 +282,19 @@ class NotificationCubit extends Cubit<NotificationState> {
           title: tip.title,
           body: tip.description,
           scheduledDate: scheduledDate,
-          payload: 'route:/daily-tip',
+          payload: 'route:${AppRoutes.notifications}',
         );
 
-        if (i == 0) {
-          final id = "tip_$uniqueIntId";
-          final notification = AppNotification(
-            id: id,
-            title: tip.title,
-            body: tip.description,
-            timestamp: scheduledDate,
-            type: 'tip',
-          );
-          await localStorageService.save(_boxName, id, notification.toMap());
-        }
+        // Also save to internal notifications list so it appears in the screen
+        final id = "tip_$uniqueIntId";
+        final notification = AppNotification(
+          id: id,
+          title: tip.title,
+          body: tip.description,
+          timestamp: scheduledDate,
+          type: 'tip',
+        );
+        await localStorageService.save(_boxName, id, notification.toMap());
       }
 
       await localStorageService.save('settings', tipKey, {'date': today});
@@ -325,6 +362,17 @@ class NotificationCubit extends Cubit<NotificationState> {
         final updated = currentList[index].copyWith(isRead: true);
         await localStorageService.save(_boxName, id, updated.toMap());
 
+        // Sync with Firestore for personal notifications
+        if (updated.type != 'broadcast' && _userId != null) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(_userId)
+              .collection('notifications')
+              .doc(id)
+              .update({'isRead': true})
+              .catchError((e) => debugPrint("Firestore Update Error: $e"));
+        }
+
         final newList = List<AppNotification>.from(currentList);
         newList[index] = updated;
         emit(NotificationLoaded(newList));
@@ -339,6 +387,18 @@ class NotificationCubit extends Cubit<NotificationState> {
 
       await localStorageService.delete(_boxName, id);
       await localStorageService.save(_deletedBoxName, id, {'id': id});
+
+      // Sync with Firestore for personal notifications
+      if (_userId != null) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(_userId)
+            .collection('notifications')
+            .doc(id)
+            .delete()
+            .catchError((e) => debugPrint("Firestore Delete Error: $e"));
+      }
+
       emit(NotificationLoaded(newList));
     }
   }
@@ -348,8 +408,22 @@ class NotificationCubit extends Cubit<NotificationState> {
       final notifications = await localStorageService.getAll(_boxName);
       for (var n in notifications) {
         final id = n['id'];
+        final type = n['type'];
         await localStorageService.delete(_boxName, id);
         await localStorageService.save(_deletedBoxName, id, {'id': id});
+
+        // Sync with Firestore
+        if (type != 'broadcast' && _userId != null) {
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(_userId)
+              .collection('notifications')
+              .doc(id)
+              .delete()
+              .catchError(
+                (e) => debugPrint("Firestore Batch Delete Error: $e"),
+              );
+        }
       }
       emit(const NotificationLoaded([]));
     } catch (e) {

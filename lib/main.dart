@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:system_5210/core/services/notification_service.dart';
@@ -23,6 +24,8 @@ import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily
 import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
 import 'package:system_5210/core/widgets/offline_wrapper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 
 ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('ar'));
 
@@ -30,18 +33,32 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    // Initialize App Check only if you need it, wrapped in try-catch to not block auth
+    try {
+      await FirebaseAppCheck.instance.activate(
+        androidProvider: AndroidProvider.playIntegrity,
+        appleProvider: AppleProvider.deviceCheck,
+      );
+    } catch (e) {
+      debugPrint("App Check Initialization ignored: $e");
+    }
+  } catch (e) {
+    debugPrint("Firebase Initialization Error: $e");
+  }
+
+  try {
     await dotenv.load(fileName: ".env");
   } catch (e) {
     debugPrint("Dotenv Load Error: $e");
   }
 
-  // تهيئة الـ Dependency Injection
   await di.init();
 
-  // تهيئة الخدمات بشكل متوازي (Async) لتسريع الـ Splash
   _initializeServices();
 
-  // تحميل اللغة المحفوظة
   String langCode = 'ar';
   try {
     final localStorage = di.sl<LocalStorageService>();
@@ -54,25 +71,13 @@ void main() async {
     debugPrint("Error loading language: $e");
   }
 
-  runApp(const MyApp());
+  runApp(DevicePreview(enabled: false, builder: (context) => const MyApp()));
 }
 
 Future<void> _initializeServices() async {
-  // تهيئة الفايربيز
-  try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {
-    debugPrint("Firebase Initialization Error: $e");
-  }
-
-  // تهيئة الإشعارات وجدولة التذكير اليومي
   try {
     final notificationService = di.sl<NotificationService>();
     await notificationService.init();
-
-    // جدولة الإشعار اليومي باللغة المناسبة
     final currentLocale = appLocale.value;
     final l10n = await AppLocalizations.delegate.load(currentLocale);
 
@@ -136,6 +141,7 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
               scrollBehavior: GlobalScrollBehavior(),
+              useInheritedMediaQuery: true,
               locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -890,6 +890,49 @@ class AppLocalizationsAr extends AppLocalizations {
   String get noSpecialistsFound => 'لم يتم العثور على أطباء بهذا الاسم';
 
   @override
+  String get notificationSettings => 'إعدادات الإشعارات';
+
+  @override
+  String get permissionsStatus => 'حالة الأذونات';
+
+  @override
+  String get allowAllNotifications => 'تفعيل كل الإشعارات';
+
+  @override
+  String get enableSounds => 'تفعيل الأصوات';
+
+  @override
+  String get streakNotifications => 'إشعارات الستريك (تذكير يومي)';
+
+  @override
+  String get taskNotifications => 'إشعارات المهام اليومية';
+
+  @override
+  String get insightsNotifications => 'إشعارات النصائح والمعلومات';
+
+  @override
+  String get storage => 'الوصول للملفات والصور';
+
+  @override
+  String get granted => 'مفعل';
+
+  @override
+  String get denied => 'مرفوض';
+
+  @override
+  String get openSettings => 'فتح الإعدادات';
+
+  @override
+  String get testNotification => 'إرسال إشعار تجريبي';
+
+  @override
+  String get testNotificationTitle => 'تجربة نجحت! 🎉';
+
+  @override
+  String get testNotificationBody =>
+      'إشعاراتك شغالة زي الفل، استعد لمغامرات 5210!';
+
+  @override
   String get supportTitle => 'الدعم والمساعدة';
 
   @override
@@ -1106,6 +1149,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get adminWorkingHoursEn => 'Hours (En)';
+
+  @override
+  String get adminWorkingDaysAr => 'أيام العمل (ع)';
+
+  @override
+  String get adminWorkingDaysEn => 'Days (En)';
 
   @override
   String get adminOnlineConsultation => 'استشارة أونلاين';
@@ -1385,4 +1434,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aboutMeetOurTeamTitle => 'فريق العمل';
+
+  @override
+  String get updateAvailable => 'تحديث جديد متاح 🚀';
+
+  @override
+  String get updateRequired => 'تحديث ضروري ⚠️';
+
+  @override
+  String get updateDesc =>
+      'يوجد إصدار جديد من تطبيق 5210 متاح الآن. حدث التطبيق للحصول على أفضل تجربة وأحدث الميزات.';
+
+  @override
+  String get updateButton => 'تحديث الآن';
+
+  @override
+  String get laterButton => 'لاحقاً';
 }

@@ -13,7 +13,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'edit_profile_view.dart';
 import 'edit_children_view.dart';
 import 'privacy_policy_view.dart';
-import 'support_view.dart';
+import 'notification_settings_view.dart';
 import 'about_app_view.dart';
 import 'developer_profile_view.dart';
 import '../widgets/profile_shimmer.dart';
@@ -24,6 +24,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:system_5210/core/widgets/profile_image_loader.dart';
 import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -250,7 +251,15 @@ class ProfileView extends StatelessWidget {
                                 icon: Icons.notifications_active_outlined,
                                 title: l10n.notifications,
                                 iconColor: AppTheme.appBlue,
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const NotificationSettingsView(),
+                                    ),
+                                  );
+                                },
                               ),
                               const Divider(
                                 height: 1,
@@ -324,7 +333,7 @@ class ProfileView extends StatelessWidget {
                                 icon: Icons.star_border_rounded,
                                 title: l10n.rateFeedback,
                                 iconColor: AppTheme.appBlue,
-                                onTap: () {},
+                                onTap: _launchRateUrl,
                               ),
                               const Divider(
                                 height: 1,
@@ -629,6 +638,17 @@ class ProfileView extends StatelessWidget {
         Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       },
     );
+  }
+
+  Future<void> _launchRateUrl() async {
+    const url =
+        'https://play.google.com/store/apps/details?id=com.aliabdelnaser.system5210';
+    if (!await launchUrl(
+      Uri.parse(url),
+      mode: LaunchMode.externalApplication,
+    )) {
+      debugPrint("Could not launch $url");
+    }
   }
 }
 

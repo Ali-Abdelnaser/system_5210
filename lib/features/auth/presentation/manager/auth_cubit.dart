@@ -131,13 +131,24 @@ class AuthCubit extends Cubit<AuthState> {
       return;
     }
     final result = await loginWithSocialUseCase(type);
-    result.fold((failure) => emit(AuthFailure(failure.message)), (user) async {
-      final existsResult = await checkUserDataExistsUseCase(user.uid);
-      existsResult.fold(
-        (failure) => emit(AuthFailure(failure.message)),
-        (exists) => emit(AuthSuccess(user, dataExists: exists)),
-      );
-    });
+    result.fold(
+      (failure) {
+        // If the user simply cancelled or closed the sign-in dialog,
+        // we don't want to show an error message.
+        if (failure.message.contains("cancelled")) {
+          emit(AuthInitial());
+        } else {
+          emit(AuthFailure(failure.message));
+        }
+      },
+      (user) async {
+        final existsResult = await checkUserDataExistsUseCase(user.uid);
+        existsResult.fold(
+          (failure) => emit(AuthFailure(failure.message)),
+          (exists) => emit(AuthSuccess(user, dataExists: exists)),
+        );
+      },
+    );
   }
 
   /// Sends OTP for login; checks if phone is registered first.

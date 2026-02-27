@@ -23,16 +23,23 @@ class HomeLoading extends HomeState {}
 class HomeLoaded extends HomeState {
   final String displayName;
   final UserProfileModel userProfile;
+  final List<Doctor> specialists;
   final Map<String, dynamic>? streakResult;
 
   const HomeLoaded({
     required this.displayName,
     required this.userProfile,
+    required this.specialists,
     this.streakResult,
   });
 
   @override
-  List<Object?> get props => [displayName, userProfile, streakResult];
+  List<Object?> get props => [
+    displayName,
+    userProfile,
+    specialists,
+    streakResult,
+  ];
 }
 
 class HomeFailure extends HomeState {

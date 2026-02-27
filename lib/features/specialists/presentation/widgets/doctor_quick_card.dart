@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
+import 'package:system_5210/core/widgets/app_shimmer.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:ui';
 
@@ -55,11 +55,9 @@ class DoctorQuickCard extends StatelessWidget {
                               loadingBuilder:
                                   (context, child, loadingProgress) {
                                     if (loadingProgress == null) return child;
-                                    return Container(
-                                      color: const Color(0xFFF1F5F9),
-                                      child: const AppLoadingIndicator(
-                                        size: 30,
-                                      ),
+                                    return AppShimmer(
+                                      width: double.infinity,
+                                      height: double.infinity,
                                     );
                                   },
                               errorBuilder: (context, error, stackTrace) {

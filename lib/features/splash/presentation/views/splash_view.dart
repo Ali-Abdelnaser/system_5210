@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:system_5210/core/utils/app_routes.dart';
-import 'dart:math' as math;
 import 'package:system_5210/core/theme/app_theme.dart';
 import 'package:system_5210/core/utils/app_images.dart';
 import 'package:system_5210/core/services/permission_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
+import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
 import 'package:system_5210/core/utils/injection_container.dart' as di;
 import 'package:system_5210/core/services/local_storage_service.dart';
 
@@ -19,50 +21,72 @@ class SplashView extends StatefulWidget {
 class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   static bool _isFirstLaunch = true;
   late AnimationController _controller;
-  late Animation<double> _radiusAnimation;
-  late Animation<double> _opacityAnimation;
+
+  // Animation for each layer
+  late Animation<double> _bgFadeAnimation;
+  late Animation<double> _contentFadeAnimation;
   late Animation<double> _rotationAnimation;
+  late Animation<double> _logoScaleAnimation;
+
+  static const int _splashDurationInSeconds = 5;
 
   @override
   void initState() {
     super.initState();
 
-    // Total duration for the splash sequence
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 3500),
+      duration: const Duration(seconds: _splashDurationInSeconds),
     );
 
-    // Request multiple permissions at once
-    PermissionService.requestInitialPermissions();
-
-    // 1. Continuous Rotation
-    _rotationAnimation = Tween<double>(begin: 0, end: 4).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.0, 1.0, curve: Curves.linear),
-      ),
+    // 1. Background Fade-In (Starts after a small delay to match native logo)
+    _bgFadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.15, 0.45, curve: Curves.easeIn),
     );
 
-    // 2. Radius Animation: Stay at full radius, then collapse at the end
-    _radiusAnimation = TweenSequence([
-      TweenSequenceItem(
-        tween: ConstantTween<double>(1.0),
-        weight: 80, // Orbiting normally for 80% of time
-      ),
+    // 2. Content (Text & Loader) Fade-In
+    _contentFadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.40, 0.70, curve: Curves.easeIn),
+    );
+
+    // 3. Subtle Logo Breathing (Starts after background is visible)
+    _logoScaleAnimation = TweenSequence([
+      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 40),
       TweenSequenceItem(
         tween: Tween<double>(
           begin: 1.0,
-          end: 0.0,
+          end: 1.05,
         ).chain(CurveTween(curve: Curves.easeInOut)),
-        weight: 20, // Collapse quickly in the last 20%
+        weight: 30,
+      ),
+      TweenSequenceItem(
+        tween: Tween<double>(
+          begin: 1.05,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
+        weight: 30,
       ),
     ]).animate(_controller);
 
-    _opacityAnimation = TweenSequence([
-      TweenSequenceItem(tween: ConstantTween<double>(1.0), weight: 85),
-      TweenSequenceItem(tween: Tween<double>(begin: 1.0, end: 0.0), weight: 15),
-    ]).animate(_controller);
+    // 4. Loader Rotation (Premium dynamic rotation)
+    _rotationAnimation = Tween<double>(begin: 0, end: 3).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.40, 1.0, curve: Curves.easeInOutCubic),
+      ),
+    );
+
+    PermissionService.requestInitialPermissions();
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Trigger pre-fetching while animation plays
+      di.sl<HomeCubit>().loadUserProfile();
+      di.sl<RecipeCubit>().getRecipes();
+    }
+    // ----------------------------
 
     if (!_isFirstLaunch) {
       _navigateNext();
@@ -81,28 +105,36 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 
   Future<void> _navigateNext() async {
-    // 1. Check Language
     final localStorage = di.sl<LocalStorageService>();
     final settings = await localStorage.get('settings', 'language');
     final bool hasLanguage = settings != null;
 
     if (!mounted) return;
 
+    String nextRoute;
     if (!hasLanguage) {
-      Navigator.pushReplacementNamed(context, AppRoutes.language);
-      return;
+      nextRoute = AppRoutes.language;
+    } else {
+      final user = FirebaseAuth.instance.currentUser;
+      nextRoute = (user != null) ? AppRoutes.home : AppRoutes.onboarding;
     }
 
-    // 2. Check Auth
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // User is logged in, reload to get fresh token/claims if needed
-      // await user.reload(); // Optional, but good practice
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
-    } else {
-      // User not logged in, go to Onboarding (which leads to Login)
-      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
-    }
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, anim, secAnim) {
+          final route = AppRoutes.onGenerateRoute(
+            RouteSettings(name: nextRoute),
+          );
+          return (route is MaterialPageRoute)
+              ? route.builder(context)
+              : const Scaffold();
+        },
+        transitionsBuilder: (context, anim, secAnim, child) =>
+            FadeTransition(opacity: anim, child: child),
+        transitionDuration: const Duration(milliseconds: 1000),
+      ),
+    );
   }
 
   @override
@@ -116,36 +148,88 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
+        alignment: Alignment.center,
         children: [
-          // Background image
           Positioned.fill(
-            child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
+            child: FadeTransition(
+              opacity: _bgFadeAnimation,
+              child: Image.asset(AppImages.authBackground, fit: BoxFit.cover),
+            ),
           ),
 
           Center(
-            child: AnimatedBuilder(
-              animation: _controller,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _opacityAnimation.value,
-                  child: SizedBox(
-                    width: 200,
-                    height: 200,
-                    child: CustomPaint(
-                      painter: TrailPainter(
-                        rotationProgress: _rotationAnimation.value,
-                        radiusMultiplier: _radiusAnimation.value,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                FadeTransition(
+                  opacity: _contentFadeAnimation,
+                  child: RotationTransition(
+                    turns: _rotationAnimation,
+                    child: SizedBox(
+                      width: 200,
+                      height: 200,
+                      child: CustomPaint(
+                        painter: LoadingArcPainter(
+                          colors: [
+                            AppTheme.appBlue.withOpacity(0.0),
+                            AppTheme.appBlue.withOpacity(0.7),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+
+                ScaleTransition(
+                  scale: _logoScaleAnimation,
+                  child: Image.asset(AppImages.logo, width: 180, height: 180),
+                ),
+              ],
+            ),
+          ),
+
+          Positioned(
+            bottom: 250,
+            child: FadeTransition(
+              opacity: _contentFadeAnimation,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '5210EG',
+                    style: GoogleFonts.poppins(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 6,
+                      color: AppTheme.appBlue,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 1.5,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
                         colors: [
-                          AppTheme.appRed,
-                          AppTheme.appYellow,
-                          AppTheme.appGreen,
-                          AppTheme.appBlue,
+                          AppTheme.appBlue.withOpacity(0),
+                          AppTheme.appBlue.withOpacity(0.5),
+                          AppTheme.appBlue.withOpacity(0),
                         ],
                       ),
                     ),
                   ),
-                );
-              },
+                  const SizedBox(height: 12),
+                  Text(
+                    'HEALTHY HABITS FOR FAMILIES',
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 2.5,
+                      color: AppTheme.appBlue.withOpacity(0.5),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -154,63 +238,36 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 }
 
-class TrailPainter extends CustomPainter {
-  final double rotationProgress;
-  final double radiusMultiplier;
+class LoadingArcPainter extends CustomPainter {
   final List<Color> colors;
-
-  TrailPainter({
-    required this.rotationProgress,
-    required this.radiusMultiplier,
-    required this.colors,
-  });
+  LoadingArcPainter({required this.colors});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    // Base radius is size.width / 3, multiplied by our collapse factor
-    final radius = (size.width / 3) * radiusMultiplier;
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
-    // If radius is almost zero, draw a single merging dot at center
-    if (radiusMultiplier < 0.1) {
-      final mergePaint = Paint()
-        ..color = colors[0].withOpacity(radiusMultiplier * 10);
-      canvas.drawCircle(center, 14 * radiusMultiplier * 10, mergePaint);
-      return;
-    }
+    // 1. Subtle Glow Background Arc
+    final shadowPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 5.0
+      ..strokeCap = StrokeCap.round
+      ..color = colors.last.withOpacity(0.15)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 3);
+    canvas.drawArc(rect, 0.5, 1.8, false, shadowPaint);
 
-    for (int i = 0; i < 4; i++) {
-      final double startAngle =
-          (i * math.pi / 2) + (rotationProgress * 2 * math.pi);
-      final rect = Rect.fromCircle(center: center, radius: radius);
+    // 2. Main Gradient Arc
+    final paint = Paint()
+      ..shader = SweepGradient(
+        colors: colors,
+        stops: const [0.0, 1.0],
+      ).createShader(rect)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3.0
+      ..strokeCap = StrokeCap.round;
 
-      // Draw trails with shrinking width and opacity during collapse
-      for (double j = 0; j < 1.0; j += 0.1) {
-        final paint = Paint()
-          ..color = colors[i].withOpacity(
-            0.5 * (1 - j) * math.min(1.0, radiusMultiplier * 2),
-          )
-          ..style = PaintingStyle.stroke
-          ..strokeCap = StrokeCap.round
-          ..strokeWidth = 22 * (1 - j * 0.5) * (0.3 + 0.7 * radiusMultiplier);
-
-        canvas.drawArc(rect, startAngle - (j * 0.8), 0.15, false, paint);
-      }
-
-      // Draw leading dot
-      final dotPaint = Paint()..color = colors[i];
-      final dotOffset = Offset(
-        center.dx + radius * math.cos(startAngle),
-        center.dy + radius * math.sin(startAngle),
-      );
-      canvas.drawCircle(
-        dotOffset,
-        14 * (0.4 + 0.6 * radiusMultiplier),
-        dotPaint,
-      );
-    }
+    canvas.drawArc(rect, 0.5, 1.8, false, paint);
   }
 
   @override
-  bool shouldRepaint(covariant TrailPainter oldDelegate) => true;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

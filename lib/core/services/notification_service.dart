@@ -4,8 +4,11 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:system_5210/core/utils/app_routes.dart';
+import 'package:system_5210/core/services/local_storage_service.dart';
+import 'package:system_5210/core/utils/injection_container.dart' as di;
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -16,6 +19,7 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
+    if (kIsWeb) return; // Not supported on web without complex setup
     try {
       tz_data.initializeTimeZones();
 
@@ -81,21 +85,25 @@ class NotificationService {
     required String title,
     required String body,
   }) async {
+    if (!await _shouldShowNotification('streak')) return;
+    final playSound = await _shouldPlaySound();
+
     try {
       await flutterLocalNotificationsPlugin.zonedSchedule(
         id: 0,
         title: title,
         body: body,
         scheduledDate: _nextInstance1015PM(),
-        notificationDetails: const NotificationDetails(
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             'daily_streak_channel',
             'Daily Streak Reminders',
             importance: Importance.max,
             priority: Priority.high,
             icon: 'ic_stat_name',
+            playSound: playSound,
           ),
-          iOS: DarwinNotificationDetails(),
+          iOS: DarwinNotificationDetails(presentSound: playSound),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
@@ -110,12 +118,15 @@ class NotificationService {
     required String title,
     required String body,
     required DateTime scheduledDate,
+    String category = 'insights',
     String? payload,
   }) async {
     try {
+      if (!await _shouldShowNotification(category)) return;
+      final playSound = await _shouldPlaySound();
+
       final tzScheduledDate = tz.TZDateTime.from(scheduledDate, tz.local);
 
-      // التأكد إن الوقت مش في الماضي
       if (tzScheduledDate.isBefore(tz.TZDateTime.now(tz.local))) {
         debugPrint("Skipping scheduling for past date: $tzScheduledDate");
         return;
@@ -126,7 +137,7 @@ class NotificationService {
         title: title,
         body: body,
         scheduledDate: tzScheduledDate,
-        notificationDetails: const NotificationDetails(
+        notificationDetails: NotificationDetails(
           android: AndroidNotificationDetails(
             'daily_tips_channel',
             'Daily Tips',
@@ -134,12 +145,12 @@ class NotificationService {
             importance: Importance.max,
             priority: Priority.high,
             icon: 'ic_stat_name',
-            playSound: true,
+            playSound: playSound,
           ),
           iOS: DarwinNotificationDetails(
             presentAlert: true,
             presentBadge: true,
-            presentSound: true,
+            presentSound: playSound,
           ),
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -180,6 +191,9 @@ class NotificationService {
         }
       }
 
+      if (!await _shouldShowNotification('all')) return;
+      final playSound = await _shouldPlaySound();
+
       await flutterLocalNotificationsPlugin.show(
         id: id,
         title: title,
@@ -191,7 +205,7 @@ class NotificationService {
             importance: Importance.max,
             priority: Priority.high,
             icon: 'ic_stat_name',
-            playSound: true,
+            playSound: playSound,
             enableVibration: true,
             styleInformation: bigPictureStyleInformation,
             number: badgeCount,
@@ -208,7 +222,7 @@ class NotificationService {
           iOS: DarwinNotificationDetails(
             presentAlert: true,
             presentBadge: true,
-            presentSound: true,
+            presentSound: playSound,
             badgeNumber: badgeCount,
             attachments: imageUrl != null
                 ? [DarwinNotificationAttachment(imageUrl)]
@@ -252,5 +266,24 @@ class NotificationService {
 
   Future<void> cancelAll() async {
     await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  Future<bool> _shouldShowNotification(String category) async {
+    final storage = di.sl<LocalStorageService>();
+    final settings = await storage.get('app_settings', 'notification_settings');
+    if (settings == null) return true;
+
+    final allEnabled = settings['all'] ?? true;
+    if (!allEnabled) return false;
+
+    if (category == 'all') return true;
+    return settings[category] ?? true;
+  }
+
+  Future<bool> _shouldPlaySound() async {
+    final storage = di.sl<LocalStorageService>();
+    final settings = await storage.get('app_settings', 'notification_settings');
+    if (settings == null) return true;
+    return settings['sounds'] ?? true;
   }
 }

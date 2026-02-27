@@ -9,6 +9,8 @@ import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubi
 import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_state.dart';
 import 'package:system_5210/core/widgets/app_back_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:system_5210/core/widgets/app_loading_indicator.dart';
+import 'package:system_5210/features/games/quizGame/presentation/widgets/quiz_glass_container.dart';
 import 'quiz_game_view.dart';
 
 class QuizLevelsView extends StatefulWidget {
@@ -44,9 +46,11 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
     super.dispose();
   }
 
-  void _scrollToCurrentLevel(int unlockedLevel) {
+  bool _isInitialScrollDone = false;
+
+  void _scrollToCurrentLevel(int unlockedLevel, {bool immediate = false}) {
     // Add a small delay to ensure the list is fully rendered and layout is stable
-    Future.delayed(const Duration(milliseconds: 300), () {
+    Future.delayed(const Duration(milliseconds: 100), () {
       if (!mounted || !_scrollController.hasClients) return;
 
       // Approximate height per item based on UI structure
@@ -54,15 +58,24 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
       // Subtract half the screen height to center the level
       final double screenHeight = MediaQuery.of(context).size.height;
       final double scrollPosition =
-          ((unlockedLevel - 2) * itemHeight) -
+          ((unlockedLevel - 1) * itemHeight) -
           (screenHeight / 2) +
           (itemHeight / 2);
 
-      _scrollController.animateTo(
-        scrollPosition.clamp(0, _scrollController.position.maxScrollExtent),
-        duration: 1200.ms,
-        curve: Curves.easeInOutCubic,
+      final target = scrollPosition.clamp(
+        0.0,
+        _scrollController.position.maxScrollExtent,
       );
+
+      if (immediate) {
+        _scrollController.jumpTo(target);
+      } else {
+        _scrollController.animateTo(
+          target,
+          duration: 1200.ms,
+          curve: Curves.easeInOutCubic,
+        );
+      }
     });
   }
 
@@ -81,11 +94,18 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
 
           BlocConsumer<QuizCubit, QuizState>(
             listener: (context, state) {
-              if (state is QuizLevelsLoaded) {
+              if (state is QuizLevelsLoaded && !_isInitialScrollDone) {
+                _scrollToCurrentLevel(state.lastUnlockedLevel, immediate: true);
+                _isInitialScrollDone = true;
+              } else if (state is QuizLevelsLoaded) {
                 _scrollToCurrentLevel(state.lastUnlockedLevel);
               }
             },
             builder: (context, state) {
+              if (state is QuizLoading && !_isInitialScrollDone) {
+                return _buildLoadingState();
+              }
+
               int unlockedLevels = state.lastUnlockedLevel;
               Map<int, int> levelStars = state.levelStars;
               int totalStars = levelStars.values.fold(0, (sum, s) => sum + s);
@@ -93,7 +113,7 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
                 0,
                 (sum, s) => sum + s,
               );
-//android\app
+
               return SafeArea(
                 child: Column(
                   children: [
@@ -139,7 +159,41 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
               );
             },
           ),
+
+          // Back Button
+          const Positioned(top: 50, left: 20, child: AppBackButton()),
         ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: QuizGlassContainer(
+        padding: const EdgeInsets.all(40),
+        borderRadius: 40,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppLoadingIndicator(size: 80),
+            const SizedBox(height: 25),
+            Text(
+              'جاري تحميل المتعة...',
+              style: GoogleFonts.cairo(
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                color: const Color.fromARGB(255, 51, 51, 51),
+                shadows: [
+                  Shadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1014,7 +1068,9 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
                                 );
                               },
                               child: Text(
-                                stars > 0 ? 'إعادة اللعب' : 'ابدأ الآن',
+                                (score > 0 || stars > 0)
+                                    ? 'إعادة اللعب'
+                                    : 'ابدأ الآن',
                                 style: GoogleFonts.cairo(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 18,

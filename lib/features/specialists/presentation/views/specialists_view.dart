@@ -6,7 +6,6 @@ import 'package:system_5210/core/utils/injection_container.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:system_5210/core/widgets/app_shimmer.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
 import 'package:system_5210/features/specialists/presentation/views/doctor_details_view.dart';
 import 'package:system_5210/core/widgets/app_back_button.dart';
 import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
@@ -222,9 +221,9 @@ class _SpecialistsViewState extends State<SpecialistsView> {
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
-                      return Container(
-                        color: const Color(0xFFF1F5F9),
-                        child: const AppLoadingIndicator(size: 24),
+                      return AppShimmer(
+                        width: double.infinity,
+                        height: double.infinity,
                       );
                     },
                     errorBuilder: (context, error, stackTrace) {

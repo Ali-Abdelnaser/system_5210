@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
 import 'package:system_5210/core/utils/app_images.dart';
 import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
 import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_state.dart';
+import '../widgets/drifting_cloud.dart';
+import '../widgets/quiz_hud.dart';
+import '../widgets/quiz_progress_bar.dart';
+import '../widgets/question_container.dart';
+import '../widgets/options_grid.dart';
+import '../widgets/quiz_lifelines.dart';
+import 'dart:ui';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:system_5210/core/theme/app_theme.dart';
 
 class QuizGameView extends StatefulWidget {
   final int level;
@@ -32,14 +38,16 @@ class _QuizGameViewState extends State<QuizGameView> {
             _showResultDialog(context, state);
           }
         },
+        buildWhen: (previous, current) {
+          // Only rebuild the main structure if the major state type changes
+          return previous.runtimeType != current.runtimeType;
+        },
         builder: (context, state) {
           if (state is QuizLoading) {
             return _buildLoadingState();
           }
 
           if (state is QuizGameInProgress) {
-            final question = state.questions[state.currentQuestionIndex];
-
             return Stack(
               children: [
                 // 1. App Background
@@ -50,45 +58,48 @@ class _QuizGameViewState extends State<QuizGameView> {
                   ),
                 ),
 
-                // 2. Animated Atmosphere (Drifting Clouds - Spread across screen)
-                ...List.generate(12, (index) => _buildDriftingCloud(index)),
+                // 2. Animated Atmosphere (Drifting Clouds)
+                ...List.generate(12, (index) => DriftingCloud(index: index)),
 
                 SafeArea(
                   child: Column(
                     children: [
-                      // 3. Premium HUD
-                      _buildHUD(state),
-
+                      const QuizHUD(),
                       const SizedBox(height: 10),
-
-                      // 4. Progress Bar
-                      _buildProgressBar(state),
-
+                      const QuizProgressBar(),
                       const SizedBox(height: 20),
-
-                      // 5. Animated Question Container
-                      _buildQuestionContainer(question, state),
-
+                      const QuestionContainer(),
                       const SizedBox(height: 20),
-
-                      // 6. Options List
-                      Expanded(child: _buildOptionsGrid(question, state)),
-
-                      // 7. Lifelines Section
-                      _buildLifelines(state),
-
+                      const Expanded(child: OptionsGrid()),
+                      const QuizLifelines(),
                       const SizedBox(height: 10),
                     ],
                   ),
                 ),
 
                 // 8. Tutorial Overlay (If visible)
-                if (state.isTutorialVisible) _buildTutorialOverlay(),
+                BlocBuilder<QuizCubit, QuizState>(
+                  buildWhen: (prev, curr) =>
+                      (prev is QuizGameInProgress &&
+                      curr is QuizGameInProgress &&
+                      prev.isTutorialVisible != curr.isTutorialVisible),
+                  builder: (context, state) {
+                    if (state is QuizGameInProgress &&
+                        state.isTutorialVisible) {
+                      return _buildTutorialOverlay();
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
               ],
             );
           }
 
-          return const Center(child: Text('خطأ في تحميل اللعبة'));
+          if (state is QuizError) {
+            return _buildErrorState(state.message);
+          }
+
+          return const SizedBox.shrink();
         },
       ),
     );
@@ -122,552 +133,123 @@ class _QuizGameViewState extends State<QuizGameView> {
     );
   }
 
-  Widget _buildDriftingCloud(int index) {
-    // Distribute clouds more randomly across the whole height
-    final double top = (index * 70.0) % MediaQuery.of(context).size.height;
-    final double scale = 0.4 + (index % 4) * 0.25;
-    final int speed = 20 + (index * 4);
-    final double delay = index * 1.5;
-
-    return Positioned(
-          top: top,
-          left: -300,
-          child: Opacity(
-            opacity: 0.5,
-            child: Image.asset(AppImages.cloud, width: 250 * scale),
-          ),
-        )
-        .animate(onPlay: (c) => c.repeat(), delay: delay.seconds)
-        .moveX(
-          begin: -300,
-          end: 700,
-          duration: speed.seconds,
-          curve: Curves.linear,
-        );
-  }
-
-  Widget _buildHUD(QuizGameInProgress state) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Row(
-            children: [
-              // Styled Back Button
-              _buildGlassHUDItem(
-                child: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: Color(0xFF1E293B),
-                  size: 20,
-                ),
-                onTap: () {
-                  context.read<QuizCubit>().exitGame();
-                  Navigator.pop(context);
-                },
-              ),
-
-              const Spacer(),
-
-              // Points & Bonus
-              _buildGlassHUDItem(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.stars_rounded,
-                          color: Colors.amber,
-                          size: 20,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${state.score * 100}',
-                          style: GoogleFonts.cairo(
-                            color: const Color(0xFF1E293B),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (state.bonusScore > 0)
-                      Text(
-                        '+${state.bonusScore} Bonus',
-                        style: GoogleFonts.cairo(
-                          color: AppTheme.appGreen,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 10,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          // Central Timer & Streak
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTimer(state),
-              if (state.streakCount >= 2)
-                Container(
-                  margin: const EdgeInsets.only(top: 4),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.orange.withOpacity(0.5)),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.fireplace_rounded,
-                        color: Colors.orange,
-                        size: 14,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'x${state.streakCount} Streak',
-                        style: GoogleFonts.cairo(
-                          color: Colors.orange,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ],
-                  ),
-                ).animate().scale().shake(),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGlassHUDItem({required Widget child, VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: _buildGlassContainer(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        borderRadius: 20,
-        child: child,
-      ),
-    );
-  }
-
-  Widget _buildProgressBar(QuizGameInProgress state) {
-    final progress = (state.currentQuestionIndex + 1) / state.questions.length;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25),
+  Widget _buildErrorState(String message) {
+    return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'السؤال ${state.currentQuestionIndex + 1}',
-                style: GoogleFonts.cairo(
-                  color: const Color(0xFF1E293B),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-              Text(
-                '${state.currentQuestionIndex + 1}/${state.questions.length}',
-                style: GoogleFonts.cairo(
-                  color: const Color(0xFF1E293B),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Container(
-            height: 10,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: FractionallySizedBox(
-              alignment: Alignment.centerRight,
-              widthFactor: progress,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Colors.amber, Colors.orangeAccent],
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.amber.withOpacity(0.3),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          const Icon(Icons.error_outline, color: Colors.red, size: 60),
+          const SizedBox(height: 16),
+          Text(message, style: GoogleFonts.cairo(fontSize: 18)),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('عودة'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTimer(QuizGameInProgress state) {
-    final isCritical = state.timerSeconds < 5;
-    return _buildGlassContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          borderRadius: 25,
-          borderColor: isCritical
-              ? Colors.redAccent.withOpacity(0.5)
-              : AppTheme.appGreen.withOpacity(0.3),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                '${state.timerSeconds}',
-                style: GoogleFonts.cairo(
-                  color: isCritical ? Colors.redAccent : AppTheme.appGreen,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 22,
-                ),
-              ),
-              Text(
-                'SECS',
-                style: GoogleFonts.cairo(
-                  color: (isCritical ? Colors.redAccent : AppTheme.appGreen)
-                      .withOpacity(0.7),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10,
-                ),
-              ),
-            ],
-          ),
-        )
-        .animate(target: isCritical ? 1 : 0)
-        .shake(hz: 4, curve: Curves.easeInOut)
-        .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1));
-  }
-
-  Widget _buildGlassContainer({
-    required Widget child,
-    double borderRadius = 30,
-    EdgeInsetsGeometry? padding,
-    EdgeInsetsGeometry? margin,
-    Color? borderColor,
-  }) {
-    return Container(
-      margin: margin,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(borderRadius),
+  Widget _buildTutorialOverlay() {
+    return Positioned.fill(
+      child: Container(
+        color: Colors.black.withOpacity(0.85),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: padding,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(borderRadius),
-              border: Border.all(
-                color: borderColor ?? Colors.white.withOpacity(0.35),
-                width: 1.5,
-              ),
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: SafeArea(
+            child: Column(
+              children: [
+                const Spacer(),
+                Text(
+                  'طريقة اللعب',
+                  style: GoogleFonts.cairo(
+                    color: Colors.white,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 40),
+                _buildTutorialItem(
+                  Icons.timer_outlined,
+                  'أجب بسرعة لتحصل على نقاط إضافية',
+                ),
+                _buildTutorialItem(
+                  Icons.auto_awesome_rounded,
+                  'استخدم المساعدات بحكمة، فعدم استخدامها يمنحك بونص كبير',
+                ),
+                _buildTutorialItem(
+                  Icons.fireplace_rounded,
+                  'حافظ على سلسلة الإجابات الصحيحة لمضاعفة نقاطك',
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: ElevatedButton(
+                    onPressed: () =>
+                        context.read<QuizCubit>().dismissTutorial(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.appGreen,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                    child: Text(
+                      'أنا جاهز!',
+                      style: GoogleFonts.cairo(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+              ],
             ),
-            child: child,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildQuestionContainer(question, QuizGameInProgress state) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      child: _buildGlassContainer(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          children: [
-            Text(
-              question.question,
-              textAlign: TextAlign.center,
+  Widget _buildTutorialItem(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+      child: Row(
+        textDirection: TextDirection.rtl,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.appGreen.withOpacity(0.2),
+              shape: BoxShape.circle,
+              border: Border.all(color: AppTheme.appGreen.withOpacity(0.5)),
+            ),
+            child: Icon(icon, color: AppTheme.appGreen, size: 28),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Text(
+              text,
               style: GoogleFonts.cairo(
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
-                color: const Color(0xFF1E293B),
-                height: 1.4,
+                color: Colors.white,
+                fontSize: 16,
+                height: 1.5,
               ),
               textDirection: TextDirection.rtl,
             ),
-            if (state.showCurrentHint)
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.amber.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(color: Colors.amber.withOpacity(0.5)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(
-                      Icons.lightbulb_outline_rounded,
-                      color: Colors.amber,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    Flexible(
-                      child: Text(
-                        'تلميح: ${question.hint}',
-                        style: GoogleFonts.cairo(
-                          color: Colors.amber,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                        textDirection: TextDirection.rtl,
-                      ),
-                    ),
-                  ],
-                ),
-              ).animate().scale(curve: Curves.easeOutBack).fadeIn(),
-          ],
-        ),
-      ),
-    ).animate().scale(curve: Curves.easeOutBack, duration: 600.ms).fadeIn();
-  }
-
-  Widget _buildOptionsGrid(question, QuizGameInProgress state) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      itemCount: question.options.length,
-      itemBuilder: (context, index) {
-        final isCorrect = index == question.correctIndex;
-        final isSelected = index == state.selectedOptionIndex;
-        final isRemoved = state.currentRemovedOptions.contains(index);
-
-        if (isRemoved) return const SizedBox.shrink();
-
-        return Padding(
-              padding: const EdgeInsets.only(bottom: 15),
-              child: GestureDetector(
-                onTap: state.selectedOptionIndex == null && !isRemoved
-                    ? () => context.read<QuizCubit>().answerQuestion(index)
-                    : null,
-                child: _buildOptionTile(
-                  index: index,
-                  label: question.options[index],
-                  isSelected: isSelected,
-                  isCorrect: isCorrect,
-                  showFeedback: state.selectedOptionIndex != null,
-                ),
-              ),
-            )
-            .animate(
-              target: isSelected && state.isLastAnswerCorrect == false ? 1 : 0,
-            )
-            .shake(hz: 8, curve: Curves.easeInOut);
-      },
-    );
-  }
-
-  Widget _buildOptionTile({
-    required int index,
-    required String label,
-    required bool isSelected,
-    required bool isCorrect,
-    required bool showFeedback,
-  }) {
-    Color borderCol = Colors.white.withOpacity(0.35);
-
-    if (showFeedback) {
-      if (isCorrect) {
-        borderCol = Colors.greenAccent;
-      } else if (isSelected) {
-        borderCol = Colors.redAccent;
-      }
-    } else if (isSelected) {
-      borderCol = Colors.amber;
-    }
-
-    return Stack(
-          children: [
-            _buildGlassContainer(
-              padding: const EdgeInsets.all(18),
-              borderRadius: 20,
-              borderColor: borderCol,
-              child: Container(
-                decoration: isCorrect && showFeedback
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.greenAccent.withOpacity(0.2),
-                            blurRadius: 15,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      )
-                    : null,
-                child: Row(
-                  children: [
-                    _buildOptionLabel(index, isCorrect && showFeedback),
-                    const SizedBox(width: 15),
-                    Expanded(
-                      child: Text(
-                        label,
-                        style: GoogleFonts.cairo(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF1E293B),
-                        ),
-                        textDirection: TextDirection.rtl,
-                      ),
-                    ),
-                    if (showFeedback && isCorrect)
-                      const Icon(
-                        Icons.check_circle_rounded,
-                        color: Colors.greenAccent,
-                        size: 28,
-                      ).animate().scale(curve: Curves.easeOutBack).fadeIn(),
-                    if (showFeedback && isSelected && !isCorrect)
-                      const Icon(
-                        Icons.cancel_rounded,
-                        color: Colors.redAccent,
-                        size: 28,
-                      ).animate().shake(),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        )
-        .animate(target: isCorrect && showFeedback ? 1 : 0)
-        .shimmer(color: Colors.white.withOpacity(0.2), duration: 1.seconds)
-        .scale(
-          begin: const Offset(1, 1),
-          end: const Offset(1.02, 1.02),
-          duration: 400.ms,
-        );
-  }
-
-  Widget _buildOptionLabel(int index, bool isCorrect) {
-    final labels = ['A', 'B', 'C', 'D'];
-    return Container(
-      width: 45,
-      height: 45,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: isCorrect
-            ? Colors.greenAccent.withOpacity(0.3)
-            : const Color(0xFF1E293B).withOpacity(0.1),
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: isCorrect
-              ? Colors.greenAccent
-              : const Color(0xFF1E293B).withOpacity(0.2),
-          width: 2,
-        ),
-      ),
-      child: Text(
-        labels[index % 4],
-        style: GoogleFonts.cairo(fontWeight: FontWeight.w900, fontSize: 16),
-      ),
-    );
-  }
-
-  Widget _buildLifelines(QuizGameInProgress state) {
-    return _buildGlassContainer(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      padding: const EdgeInsets.symmetric(vertical: 15),
-      borderRadius: 25,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildLifelineBtn(
-            Icons.exposure_minus_2_rounded,
-            '50:50',
-            state.isFiftyFiftyUsed,
-            () => context.read<QuizCubit>().useFiftyFifty(),
-          ),
-          _buildLifelineBtn(
-            Icons.timer_off_outlined,
-            'تجميد',
-            state.isTimeStoppedUsed,
-            () => context.read<QuizCubit>().useStopTime(),
-          ),
-          _buildLifelineBtn(
-            Icons.skip_next_rounded,
-            'تخطي',
-            state.isSkipUsed,
-            () => context.read<QuizCubit>().useSkipQuestion(),
-          ),
-          _buildLifelineBtn(
-            Icons.lightbulb_outline_rounded,
-            'تلميح',
-            state.isHintUsed,
-            () => context.read<QuizCubit>().useHint(),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildLifelineBtn(
-    IconData icon,
-    String label,
-    bool isUsed,
-    VoidCallback onTap,
-  ) {
-    return Tooltip(
-      message: label,
-      child: GestureDetector(
-        onTap: isUsed ? null : onTap,
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: isUsed ? Colors.black26 : Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isUsed
-                      ? Colors.transparent
-                      : Colors.white.withOpacity(0.5),
-                  width: 1.5,
-                ),
-              ),
-              child: Icon(
-                icon,
-                color: isUsed ? Colors.black12 : AppTheme.appGreen,
-                size: 26,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: GoogleFonts.cairo(
-                color: isUsed ? Colors.black12 : AppTheme.appGreen,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    ).animate().fadeIn().slideX(begin: 0.2, end: 0);
   }
 
   void _showResultDialog(BuildContext context, QuizGameFinished state) {
-    final cubit = context.read<QuizCubit>();
+    // Note: This dialog uses state data, so we don't need a separate BlocBuilder here
+    // because it's called once when the state type changes.
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -694,6 +276,7 @@ class _QuizGameViewState extends State<QuizGameView> {
                 ),
                 child: Dialog(
                   backgroundColor: Colors.transparent,
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Stack(
                     clipBehavior: Clip.none,
                     alignment: Alignment.topCenter,
@@ -797,128 +380,47 @@ class _QuizGameViewState extends State<QuizGameView> {
                                   const SizedBox(height: 8),
                                   Text(
                                     '✨ +${state.noAidsBonus} بونص عدم استخدام مساعدات ✨',
+                                    textAlign: TextAlign.center,
                                     style: GoogleFonts.cairo(
+                                      color: Colors.amber[800],
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 12,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.orange,
                                     ),
-                                  ).animate().shimmer(),
+                                  ),
                                 ],
-                                const SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children:
-                                      List.generate(
-                                            3,
-                                            (index) => Icon(
-                                              index < state.stars
-                                                  ? Icons.star_rounded
-                                                  : Icons.star_border_rounded,
-                                              color: Colors.amber,
-                                              size: 55,
-                                            ),
-                                          )
-                                          .animate(interval: 200.ms)
-                                          .scale(curve: Curves.easeOutBack)
-                                          .shake(),
-                                ),
-                                const SizedBox(height: 35),
+                                const SizedBox(height: 30),
+                                // Action Buttons
                                 Row(
                                   children: [
                                     Expanded(
-                                      child: OutlinedButton(
-                                        style: OutlinedButton.styleFrom(
-                                          side: const BorderSide(
-                                            color: Color(0xFF1E293B),
-                                            width: 2,
-                                          ),
-                                          foregroundColor: const Color(
-                                            0xFF1E293B,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 15,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          cubit.exitGame();
+                                      child: _buildActionBtn(
+                                        'الخروج',
+                                        Colors.grey[200]!,
+                                        const Color(0xFF1E293B),
+                                        () {
                                           Navigator.pop(dialogContext);
                                           Navigator.pop(context);
                                         },
-                                        child: Text(
-                                          'الخروج',
-                                          style: GoogleFonts.cairo(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                          ),
-                                        ),
                                       ),
                                     ),
-                                    const SizedBox(width: 8),
+                                    const SizedBox(width: 15),
                                     Expanded(
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(
-                                            0xFF1E293B,
-                                          ),
-                                          foregroundColor: Colors.white,
-                                          elevation: 0,
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 15,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
-                                            ),
-                                          ),
-                                        ),
-                                        onPressed: () {
+                                      child: _buildActionBtn(
+                                        'المستوى التالي',
+                                        AppTheme.appGreen,
+                                        Colors.white,
+                                        () {
                                           Navigator.pop(dialogContext);
-                                          cubit.startLevel(widget.level);
+                                          if (state.level < 14) {
+                                            context
+                                                .read<QuizCubit>()
+                                                .startLevel(state.level + 1);
+                                          } else {
+                                            Navigator.pop(context);
+                                          }
                                         },
-                                        child: Text(
-                                          'إعادة',
-                                          style: GoogleFonts.cairo(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
-                                          ),
-                                        ),
                                       ),
                                     ),
-                                    if (state.stars >= 1) ...[
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: AppTheme.appGreen,
-                                            foregroundColor: Colors.white,
-                                            elevation: 0,
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 15,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                            ),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(dialogContext);
-                                            cubit.startLevel(widget.level + 1);
-                                          },
-                                          child: Text(
-                                            'التالي',
-                                            style: GoogleFonts.cairo(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
                                   ],
                                 ),
                               ],
@@ -926,23 +428,35 @@ class _QuizGameViewState extends State<QuizGameView> {
                           ),
                         ),
                       ),
+
+                      // Floating Header Image
                       Positioned(
-                        top: -100,
-                        child:
-                            Image.asset(
-                                  state.stars >= 1
-                                      ? AppImages.gameSuccess3
-                                      : AppImages.gameFail3,
-                                  height: 220,
+                        top: -80,
+                        child: Image.asset(
+                          state.stars >= 2
+                              ? AppImages.gameSuccess1
+                              : AppImages.gameSuccess2,
+                          width: 180,
+                        ).animate().shimmer(duration: 800.ms),
+                      ),
+                      // Stars Row
+                      Positioned(
+                        top: 60,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(3, (i) {
+                            final hasStar = i < state.stars;
+                            return Icon(
+                                  hasStar
+                                      ? Icons.star_rounded
+                                      : Icons.star_outline_rounded,
+                                  color: Colors.amber,
+                                  size: 45,
                                 )
-                                .animate()
-                                .slideY(
-                                  begin: 0.3,
-                                  end: 0,
-                                  duration: 800.ms,
-                                  curve: Curves.easeOutBack,
-                                )
-                                .fadeIn(),
+                                .animate(delay: (200 * i).ms)
+                                .scale(curve: Curves.easeOutBack);
+                          }),
+                        ),
                       ),
                     ],
                   ),
@@ -955,66 +469,13 @@ class _QuizGameViewState extends State<QuizGameView> {
     );
   }
 
-  Widget _buildTutorialOverlay() {
-    return Container(
-      color: Colors.black54,
-      child: Center(
-        child: Container(
-          padding: const EdgeInsets.all(25),
-          margin: const EdgeInsets.symmetric(horizontal: 30),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.help_outline_rounded,
-                size: 50,
-                color: Colors.blue,
-              ),
-              const SizedBox(height: 15),
-              Text(
-                'كيف تلعب',
-                style: GoogleFonts.cairo(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-                textDirection: TextDirection.rtl,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'أجب عن الأسئلة قبل انتهاء الوقت، يمكنك استخدام المساعدات بالأسفل إذا احتجت',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.cairo(fontSize: 16),
-                textDirection: TextDirection.rtl,
-              ),
-              const SizedBox(height: 25),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => context.read<QuizCubit>().dismissTutorial(),
-                  child: Text(
-                    'ابدأ الآن',
-                    style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ).animate().fadeIn();
-  }
-
   Widget _buildScoreDetail(String label, String value, {bool isBonus = false}) {
     return Column(
       children: [
         Text(
           label,
           style: GoogleFonts.cairo(
-            fontSize: 12,
+            fontSize: 14,
             color: const Color(0xFF1E293B).withOpacity(0.6),
             fontWeight: FontWeight.bold,
           ),
@@ -1022,12 +483,29 @@ class _QuizGameViewState extends State<QuizGameView> {
         Text(
           value,
           style: GoogleFonts.cairo(
-            fontSize: 18,
-            color: isBonus ? AppTheme.appGreen : const Color(0xFF1E293B),
+            fontSize: 22,
             fontWeight: FontWeight.w900,
+            color: isBonus ? AppTheme.appGreen : const Color(0xFF1E293B),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildActionBtn(String label, Color bg, Color fg, VoidCallback onTap) {
+    return ElevatedButton(
+      onPressed: onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: bg,
+        foregroundColor: fg,
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 16),
+      ),
     );
   }
 }

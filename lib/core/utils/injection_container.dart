@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/foundation.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-
 import 'package:get_it/get_it.dart';
 import 'package:system_5210/features/specialists/data/datasources/specialists_remote_data_source.dart';
 import 'package:system_5210/features/specialists/data/datasources/specialists_remote_data_source_impl.dart';
@@ -34,7 +34,6 @@ import 'package:system_5210/features/user_setup/domain/repositories/user_setup_r
 import 'package:system_5210/features/user_setup/domain/usecases/save_user_profile_usecase.dart';
 import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
 import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-
 import 'package:system_5210/features/user_setup/domain/usecases/get_user_profile_usecase.dart';
 import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
 import 'package:system_5210/features/auth/domain/usecases/logout_usecase.dart';
@@ -72,6 +71,7 @@ import 'package:system_5210/features/step_tracker/presentation/manager/step_trac
 
 import 'package:system_5210/core/services/notification_service.dart';
 import 'package:system_5210/core/services/streak_service.dart';
+import 'package:system_5210/core/services/update_service.dart';
 
 final sl = GetIt.instance;
 
@@ -81,7 +81,8 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton(() => NotificationService());
   sl.registerLazySingleton(() => StreakService(sl()));
-  sl.registerLazySingleton(() => StepTrackerService());
+  sl.registerLazySingleton(() => StepTrackerService(sl(), sl()));
+  sl.registerLazySingleton(() => UpdateService(sl(), sl()));
   // Use cases
   sl.registerLazySingleton(() => GetSpecialists(sl()));
   sl.registerLazySingleton(() => LoginWithEmailUseCase(sl()));
@@ -116,6 +117,7 @@ Future<void> init() async {
   sl.registerFactory(
     () => HomeCubit(
       getUserProfileUseCase: sl(),
+      getSpecialists: sl(),
       authRepository: sl(),
       streakService: sl(),
     ),
@@ -235,12 +237,12 @@ Future<void> init() async {
   sl.registerLazySingleton(() => StorageService());
 
   // GoogleSignIn 7.x registration
-  // TODO: Replace "YOUR_WEB_CLIENT_ID" with your actual Web Client ID from Firebase Console
-  // You can find this in the Firebase Console -> Authentication -> Sign-in method -> Google -> Web SDK configuration
-  // It usually looks like: "1234567890-abcdefghijklmnopqrstuvwxyz.apps.googleusercontent.com"
+  // For Android, google_sign_in reads from google-services.json automatically.
+  // We only need to provide clientId for Web.
   await GoogleSignIn.instance.initialize(
-    serverClientId:
-        "438853515029-pvmsfd2hjj6ktu9e3n1r54901l25d2f1.apps.googleusercontent.com",
+    clientId: kIsWeb
+        ? "438853515029-pvmsfd2hjj6ktu9e3n1r54901l25d2f1.apps.googleusercontent.com"
+        : null,
   );
   sl.registerLazySingleton<GoogleSignIn>(() => GoogleSignIn.instance);
 
