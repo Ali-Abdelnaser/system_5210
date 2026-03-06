@@ -24,6 +24,7 @@ class StepTrackerCubit extends Cubit<StepTrackerState> {
             steps: initialSteps,
             weeklySteps: history,
             isGoalReached: initialSteps >= StepTrackerService.goalThreshold,
+            hasCelebrated: initialSteps < StepTrackerService.goalThreshold ? false : true,
           ),
         );
 
@@ -35,11 +36,14 @@ class StepTrackerCubit extends Cubit<StepTrackerState> {
             final today = DateTime.now().toIso8601String().split('T')[0];
             newHistory[today] = steps;
 
+            final isReached = steps >= StepTrackerService.goalThreshold;
+
             emit(
               StepTrackerLoaded(
                 steps: steps,
                 weeklySteps: newHistory,
-                isGoalReached: steps >= StepTrackerService.goalThreshold,
+                isGoalReached: isReached,
+                hasCelebrated: currentState.hasCelebrated || isReached,
               ),
             );
           }
@@ -55,11 +59,13 @@ class StepTrackerCubit extends Cubit<StepTrackerState> {
   Future<void> refreshSteps() async {
     final steps = await _stepTrackerService.getStepsToday();
     final history = await _stepTrackerService.getWeeklyHistory();
+    final isReached = steps >= StepTrackerService.goalThreshold;
     emit(
       StepTrackerLoaded(
         steps: steps,
         weeklySteps: history,
-        isGoalReached: steps >= StepTrackerService.goalThreshold,
+        isGoalReached: isReached,
+        hasCelebrated: isReached, // If we refresh and it's reached, assume celebrated or don't trigger now
       ),
     );
   }

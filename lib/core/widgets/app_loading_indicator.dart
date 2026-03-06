@@ -75,7 +75,7 @@ class _RotatingDotsPainter extends CustomPainter {
       final rect = Rect.fromCircle(center: center, radius: radius);
       for (double j = 0; j < 1.0; j += 0.2) {
         final paint = Paint()
-          ..color = colors[i].withValues(alpha: 0.5 * (1 - j))
+          ..color = colors[i].withOpacity(0.5 * (1 - j))
           ..style = PaintingStyle.stroke
           ..strokeCap = StrokeCap.round
           ..strokeWidth = (size.width * 0.1) * (1 - j * 0.5);

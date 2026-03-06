@@ -313,7 +313,7 @@ class _AdminEditDoctorViewState extends State<AdminEditDoctorView> {
                           borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
-                              color: AppTheme.appBlue.withValues(alpha: 0.3),
+                              color: AppTheme.appBlue.withOpacity(0.3),
                               blurRadius: 10,
                             ),
                           ],

@@ -21,7 +21,25 @@ class StepTrackerService {
 
   Stream<int> get stepsStream => _stepsController.stream;
 
+  // Calculation helpers
+  static double calculateDistanceKm(int steps, double heightCm) {
+    final strideLengthCm = heightCm * 0.413;
+    return (steps * strideLengthCm) / 100000;
+  }
+
+  static double calculateCalories(int steps, double heightCm, double weightKg) {
+    final distanceKm = calculateDistanceKm(steps, heightCm);
+    return weightKg * distanceKm * 0.75;
+  }
+
+  static int calculateActiveMinutes(int steps) {
+    return (steps / 100).round();
+  }
+
   Future<bool> authorize() async {
+    // activityRecognition is Android-specific for permission_handler
+    // On iOS, Pedometer will work if "Motion Usage Description" is in Info.plist
+    // We can check platform but permission_handler handles it gracefully
     final status = await Permission.activityRecognition.request();
     if (status.isGranted) {
       _startListening();
@@ -40,35 +58,40 @@ class StepTrackerService {
 
   Future<void> _onStepCount(StepCount event) async {
     final now = DateTime.now();
-    final today = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    ).toIso8601String().split('T')[0];
+    final today = formatDate(now);
 
     final data = await _storage.get(boxName, keyMeta) ?? {};
 
     int dayStartSteps = data['day_start_steps'] ?? event.steps;
     String lastDate = data['last_update_date'] ?? today;
     bool goalNotified = data['goal_notified_$today'] ?? false;
+    int sensorAtLastUpdate = data['last_sensor_steps'] ?? event.steps;
 
-    // New day detection
+    // Detect sensor reset (phone reboot or overflow)
+    // We check if steps decreased significantly without a date change
+    if (event.steps < (sensorAtLastUpdate - 100)) {
+      // Sensor reset: we need to adjust dayStartSteps offset
+      // If we are on the same day, we want todaySteps to stay roughly the same
+      int currentTodaySteps = data['current_daily_steps'] ?? 0;
+      dayStartSteps = event.steps - currentTodaySteps;
+      if (dayStartSteps < 0) dayStartSteps = 0;
+    }
+
+    // New day detection (Gap handling)
     if (lastDate != today) {
-      // Save yesterday's data to history before resetting
+      // Save last known steps to history if they don't exist
       await _saveToHistory(lastDate, data['current_daily_steps'] ?? 0);
+
+      // Update dayStartSteps for the new day
       dayStartSteps = event.steps;
       lastDate = today;
       goalNotified = false;
-    }
-    // Sensor reset detection (e.g. phone reboot)
-    else if (event.steps < (data['last_sensor_steps'] ?? 0)) {
-      dayStartSteps = event.steps;
     }
 
     int todaySteps = event.steps - dayStartSteps;
     if (todaySteps < 0) todaySteps = 0;
 
-    // Goal detection
+    // Goal detection (using unified threshold)
     if (todaySteps >= goalThreshold && !goalNotified) {
       _notifyGoalReached();
       goalNotified = true;
@@ -86,13 +109,21 @@ class StepTrackerService {
     _stepsController.add(todaySteps);
   }
 
+  static String formatDate(DateTime date) {
+    return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+
   Future<void> _saveToHistory(String date, int steps) async {
     final history = await _storage.get(boxName, keyHistory) ?? {};
-    history[date] = steps;
 
-    // Keep only last 10 days to save space
+    // Only save if this date isn't already in history or if steps are higher
+    if (history[date] == null || (history[date] as int) < steps) {
+      history[date] = steps;
+    }
+
+    // Keep only last 14 days for a better weekly analysis UI
     final sortedKeys = history.keys.toList()..sort();
-    if (sortedKeys.length > 10) {
+    if (sortedKeys.length > 14) {
       history.remove(sortedKeys.first);
     }
 
@@ -111,8 +142,8 @@ class StepTrackerService {
       });
     }
 
-    // Add today to the history returned for the UI
-    final today = DateTime.now().toIso8601String().split('T')[0];
+    // Ensure today is in the map for UI
+    final today = formatDate(DateTime.now());
     history[today] = await getStepsToday();
 
     return history;

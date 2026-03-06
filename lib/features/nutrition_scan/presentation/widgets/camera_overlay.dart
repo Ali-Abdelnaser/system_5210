@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:system_5210/core/theme/app_theme.dart';
 
-enum cameraStatus { initializing, searching, textDetected, ready }
+enum CameraStatus { initializing, searching, textDetected, ready }
 
 class CameraOverlay extends StatelessWidget {
-  final cameraStatus status;
+  final CameraStatus status;
   final String helperMessage;
 
   const CameraOverlay({
     super.key,
-    this.status = cameraStatus.searching,
+    this.status = CameraStatus.searching,
     this.helperMessage = "Place the ingredients label inside the frame",
   });
 
   Color _getFrameColor() {
     switch (status) {
-      case cameraStatus.initializing:
+      case CameraStatus.initializing:
         return Colors.grey;
-      case cameraStatus.searching:
-        return Colors.grey.withOpacity(0.5);
-      case cameraStatus.textDetected:
+      case CameraStatus.searching:
+        return Colors.grey.withValues(alpha: 0.5);
+      case CameraStatus.textDetected:
         return AppTheme.appYellow;
-      case cameraStatus.ready:
+      case CameraStatus.ready:
         return AppTheme.appGreen;
     }
   }
@@ -37,7 +37,7 @@ class CameraOverlay extends StatelessWidget {
         // Dark background with hole
         ColorFiltered(
           colorFilter: ColorFilter.mode(
-            Colors.black.withOpacity(0.6),
+            Colors.black.withValues(alpha: 0.6),
             BlendMode.srcOut,
           ),
           child: Stack(
@@ -70,7 +70,7 @@ class CameraOverlay extends StatelessWidget {
             height: scanAreaHeight,
             decoration: BoxDecoration(
               border: Border.all(
-                color: _getFrameColor().withOpacity(0.3),
+                color: _getFrameColor().withValues(alpha: 0.3),
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(24),
@@ -82,8 +82,8 @@ class CameraOverlay extends StatelessWidget {
                 _buildCorner(bottom: 0, left: 0, rotate: -1.57),
                 _buildCorner(bottom: 0, right: 0, rotate: 3.14),
 
-                if (status == cameraStatus.ready ||
-                    status == cameraStatus.textDetected)
+                if (status == CameraStatus.ready ||
+                    status == CameraStatus.textDetected)
                   const ScanningLine(),
               ],
             ),
@@ -102,7 +102,7 @@ class CameraOverlay extends StatelessWidget {
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -120,7 +120,7 @@ class CameraOverlay extends StatelessWidget {
         ),
 
         // Text Detected Badge
-        if (status == cameraStatus.ready || status == cameraStatus.textDetected)
+        if (status == CameraStatus.ready || status == CameraStatus.textDetected)
           Positioned(
             top: size.height * 0.5 - scanAreaHeight / 2 - 40,
             left: 0,
@@ -134,7 +134,7 @@ class CameraOverlay extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: status == cameraStatus.ready
+                    color: status == CameraStatus.ready
                         ? AppTheme.appGreen
                         : AppTheme.appYellow,
                     borderRadius: BorderRadius.circular(12),
@@ -148,7 +148,7 @@ class CameraOverlay extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        status == cameraStatus.ready
+                        status == CameraStatus.ready
                             ? "READY TO SCAN"
                             : "TEXT DETECTED",
                         style: const TextStyle(
@@ -238,16 +238,16 @@ class _ScanningLineState extends State<ScanningLine>
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.appBlue.withOpacity(0.5),
+                  color: AppTheme.appBlue.withValues(alpha: 0.5),
                   blurRadius: 10,
                   spreadRadius: 2,
                 ),
               ],
               gradient: LinearGradient(
                 colors: [
-                  AppTheme.appBlue.withOpacity(0),
+                  AppTheme.appBlue.withValues(alpha: 0),
                   AppTheme.appBlue,
-                  AppTheme.appBlue.withOpacity(0),
+                  AppTheme.appBlue.withValues(alpha: 0),
                 ],
               ),
             ),

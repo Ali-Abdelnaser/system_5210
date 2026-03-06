@@ -115,7 +115,7 @@ class _NotificationsViewState extends State<NotificationsView>
                           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.6),
+                               color: Colors.white.withOpacity(0.6),
                               borderRadius: BorderRadius.circular(50),
                               border: Border.all(
                                 color: Colors.white.withOpacity(0.4),
@@ -188,7 +188,7 @@ class _NotificationsViewState extends State<NotificationsView>
                     return ListView.builder(
                       padding: const EdgeInsets.all(20),
                       itemCount: 6,
-                      itemBuilder: (_, __) => AppShimmer.notificationCard(),
+                      itemBuilder: (_, index) => AppShimmer.notificationCard(),
                     );
                   }
 
@@ -277,134 +277,119 @@ class _NotificationsViewState extends State<NotificationsView>
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child:
-          Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  GlassCard(
-                    padding: EdgeInsets.zero,
-                    opacity: 0.8,
-                    blur: 15,
-                    borderRadius: 20,
-                    child: InkWell(
-                      onTap: () {
-                        context.read<NotificationCubit>().markAsRead(
-                          notification.id,
-                        );
-                        _showNotificationSheet(context, notification, isAr);
-                      },
-                      borderRadius: BorderRadius.circular(20),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildTypeIcon(notification.type),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 35),
-                                    child: Text(
-                                      isAr
-                                          ? notification.title
-                                          : (notification.titleEn ??
-                                                notification.title),
-                                      style:
-                                          (isAr
-                                          ? GoogleFonts.cairo
-                                          : GoogleFonts.poppins)(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w800,
-                                            color: const Color(0xFF1E293B),
-                                          ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    isAr
-                                        ? notification.body
-                                        : (notification.bodyEn ??
-                                              notification.body),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style:
-                                        (isAr
-                                        ? GoogleFonts.cairo
-                                        : GoogleFonts.poppins)(
-                                          fontSize: 13,
-                                          color: const Color(0xFF475569),
-                                          height: 1.4,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.access_time_rounded,
-                                        size: 13,
-                                        color: Colors.grey[400],
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        timeStr,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.grey[500],
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      if (!notification.isRead)
-                                        Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                    vertical: 2,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: AppTheme.appRed
-                                                    .withOpacity(0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Text(
-                                                isAr ? "جديد" : "New",
-                                                style: GoogleFonts.cairo(
-                                                  color: AppTheme.appRed,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            )
-                                            .animate(onPlay: (c) => c.repeat())
-                                            .shimmer(
-                                              duration: 1500.ms,
-                                              color: Colors.white,
-                                            ),
-                                    ],
-                                  ),
-                                ],
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          GlassCard(
+            padding: EdgeInsets.zero,
+            opacity: 0.8,
+            blur: 15,
+            borderRadius: 20,
+            child: InkWell(
+              onTap: () {
+                context.read<NotificationCubit>().markAsRead(notification.id);
+                _showNotificationSheet(context, notification, isAr);
+              },
+              borderRadius: BorderRadius.circular(20),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTypeIcon(notification.type),
+                    const SizedBox(width: 15),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(end: 35),
+                            child: Text(
+                              isAr
+                                  ? notification.title
+                                  : (notification.titleEn ?? notification.title),
+                              style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                                color: const Color(0xFF1E293B),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            isAr
+                                ? notification.body
+                                : (notification.bodyEn ?? notification.body),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
+                              fontSize: 13,
+                              color: const Color(0xFF475569),
+                              height: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.access_time_rounded,
+                                size: 13,
+                                color: Colors.grey[400],
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                timeStr,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey[500],
+                                ),
+                              ),
+                              const Spacer(),
+                              if (!notification.isRead)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.appRed.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    isAr ? "جديد" : "New",
+                                    style: GoogleFonts.cairo(
+                                      color: AppTheme.appRed,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )
+                                    .animate(onPlay: (c) => c.repeat())
+                                    .shimmer(
+                                      duration: 1500.ms,
+                                      color: Colors.white,
+                                    ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    right: isAr ? null : 10,
-                    left: isAr ? 10 : null,
-                    child: _buildReactionButton(notification),
-                  ),
-                ],
-              )
-              .animate()
-              .fadeIn(delay: (index * 50).ms, duration: 400.ms)
-              .slideX(begin: 0.1, end: 0),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          PositionedDirectional(
+            top: 10,
+            end: 10,
+            child: _buildReactionButton(notification),
+          ),
+        ],
+      ).animate().fadeIn(delay: (index * 50).ms, duration: 400.ms).slideX(
+            begin: 0.1,
+            end: 0,
+          ),
     );
   }
 

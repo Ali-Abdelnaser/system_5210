@@ -510,5 +510,33 @@
   "updateRequired": "تحديث ضروري ⚠️",
   "updateDesc": "يوجد إصدار جديد من تطبيق 5210 متاح الآن. حدث التطبيق للحصول على أفضل تجربة وأحدث الميزات.",
   "updateButton": "تحديث الآن",
-  "laterButton": "لاحقاً"
+  "laterButton": "لاحقاً",
+  "stepTrackerTitle": "تفاصيل النشاط",
+  "totalSteps": "إجمالي الخطوات",
+  "stepsGoal": "الهدف: {goal}",
+  "@stepsGoal": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "caloriesLabel": "سعرة حرارية",
+  "distanceLabel": "كيلومتر",
+  "km": "كم",
+  "activeTimeLabel": "دقيقة نشطة",
+  "powerIndexLabel": "معدل القوة",
+  "heroEvolution": "تطوير البطل",
+  "heroEvolutionDesc": "حدث بياناتك لقوة أكبر",
+  "weeklyAnalysis": "تحليل الأسبوع",
+  "risingHero": "بطل صاعد",
+  "activeHero": "بطل نشيط",
+  "legendaryHero": "بطل متميز",
+  "congratsHero": "عاش يا بطل! 🎉",
+  "goalReachedMsg": "لقد حققت هدف الـ 5210 خطوة لليوم. استمر في التحرك!",
+  "min": "دق",
+  "activityToday": "نشاط اليوم",
+  "heroSteps": "خطوة بطل",
+  "activityTrackingRequired": "تحتاج لصلاحية تتبع النشاط",
+  "activityTrackingDesc": "من فضلك فعل صلاحية تتبع النشاط من إعدادات الهاتف لمتابعة خطواتك"
 }

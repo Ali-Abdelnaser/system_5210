@@ -8,4 +8,7 @@ abstract class NutritionRepository {
     String languageCode,
   );
   Future<void> deleteScanResult(String userId, DateTime timestamp);
+  Future<int> getDailyScanCount(String userId);
+  Future<void> incrementDailyScanCount(String userId);
+  Future<bool> validateImageText(String imagePath);
 }

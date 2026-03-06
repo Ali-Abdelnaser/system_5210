@@ -154,7 +154,7 @@ class _AdminLoginViewState extends State<AdminLoginView> {
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: AppTheme.appBlue.withValues(alpha: 0.3),
+                            color: AppTheme.appBlue.withOpacity(0.3),
                             blurRadius: 10,
                             offset: const Offset(0, 5),
                           ),

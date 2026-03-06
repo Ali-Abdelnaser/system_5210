@@ -173,7 +173,7 @@ class _RecentScansPageState extends State<RecentScansPage> {
                     ),
                   ),
                 ),
-                ...dayScans.map((scan) => _buildScanCard(scan, l10n)).toList(),
+                ...dayScans.map((scan) => _buildScanCard(scan, l10n)),
               ],
             )
             .animate()
@@ -208,12 +208,12 @@ class _RecentScansPageState extends State<RecentScansPage> {
         border: Border.all(color: Colors.white, width: 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
           BoxShadow(
-            color: scoreColor.withOpacity(0.05),
+            color: scoreColor.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 4),
           ),
@@ -259,7 +259,7 @@ class _RecentScansPageState extends State<RecentScansPage> {
                       height: 65,
                       child: CircularProgressIndicator(
                         value: scan.healthScore / 100,
-                        backgroundColor: scoreColor.withOpacity(0.1),
+                        backgroundColor: scoreColor.withValues(alpha: 0.1),
                         color: scoreColor,
                         strokeWidth: 6,
                         strokeCap: StrokeCap.round,
@@ -360,14 +360,14 @@ class _RecentScansPageState extends State<RecentScansPage> {
                             Icon(
                               Icons.warning_amber_rounded,
                               size: 14,
-                              color: AppTheme.appRed.withOpacity(0.7),
+                              color: AppTheme.appRed.withValues(alpha: 0.7),
                             ),
                             const SizedBox(width: 4),
                             Text(
                               "${scan.warnings.length} ${_t(l10n, 'warnings')}",
                               style: GoogleFonts.cairo(
                                 fontSize: 11,
-                                color: AppTheme.appRed.withOpacity(0.8),
+                                color: AppTheme.appRed.withValues(alpha: 0.8),
                               ),
                             ),
                           ],
@@ -396,7 +396,7 @@ class _RecentScansPageState extends State<RecentScansPage> {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.appBlue.withOpacity(0.1),
+                  color: AppTheme.appBlue.withValues(alpha: 0.1),
                   blurRadius: 30,
                   spreadRadius: 10,
                 ),
@@ -405,7 +405,7 @@ class _RecentScansPageState extends State<RecentScansPage> {
             child: Icon(
               Icons.history_edu_outlined,
               size: 80,
-              color: AppTheme.appBlue.withOpacity(0.5),
+              color: AppTheme.appBlue.withValues(alpha: 0.5),
             ),
           ).animate().scale(duration: 600.ms, curve: Curves.elasticOut),
           const SizedBox(height: 24),
@@ -440,7 +440,7 @@ class _RecentScansPageState extends State<RecentScansPage> {
             Icon(
               Icons.error_outline_rounded,
               size: 60,
-              color: AppTheme.appRed.withOpacity(0.5),
+              color: AppTheme.appRed.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(

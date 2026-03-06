@@ -5,6 +5,10 @@ import 'package:system_5210/features/nutrition_scan/presentation/pages/processin
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:system_5210/l10n/app_localizations.dart';
 
 class ScanConfirmationPage extends StatefulWidget {
   final String imagePath;
@@ -15,16 +19,41 @@ class ScanConfirmationPage extends StatefulWidget {
 }
 
 class _ScanConfirmationPageState extends State<ScanConfirmationPage> {
-  bool _isProcessing = false;
+  bool _isLoading = false;
 
   void _processImage() async {
-    setState(() => _isProcessing = true);
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProcessingView(imagePath: widget.imagePath),
-      ),
-    );
+    if (_isLoading) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      final cubit = context.read<NutritionScanCubit>();
+      final hasText = await cubit.validateImageText(widget.imagePath);
+
+      if (!mounted) return;
+
+      if (!hasText) {
+        setState(() => _isLoading = false);
+        final isAr = AppLocalizations.of(context)!.localeName == 'ar';
+        AppAlerts.showAlert(
+          context,
+          message: isAr
+              ? "عذراً! لا يوجد نص واضح في الصورة. يرجى إعادة الالتقاط والتركيز على المكونات."
+              : "Sorry! No clear text detected in the image. Please retake the photo focusing on the ingredients.",
+          type: AlertType.warning,
+        );
+        return;
+      }
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProcessingView(imagePath: widget.imagePath),
+        ),
+      );
+    } catch (_) {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -47,10 +76,10 @@ class _ScanConfirmationPageState extends State<ScanConfirmationPage> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.1),
+                    Colors.black.withValues(alpha: 0.1),
                     Colors.transparent,
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.7),
                   ],
                   stops: const [0.0, 0.2, 0.7, 1.0],
                 ),
@@ -105,8 +134,10 @@ class _ScanConfirmationPageState extends State<ScanConfirmationPage> {
                       // Confirm Button
                       Expanded(
                         child: _buildButton(
-                          label: "تحليل",
-                          icon: Icons.auto_awesome,
+                          label: _isLoading ? "جاري التحقق..." : "تحليل",
+                          icon: _isLoading
+                              ? Icons.hourglass_empty
+                              : Icons.auto_awesome,
                           onTap: _processImage,
                           isPrimary: true,
                         ),
@@ -139,9 +170,9 @@ class _ScanConfirmationPageState extends State<ScanConfirmationPage> {
             decoration: BoxDecoration(
               color: isPrimary
                   ? AppTheme.appBlue
-                  : Colors.white.withOpacity(0.15),
+                  : Colors.white.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withOpacity(0.2)),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -632,6 +632,7 @@ class ProfileView extends StatelessWidget {
           null,
           null,
           role: null,
+          langCode: Localizations.localeOf(context).languageCode,
         );
 
         context.read<AuthCubit>().logout();

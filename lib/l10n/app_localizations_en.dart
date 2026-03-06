@@ -1462,4 +1462,71 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get laterButton => 'Later';
+
+  @override
+  String get stepTrackerTitle => 'Activity Details';
+
+  @override
+  String get totalSteps => 'Total Steps';
+
+  @override
+  String stepsGoal(String goal) {
+    return 'Goal: $goal';
+  }
+
+  @override
+  String get caloriesLabel => 'Calories';
+
+  @override
+  String get distanceLabel => 'Distance';
+
+  @override
+  String get km => 'km';
+
+  @override
+  String get activeTimeLabel => 'Active Time';
+
+  @override
+  String get powerIndexLabel => 'Power Index';
+
+  @override
+  String get heroEvolution => 'Hero Evolution';
+
+  @override
+  String get heroEvolutionDesc => 'Update stats for power boost';
+
+  @override
+  String get weeklyAnalysis => 'Weekly Analysis';
+
+  @override
+  String get risingHero => 'Rising Hero';
+
+  @override
+  String get activeHero => 'Active Hero';
+
+  @override
+  String get legendaryHero => 'Legendary Hero';
+
+  @override
+  String get congratsHero => 'Congrats Hero! 🎉';
+
+  @override
+  String get goalReachedMsg =>
+      'You\'ve reached your 5210 steps goal today. Keep moving!';
+
+  @override
+  String get min => 'min';
+
+  @override
+  String get activityToday => 'Today\'s Energy';
+
+  @override
+  String get heroSteps => 'Hero Steps';
+
+  @override
+  String get activityTrackingRequired => 'Activity Tracking Required';
+
+  @override
+  String get activityTrackingDesc =>
+      'Please enable activity tracking permission in settings to track your steps';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:url_launcher/url_launcher.dart';
@@ -17,6 +18,7 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   Future<void> init() async {
     if (kIsWeb) return; // Not supported on web without complex setup
@@ -44,6 +46,9 @@ class NotificationService {
         onDidReceiveNotificationResponse: _handleNotificationTap,
       );
 
+      // Initialize Firebase Messaging
+      await _initFirebaseMessaging();
+
       final androidPlugin = flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin
@@ -54,6 +59,55 @@ class NotificationService {
     } catch (e) {
       debugPrint("Error in Notification Init: $e");
     }
+  }
+
+  Future<void> _initFirebaseMessaging() async {
+    try {
+      // 1. Request permissions (especially for iOS)
+      await _firebaseMessaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      // 2. Background handler setup
+      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+      // 3. Foreground message listener
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        RemoteNotification? notification = message.notification;
+        AndroidNotification? android = message.notification?.android;
+
+        if (notification != null) {
+          showImmediateNotification(
+            title: notification.title ?? '',
+            body: notification.body ?? '',
+            imageUrl: android?.imageUrl,
+            showAction: true,
+            actionUrl: message.data['route'] != null ? 'route:${message.data['route']}' : null,
+          );
+        }
+      });
+
+      // 4. Notification tap listener (when app is in background but not killed)
+      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+        if (message.data['route'] != null) {
+          AppRoutes.navigatorKey.currentState?.pushNamed(message.data['route']);
+        }
+      });
+
+      // Get FCM token for potential backend use
+      String? token = await _firebaseMessaging.getToken();
+      debugPrint("FCM Token: $token");
+    } catch (e) {
+      debugPrint("Error initializing Firebase Messaging: $e");
+    }
+  }
+
+  @pragma('vm:entry-point')
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    // This handler must be a top-level or static function
+    debugPrint("Handling a background message: ${message.messageId}");
   }
 
   void _handleNotificationTap(NotificationResponse details) async {
@@ -168,10 +222,15 @@ class NotificationService {
     String? imageUrl,
     String? actionUrl,
     bool showAction = false,
+    String? actionTitle,
     int? badgeCount,
   }) async {
     try {
       final id = DateTime.now().millisecondsSinceEpoch ~/ 1000 % 0x7FFFFFFF;
+
+      // Determine action title language
+      final String finalActionTitle = actionTitle ?? 
+          (title.contains(RegExp(r'[أ-ي]')) ? 'مشاهدة الآن' : 'View Now');
 
       BigPictureStyleInformation? bigPictureStyleInformation;
       if (imageUrl != null && imageUrl.startsWith('http')) {
@@ -211,9 +270,9 @@ class NotificationService {
             number: badgeCount,
             actions: showAction
                 ? [
-                    const AndroidNotificationAction(
+                    AndroidNotificationAction(
                       'go_action',
-                      'مشاهدة الآن',
+                      finalActionTitle,
                       showsUserInterface: true,
                     ),
                   ]

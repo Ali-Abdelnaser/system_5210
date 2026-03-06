@@ -91,7 +91,7 @@ class ScanResultPage extends StatelessWidget {
                           style: GoogleFonts.cairo(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -169,7 +169,7 @@ class ScanResultPage extends StatelessWidget {
               style: GoogleFonts.cairo(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -177,9 +177,9 @@ class ScanResultPage extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.2)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
           ),
           child: Text(
             _getScoreLabel(l10n),
@@ -202,7 +202,7 @@ class ScanResultPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -257,7 +257,7 @@ class ScanResultPage extends StatelessWidget {
                       vertical: 8,
                     ),
                     decoration: BoxDecoration(
-                      color: AppTheme.appYellow.withOpacity(0.1),
+                      color: AppTheme.appYellow.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -289,7 +289,10 @@ class ScanResultPage extends StatelessWidget {
             ? const Color(0xFFECFDF5)
             : const Color(0xFFFEF2F2),
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: accentColor.withOpacity(0.2), width: 1.5),
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.2),
+          width: 1.5,
+        ),
       ),
       child: Row(
         children: [
@@ -308,7 +311,7 @@ class ScanResultPage extends StatelessWidget {
                   style: GoogleFonts.cairo(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color: accentColor.withOpacity(0.6),
+                    color: accentColor.withValues(alpha: 0.6),
                   ),
                 ),
                 Text(
@@ -347,7 +350,7 @@ class ScanResultPage extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -390,7 +393,9 @@ class ScanResultPage extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppTheme.appGreen.withOpacity(0.1)),
+              border: Border.all(
+                color: AppTheme.appGreen.withValues(alpha: 0.1),
+              ),
             ),
             child: Row(
               children: [
@@ -595,10 +600,11 @@ class ScanResultPage extends StatelessWidget {
         type: AlertType.success,
       );
       Future.delayed(const Duration(milliseconds: 500), () {
-        if (context.mounted)
+        if (context.mounted) {
           context.read<NutritionScanCubit>().loadRecentScans(user.uid);
+        }
       });
-      Navigator.pop(context);
+      Navigator.popUntil(context, (route) => route.isFirst);
     }
   }
 

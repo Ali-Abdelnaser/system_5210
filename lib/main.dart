@@ -24,8 +24,6 @@ import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily
 import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
 import 'package:system_5210/core/widgets/offline_wrapper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:flutter/foundation.dart';
 
 ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('ar'));
 
@@ -73,7 +71,7 @@ void main() async {
     debugPrint("Error loading language: $e");
   }
 
-  runApp(DevicePreview(enabled: false, builder: (context) => const MyApp()));
+  runApp(const MyApp());
 }
 
 Future<void> _initializeServices() async {
@@ -143,7 +141,6 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               theme: AppTheme.lightTheme,
               scrollBehavior: GlobalScrollBehavior(),
-              useInheritedMediaQuery: true,
               locale: locale,
               supportedLocales: AppLocalizations.supportedLocales,
               localizationsDelegates: AppLocalizations.localizationsDelegates,

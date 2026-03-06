@@ -7,13 +7,15 @@ import 'package:system_5210/features/daily_tasks_game/presentation/widgets/glass
 import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
 import 'package:system_5210/features/profile/presentation/manager/profile_state.dart';
 import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
+import 'package:system_5210/core/services/step_tracker_service.dart';
+import 'package:system_5210/l10n/app_localizations.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:math' as math;
 
 class StepTrackerCard extends StatelessWidget {
-  final int targetSteps;
+  final int? customTargetSteps;
 
-  const StepTrackerCard({super.key, this.targetSteps = 10000});
+  const StepTrackerCard({super.key, this.customTargetSteps});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +25,10 @@ class StepTrackerCard extends StatelessWidget {
           builder: (context, stepState) {
             if (stepState is StepTrackerPermissionDenied) {
               return _buildPermissionDeniedCard(context);
+            }
+
+            if (stepState is StepTrackerLoading) {
+              return _buildLoadingCard(context);
             }
 
             int steps = 0;
@@ -42,22 +48,24 @@ class StepTrackerCard extends StatelessWidget {
                   double.tryParse(quiz['weight']?.toString() ?? '25.0') ?? 25.0;
             }
 
-            final strideLengthCm = height * 0.413;
-            final distanceKm = (steps * strideLengthCm) / 100000;
-            final calories = weight * distanceKm * 0.75;
-            final activeMinutes = (steps / 100).round();
+            final strideHeight = height;
+            final distanceKm = StepTrackerService.calculateDistanceKm(steps, strideHeight);
+            final calories = StepTrackerService.calculateCalories(steps, strideHeight, weight);
+            final activeMinutes = StepTrackerService.calculateActiveMinutes(steps);
 
-            final isAr = Localizations.localeOf(context).languageCode == 'ar';
+            final l10n = AppLocalizations.of(context)!;
+            final isAr = l10n.localeName == 'ar';
+            final targetSteps = customTargetSteps ?? StepTrackerService.goalThreshold;
             final progress = (steps / targetSteps).clamp(0.001, 1.0);
 
             // Hero Status Logic
-            String status = isAr ? "بطل صاعد" : "Rising Hero";
+            String status = l10n.risingHero;
             Color statusColor = AppTheme.appBlue;
             if (steps >= targetSteps) {
-              status = isAr ? "بطل متميز" : "Legendary Hero";
+              status = l10n.legendaryHero;
               statusColor = const Color(0xFFFFD700);
-            } else if (steps > 5000) {
-              status = isAr ? "بطل نشيط" : "Active Hero";
+            } else if (steps > (targetSteps * 0.5)) {
+              status = l10n.activeHero;
               statusColor = const Color(0xFF2ECC71);
             }
 
@@ -96,7 +104,7 @@ class StepTrackerCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 6),
                             Text(
-                              isAr ? "نشاط اليوم" : "Today's Energy",
+                              l10n.activityToday,
                               style:
                                   (isAr
                                   ? GoogleFonts.cairo
@@ -195,7 +203,7 @@ class StepTrackerCard extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              isAr ? 'خطوة بطل' : 'Hero Steps',
+                              l10n.heroSteps,
                               style:
                                   (isAr
                                   ? GoogleFonts.cairo
@@ -244,21 +252,21 @@ class StepTrackerCard extends StatelessWidget {
                         icon: Icons.local_fire_department_rounded,
                         color: const Color(0xFFFF5F5F),
                         value: calories.toStringAsFixed(0),
-                        unit: isAr ? 'سعرة' : 'kcal',
+                        unit: l10n.kcal,
                         isAr: isAr,
                       ),
                       _buildQuickStat(
                         icon: Icons.directions_run_rounded,
                         color: const Color(0xFF2ECC71),
                         value: distanceKm.toStringAsFixed(1),
-                        unit: isAr ? 'كم' : 'km',
+                        unit: l10n.km,
                         isAr: isAr,
                       ),
                       _buildQuickStat(
                         icon: Icons.timer_rounded,
                         color: const Color(0xFF8B5CF6),
                         value: activeMinutes.toString(),
-                        unit: isAr ? 'دق' : 'min',
+                        unit: l10n.min,
                         isAr: isAr,
                       ),
                     ],
@@ -272,8 +280,23 @@ class StepTrackerCard extends StatelessWidget {
     );
   }
 
+  Widget _buildLoadingCard(BuildContext context) {
+    return GlassCard(
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      padding: const EdgeInsets.all(24),
+      opacity: 0.7,
+      blur: 25,
+      borderRadius: 35,
+      color: const Color(0xFFEBF5FF),
+      child: const Center(
+        child: CircularProgressIndicator(color: AppTheme.appBlue),
+      ),
+    );
+  }
+
   Widget _buildPermissionDeniedCard(BuildContext context) {
-    final isAr = Localizations.localeOf(context).languageCode == 'ar';
+    final l10n = AppLocalizations.of(context)!;
+    final isAr = l10n.localeName == 'ar';
     return GlassCard(
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       padding: const EdgeInsets.all(24),
@@ -290,7 +313,7 @@ class StepTrackerCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            isAr ? "تحتاج لصلاحية تتبع النشاط" : "Activity Tracking Required",
+            l10n.activityTrackingRequired,
             style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -299,9 +322,7 @@ class StepTrackerCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            isAr
-                ? "من فضلك فعل صلاحية تتبع النشاط من إعدادات الهاتف لمتابعة خطواتك"
-                : "Please enable activity tracking permission in settings to track your steps",
+            l10n.activityTrackingDesc,
             textAlign: TextAlign.center,
             style: (isAr ? GoogleFonts.cairo : GoogleFonts.poppins)(
               fontSize: 14,

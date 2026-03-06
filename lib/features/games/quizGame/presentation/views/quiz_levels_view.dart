@@ -153,8 +153,6 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
               );
             },
           ),
-
-          _buildParallaxBackground(),
         ],
       ),
     );

@@ -510,5 +510,33 @@
   "updateRequired": "Critical Update Required ⚠️",
   "updateDesc": "A new version of 5210 is available. Please update now to get the latest features and best experience.",
   "updateButton": "Update Now",
-  "laterButton": "Later"
+  "laterButton": "Later",
+  "stepTrackerTitle": "Activity Details",
+  "totalSteps": "Total Steps",
+  "stepsGoal": "Goal: {goal}",
+  "@stepsGoal": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      }
+    }
+  },
+  "caloriesLabel": "Calories",
+  "distanceLabel": "Distance",
+  "km": "km",
+  "activeTimeLabel": "Active Time",
+  "powerIndexLabel": "Power Index",
+  "heroEvolution": "Hero Evolution",
+  "heroEvolutionDesc": "Update stats for power boost",
+  "weeklyAnalysis": "Weekly Analysis",
+  "risingHero": "Rising Hero",
+  "activeHero": "Active Hero",
+  "legendaryHero": "Legendary Hero",
+  "congratsHero": "Congrats Hero! 🎉",
+  "goalReachedMsg": "You've reached your 5210 steps goal today. Keep moving!",
+  "min": "min",
+  "activityToday": "Today's Energy",
+  "heroSteps": "Hero Steps",
+  "activityTrackingRequired": "Activity Tracking Required",
+  "activityTrackingDesc": "Please enable activity tracking permission in settings to track your steps"
 }

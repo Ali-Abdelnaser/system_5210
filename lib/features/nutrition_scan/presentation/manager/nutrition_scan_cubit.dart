@@ -6,18 +6,37 @@ import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_re
 
 class NutritionScanCubit extends Cubit<NutritionScanState> {
   final NutritionRepository repository;
+  static const int maxDailyScans = 5;
 
   NutritionScanCubit({required this.repository})
     : super(NutritionScanInitial());
 
-  Future<void> analyzeImage(String imagePath, String languageCode) async {
+  Future<void> analyzeImage(
+    String imagePath,
+    String languageCode,
+    String userId,
+  ) async {
     debugPrint(
-      "Cubit: Starting Gemini Analysis for $imagePath in $languageCode",
+      "Cubit: Starting Gemini Analysis for $imagePath in $languageCode for user $userId",
     );
     emit(NutritionScanLoading());
+
     try {
+      // 1. Check Daily Limit
+      final currentScans = await repository.getDailyScanCount(userId);
+      if (currentScans >= maxDailyScans) {
+        emit(NutritionScanLimitReached());
+        return;
+      }
+
       final data = await repository.analyzeImage(imagePath, languageCode);
       debugPrint("Cubit: Gemini Analysis Complete: $data");
+
+      // 2. Increment Daily Count (only if successful and not from cache)
+      final bool isFromCache = data['_isFromCache'] as bool? ?? false;
+      if (!isFromCache) {
+        await repository.incrementDailyScanCount(userId);
+      }
 
       // Extract and Safely Cast Data
       final Map<String, double> nutrition = {};
@@ -52,11 +71,12 @@ class NutritionScanCubit extends Cubit<NutritionScanState> {
 
       // Create Breakdown List for UI (from positives/negatives)
       final List<Map<String, dynamic>> breakdown = [];
-      for (var p in positives)
+      for (var p in positives) {
         breakdown.add({'label': p, 'score': 5}); // Dummy score visual
-      for (var n in negatives) breakdown.add({'label': n, 'score': -5});
-
-      final bool isFromCache = data['_isFromCache'] as bool? ?? false;
+      }
+      for (var n in negatives) {
+        breakdown.add({'label': n, 'score': -5});
+      }
 
       emit(
         NutritionScanProcessed(
@@ -114,6 +134,22 @@ class NutritionScanCubit extends Cubit<NutritionScanState> {
     } catch (e) {
       emit(const NutritionScanError("Failed to delete scan result."));
     }
+  }
+
+  Future<bool> validateImageText(String imagePath) async {
+    return await repository.validateImageText(imagePath);
+  }
+
+  Future<bool> hasReachedLimit(String userId) async {
+    final count = await repository.getDailyScanCount(userId);
+    return count >= maxDailyScans;
+  }
+
+  Future<void> updateDailyScanCount(String userId) async {
+    try {
+      final count = await repository.getDailyScanCount(userId);
+      emit(DailyScanCountLoaded(count));
+    } catch (_) {}
   }
 
   void resetScanState() {

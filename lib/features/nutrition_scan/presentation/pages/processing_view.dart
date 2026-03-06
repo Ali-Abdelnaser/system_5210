@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,17 +33,17 @@ class _ProcessingViewState extends State<ProcessingView>
   String _errorMessage = "";
 
   final List<String> _stepsEn = [
-    "Analyzing image structure...",
-    "Consulting AI experts...",
-    "Checking pediatric safety...",
-    "Drafting your report...",
+    "Analyzing image structure",
+    "Consulting AI experts",
+    "Checking pediatric safety",
+    "Drafting your report",
   ];
 
   final List<String> _stepsAr = [
-    "تجهيز وتحليل الصورة...",
-    "استشارة الذكاء الاصطناعي...",
-    "فحص معايير تغذية الأطفال...",
-    "إعداد التقرير النهائي...",
+    "تجهيز وتحليل الصورة",
+    "استشارة الذكاء الاصطناعي",
+    "فحص معايير تغذية الأطفال",
+    "إعداد التقرير النهائي",
   ];
 
   final List<String> _tipsAr = [
@@ -66,8 +67,9 @@ class _ProcessingViewState extends State<ProcessingView>
 
   void _startTipsRotation() {
     _tipTimer = Timer.periodic(const Duration(seconds: 4), (timer) {
-      if (mounted && !_hasError)
+      if (mounted && !_hasError) {
         setState(() => _tipIndex = (_tipIndex + 1) % _tipsAr.length);
+      }
     });
   }
 
@@ -80,21 +82,45 @@ class _ProcessingViewState extends State<ProcessingView>
 
     try {
       final locale = Localizations.localeOf(context).languageCode;
-      context.read<NutritionScanCubit>().analyzeImage(widget.imagePath, locale);
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        context.read<NutritionScanCubit>().analyzeImage(
+          widget.imagePath,
+          locale,
+          user.uid,
+        );
+      } else {
+        _handleLocalError("يجب تسجيل الدخول أولاً");
+      }
     } catch (e) {
       _handleLocalError(e.toString());
     }
 
     // Advance UI steps
-    for (int i = 0; i <= 4; i++) {
+    for (int i = 0; i < 4; i++) {
       if (!mounted || _hasError) break;
-      setState(() => _currentStep = i);
+
+      final state = context.read<NutritionScanCubit>().state;
+      if (state is NutritionScanProcessed || state is NutritionScanError) {
+        if (mounted) setState(() => _currentStep = 4);
+        _checkFinalState();
+        break;
+      }
+
+      if (mounted) setState(() => _currentStep = i);
       HapticFeedback.lightImpact();
 
-      if (_currentStep == 4) {
+      await Future.delayed(const Duration(milliseconds: 1800));
+    }
+
+    if (mounted && !_hasError) {
+      final state = context.read<NutritionScanCubit>().state;
+      if (state is NutritionScanProcessed || state is NutritionScanError) {
+        setState(() => _currentStep = 4);
         _checkFinalState();
       } else {
-        await Future.delayed(const Duration(milliseconds: 1800));
+        // Wait at 99% until listener triggers
+        setState(() => _currentStep = 4);
       }
     }
   }
@@ -154,6 +180,12 @@ class _ProcessingViewState extends State<ProcessingView>
       listener: (context, state) {
         if (state is NutritionScanProcessed && _currentStep >= 4) {
           _checkFinalState();
+        } else if (state is NutritionScanLimitReached) {
+          _handleLocalError(
+            AppLocalizations.of(context)!.localeName == 'ar'
+                ? "عذراً! لقد استهلكت جميع محاولات الفحص المتاحة لك اليوم (5 محاولات). يرجى المحاولة غداً."
+                : "Sorry! You have used all your scan attempts for today (5 attempts). Please try again tomorrow.",
+          );
         } else if (state is NutritionScanError) {
           _handleLocalError(state.message);
         }
@@ -207,15 +239,12 @@ class _ProcessingViewState extends State<ProcessingView>
                 ),
               ),
             ] else
-              Scaffold(
-                backgroundColor: Colors.transparent,
-                body: Container(
-                  color: Colors.white.withOpacity(0.95),
-                  child: AppErrorView(
-                    message: _errorMessage,
-                    onRetry: _startProcessing,
-                    onBack: () => Navigator.pop(context),
-                  ),
+              Container(
+                color: Colors.white.withValues(alpha: 0.95),
+                child: AppErrorView(
+                  message: _errorMessage,
+                  onRetry: _startProcessing,
+                  onBack: () => Navigator.pop(context),
                 ),
               ),
           ],
@@ -240,7 +269,7 @@ class _ProcessingViewState extends State<ProcessingView>
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  AppTheme.appBlue.withOpacity(0.4),
+                  AppTheme.appBlue.withValues(alpha: 0.4),
                   Colors.transparent,
                 ],
               ),
@@ -272,7 +301,7 @@ class _ProcessingViewState extends State<ProcessingView>
   Widget _buildStepsList(List<String> steps) {
     return GlassContainer(
       padding: const EdgeInsets.all(24),
-      color: Colors.white.withOpacity(0.1),
+      color: Colors.white.withValues(alpha: 0.1),
       child: Column(
         children: List.generate(
           steps.length,

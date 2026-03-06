@@ -88,6 +88,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                   state.userProfile.uid,
                   state.userProfile.createdAt,
                   role: state.userProfile.role,
+                  langCode: Localizations.localeOf(context).languageCode,
                 );
 
                 if (state.streakResult != null) {
@@ -186,10 +187,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                               children: [
                                 if (!isHomeLoading)
                                   _buildSectionTitle(
-                                    title: isAr
-                                        ? 'نشاط البطل اليومي'
-                                        : 'Daily Hero Activity',
-                                    actionText: isAr ? 'التفاصيل' : 'Details',
+                                    title: l10n.activityToday,
+                                    actionText: l10n.seeAll,
                                     onActionTap: () {
                                       Navigator.push(
                                         context,

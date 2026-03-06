@@ -1,8 +1,15 @@
 class AppTip {
   final String title;
   final String description;
+  final String? titleEn;
+  final String? descriptionEn;
 
-  const AppTip({required this.title, required this.description});
+  const AppTip({
+    required this.title,
+    required this.description,
+    this.titleEn,
+    this.descriptionEn,
+  });
 }
 
 class AppTipsData {
@@ -11,39 +18,61 @@ class AppTipsData {
       title: "الحقيقة اللي محدش قالهالك",
       description:
           "راعي نفسية طفلك، وشجعيه بالألعاب الرياضيه بدل النقد عند التعامل مع وزنه الزائد.",
+      titleEn: "The Truth No One Told You",
+      descriptionEn:
+          "Take care of your child's mental health, and encourage them with sports instead of criticism when dealing with their weight.",
     ),
     AppTip(
       title: "الحركة بتغيّر كل المعادلة",
       description:
           "احرصي على إشراك طفلك في نشاط رياضي مستمر ومتوسط القوة ويفضل أن يكون نشاط جماعي.",
+      titleEn: "Movement Changes Everything",
+      descriptionEn:
+          "Make sure to involve your child in continuous, moderate-intensity physical activity, preferably a group activity.",
     ),
     AppTip(
       title: "بداية اليوم بتحدد النتيجة",
       description: "احرصي على إعداد وجبة إفطار غنية بالألياف ومنخفضة السكر.",
+      titleEn: "The Start of the Day Sets the Result",
+      descriptionEn: "Make sure to prepare a breakfast rich in fiber and low in sugar.",
     ),
     AppTip(
       title: "اختاري صح",
       description:
           "خلي الاختيارات المتاحة وقت الجوع صحية قدر الإمكان (مثل: تقديم الخضروات والفواكه بطرق شهية مختلفة).",
+      titleEn: "Choose Right",
+      descriptionEn:
+          "Make the available choices when hungry as healthy as possible (e.g., serving vegetables and fruits in different appetizing ways).",
     ),
     AppTip(
       title: "٨٠٠٠٠٠ سعره..!!!!!!!!",
       description:
           "قومي بحساب الاحتياج اليومي من السعرات وتدريبهم على متابعة القيمة الغذائية للمأكولات.",
+      titleEn: "800,000 Calories..!!!!!!!!",
+      descriptionEn:
+          "Calculate daily calorie needs and train them to monitor the nutritional value of foods.",
     ),
     AppTip(
       title: "نظام… مش عشوائية",
       description:
           "قسمي الوجبات اليومية إلى خمس وجبات صغيرة متفرقة، وتناولها في مواعيد ثابتة.",
+      titleEn: "System... Not Randomness",
+      descriptionEn:
+          "Divide daily meals into five small, scattered meals, and eat them at fixed times.",
     ),
     AppTip(
       title: "درع ضد الجوع",
       description:
           "احرصي علي أن يتناولون الألياف الكاملة الموجودة في: الشوفان وحبوب القمح والأرز البني والحمص.",
+      titleEn: "Hunger Shield",
+      descriptionEn:
+          "Make sure they eat whole fibers found in: oats, wheat grains, brown rice, and chickpeas.",
     ),
     AppTip(
       title: "المفتاح السري",
       description: "قدمي لاطفالك كوبين من الماء قبل الأكل.",
+      titleEn: "The Secret Key",
+      descriptionEn: "Give your children two cups of water before eating.",
     ),
     AppTip(
       title: "خاف من عدوك ..!!",
@@ -330,39 +359,62 @@ class AppTipsData {
       title: "قوس قزح في طبقك 🌈",
       description:
           "حاول تاكل فواكه وخضروات بألوان مختلفة كل يوم (أحمر، أخضر، أصفر..) عشان جسمك ياخد كل الفيتامينات.",
+      titleEn: "A Rainbow on Your Plate 🌈",
+      descriptionEn:
+          "Try to eat fruits and vegetables of different colors every day (red, green, yellow...) so your body gets all the vitamins.",
     ),
     AppTip(
       title: "أبطال الحبوب الكاملة 🌾",
       description:
           "الشوفان والأرز البني والقمح بيخلوك شبعان لفترة طويلة وبيدوك طاقة قوية للعب.",
+      titleEn: "Whole Grain Heroes 🌾",
+      descriptionEn:
+          "Oats, brown rice, and wheat keep you full for a long time and give you strong energy for playing.",
     ),
     AppTip(
       title: "مصنع العضلات 💪",
       description:
           "السمك والبيض واللحمة والحليب هم اللي بيبنوا عضلاتك القوية.. اختار منهم نوع كل يوم.",
+      titleEn: "Muscle Factory 💪",
+      descriptionEn:
+          "Fish, eggs, meat, and milk build your strong muscles. Choose one of them every day.",
     ),
     AppTip(
       title: "سناك الأبطال الأذكياء 🧠",
       description:
           "لما تجوع بين الوجبات، اختار خيار وجزر مكسرات مش مملحة.. دي تسالي الأذكياء!",
+      titleEn: "Smart Heroes' Snack 🧠",
+      descriptionEn:
+          "When you get hungry between meals, choose cucumbers, carrots, and unsalted nuts. These are smart snacks!",
     ),
     AppTip(
       title: "سر الملح المخفي 🧂",
       description: "قلل الملح في أكلك عشان قلبك وجسمك يفضلوا بصحة ممتازة.",
+      titleEn: "Hidden Salt Secret 🧂",
+      descriptionEn:
+          "Reduce the salt in your food for your heart and body to stay in excellent health.",
     ),
     AppTip(
       title: "اختار الخفيف والمفيد 🐟",
       description:
           "السمك والفراخ المشوية أخف بكتير على معدتك وبيدوك نشاط أكتر من المقليات.",
+      titleEn: "Choose Light and Useful 🐟",
+      descriptionEn:
+          "Grilled fish and chicken are much lighter on your stomach and give you more energy than fried foods.",
     ),
     AppTip(
       title: "كوب الحيوية 🥛",
       description: "اشرب كوب لبن كل يوم عشان عضمك وسنانك يبقوا زي الحديد.",
+      titleEn: "Vitality Cup 🥛",
+      descriptionEn: "Drink a cup of milk every day for your bones and teeth to stay strong like iron.",
     ),
     AppTip(
       title: "ابعد عن المصنعات 🛑",
       description:
           "اللانشون والأكل المصنع بيتعب جسمك.. خليك دايمًا في الأكل الطبيعي اللي مامي بتعمله.",
+      titleEn: "Stay Away from Processed Foods 🛑",
+      descriptionEn:
+          "Lunch meat and processed food tire your body. Always stick to the natural food your mommy makes.",
     ),
     AppTip(
       title: "عدو النشاط الصامت 🍭",

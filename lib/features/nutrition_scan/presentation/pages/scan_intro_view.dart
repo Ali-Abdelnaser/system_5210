@@ -3,26 +3,71 @@ import 'package:system_5210/core/theme/app_theme.dart';
 import 'package:system_5210/core/utils/app_routes.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_state.dart';
 import 'package:system_5210/features/daily_tasks_game/presentation/widgets/glass_card.dart';
 import 'package:system_5210/l10n/app_localizations.dart';
 import 'package:system_5210/core/utils/app_alerts.dart';
 import 'package:system_5210/core/utils/app_images.dart';
 
-class ScanIntroView extends StatelessWidget {
+class ScanIntroView extends StatefulWidget {
   const ScanIntroView({super.key});
 
-  void _handleStartScan(BuildContext context) {
-    bool isServerDown = false;
-    if (isServerDown) {
-      final l10n = AppLocalizations.of(context)!;
+  @override
+  State<ScanIntroView> createState() => _ScanIntroViewState();
+}
+
+class _ScanIntroViewState extends State<ScanIntroView> {
+  int _dailyScanCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDailyCount();
+  }
+
+  Future<void> _loadDailyCount() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && mounted) {
+      context.read<NutritionScanCubit>().updateDailyScanCount(user.uid);
+    }
+  }
+
+  void _handleStartScan(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
       AppAlerts.showAlert(
         context,
-        message: l10n.serverErrorMessage,
+        message: l10n.localeName == 'ar'
+            ? "يجب تسجيل الدخول لاستخدام هذه الميزة"
+            : "You must login to use this feature",
         type: AlertType.warning,
       );
-    } else {
-      Navigator.pushNamed(context, AppRoutes.nutritionScan);
+      return;
     }
+
+    // Check Daily Limit
+    final cubit = context.read<NutritionScanCubit>();
+    final reachedLimit = await cubit.hasReachedLimit(user.uid);
+
+    if (!context.mounted) return;
+
+    if (reachedLimit) {
+      AppAlerts.showAlert(
+        context,
+        message: l10n.localeName == 'ar'
+            ? "عذراً! لقد استهلكت جميع محاولات الفحص المتاحة لك اليوم (5 محاولات). يرجى المحاولة غداً."
+            : "Sorry! You have used all your scan attempts for today (5 attempts). Please try again tomorrow.",
+        type: AlertType.warning,
+      );
+      return;
+    }
+
+    Navigator.pushNamed(context, AppRoutes.nutritionScan);
   }
 
   @override
@@ -52,8 +97,11 @@ class ScanIntroView extends StatelessWidget {
                       vertical: 10,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [_buildHistoryBadge(context, l10n)],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildDailyCounter(context, l10n),
+                        _buildHistoryBadge(context, l10n),
+                      ],
                     ),
                   ),
                 ),
@@ -84,13 +132,13 @@ class ScanIntroView extends StatelessWidget {
                                             shape: BoxShape.circle,
                                             border: Border.all(
                                               color: AppTheme.appBlue
-                                                  .withOpacity(0.35),
+                                                  .withValues(alpha: 0.35),
                                               width: 2,
                                             ),
                                             boxShadow: [
                                               BoxShadow(
                                                 color: AppTheme.appBlue
-                                                    .withOpacity(0.1),
+                                                    .withValues(alpha: 0.1),
                                                 blurRadius: 15,
                                                 spreadRadius: 1,
                                               ),
@@ -119,8 +167,8 @@ class ScanIntroView extends StatelessWidget {
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: AppTheme.appBlue.withOpacity(
-                                            0.2,
+                                          color: AppTheme.appBlue.withValues(
+                                            alpha: 0.2,
                                           ),
                                           blurRadius: 40,
                                           spreadRadius: 10,
@@ -167,8 +215,8 @@ class ScanIntroView extends StatelessWidget {
                                               spreadRadius: 4,
                                             ),
                                             BoxShadow(
-                                              color: Colors.white.withOpacity(
-                                                0.8,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.8,
                                               ),
                                               blurRadius: 2,
                                             ),
@@ -264,7 +312,7 @@ class ScanIntroView extends StatelessWidget {
                           backgroundColor: AppTheme.appBlue,
                           foregroundColor: Colors.white,
                           elevation: 10,
-                          shadowColor: AppTheme.appBlue.withOpacity(0.4),
+                          shadowColor: AppTheme.appBlue.withValues(alpha: 0.4),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(35),
                           ),
@@ -294,6 +342,48 @@ class ScanIntroView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDailyCounter(BuildContext context, AppLocalizations l10n) {
+    return BlocBuilder<NutritionScanCubit, NutritionScanState>(
+      buildWhen: (prev, curr) => curr is DailyScanCountLoaded,
+      builder: (context, state) {
+        if (state is DailyScanCountLoaded) {
+          _dailyScanCount = state.count;
+        }
+
+        final remaining = (NutritionScanCubit.maxDailyScans - _dailyScanCount)
+            .clamp(0, NutritionScanCubit.maxDailyScans);
+
+        return GlassCard(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          opacity: 0.6,
+          blur: 10,
+          borderRadius: 20,
+          color: Colors.white,
+          child: Row(
+            children: [
+              Icon(
+                Icons.bolt_rounded,
+                color: remaining > 0 ? AppTheme.appYellow : Colors.grey,
+                size: 18,
+              ),
+              const SizedBox(width: 6),
+              Text(
+                l10n.localeName == 'ar'
+                    ? "المتبقي: $remaining / ${NutritionScanCubit.maxDailyScans}"
+                    : "Remains: $remaining / ${NutritionScanCubit.maxDailyScans}",
+                style: GoogleFonts.cairo(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF1E293B),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -342,14 +432,17 @@ class ScanIntroView extends StatelessWidget {
           blur: 25,
           borderRadius: 30,
           color: Colors.white,
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 1.5,
+          ),
           child: Row(
             children: [
               Container(
                 width: 50,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
+                  color: color.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Center(child: Icon(icon, color: color, size: 26)),

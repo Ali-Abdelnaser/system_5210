@@ -31,7 +31,7 @@ class ProfileChildCard extends StatelessWidget {
         border: Border.all(color: Colors.grey[100]!),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Colors.black.withOpacity(0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -113,7 +113,7 @@ class ProfileChildCard extends StatelessWidget {
       color: Colors.white,
       surfaceTintColor: Colors.white,
       elevation: 8,
-      shadowColor: Colors.black.withValues(alpha: 0.2),
+      shadowColor: Colors.black.withOpacity(0.2),
       icon: const Icon(
         Icons.more_vert_rounded,
         color: Color(0xFF94A3B8),
@@ -190,7 +190,7 @@ class ProfileChildCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(

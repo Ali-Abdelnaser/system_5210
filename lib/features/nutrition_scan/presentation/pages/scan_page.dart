@@ -26,8 +26,8 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
   bool _isProcessing = false;
   final TextRecognizer _textRecognizer = TextRecognizer();
 
-  cameraStatus _currentStatus = cameraStatus.searching;
-  String _helperMessage = "AI System Initializing...";
+  CameraStatus _currentStatus = CameraStatus.searching;
+  String _helperMessage = "AI System Initializing";
   Timer? _analysisTimer;
   bool _isTakingPicture = false;
 
@@ -71,7 +71,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
       if (mounted) {
         setState(() {
           _isInitializing = false;
-          _helperMessage = "الذكاء الاصطناعي يبحث عن البيانات...";
+          _helperMessage = "الذكاء الاصطناعي يبحث عن البيانات";
         });
         _startLiveAnalysis();
       }
@@ -90,8 +90,9 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
       if (_controller == null ||
           !_controller!.value.isInitialized ||
           _isProcessing ||
-          _isTakingPicture)
+          _isTakingPicture) {
         return;
+      }
 
       _isTakingPicture = true;
       try {
@@ -99,15 +100,23 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
         final inputImage = InputImage.fromFilePath(image.path);
         final recognizedText = await _textRecognizer.processImage(inputImage);
 
+        // مسح الصورة المؤقتة فوراً بعد معالجتها لتجنب تسريب الذاكرة
+        final imageFile = File(image.path);
+        if (await imageFile.exists()) {
+          try {
+            await imageFile.delete();
+          } catch (_) {}
+        }
+
         if (!mounted) return;
         final hasText = recognizedText.text.trim().length > 10;
 
         setState(() {
           if (hasText) {
-            _currentStatus = cameraStatus.ready;
+            _currentStatus = CameraStatus.ready;
             _helperMessage = "تم العثور على البيانات .. التقط الآن";
           } else {
-            _currentStatus = cameraStatus.searching;
+            _currentStatus = CameraStatus.searching;
             _helperMessage = "وجه الكاميرا نحو المكونات بوضوح";
           }
         });
@@ -151,21 +160,26 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
 
   void _handleScaleUpdate(ScaleUpdateDetails details) {
     if (_controller == null || !_controller!.value.isInitialized) return;
+
+    // Smooth zoom logic
     double newZoom = _baseZoom * details.scale;
     if (newZoom < _minZoom) newZoom = _minZoom;
     if (newZoom > _maxZoom) newZoom = _maxZoom;
 
     if (newZoom != _currentZoom) {
-      setState(() => _currentZoom = newZoom);
-      _controller!.setZoomLevel(newZoom);
+      if ((newZoom - _currentZoom).abs() > 0.02) {
+        setState(() => _currentZoom = newZoom);
+        _controller!.setZoomLevel(newZoom);
+      }
     }
   }
 
   Future<void> _captureAndProcess() async {
     if (_controller == null ||
         !_controller!.value.isInitialized ||
-        _isProcessing)
+        _isProcessing) {
       return;
+    }
 
     HapticFeedback.mediumImpact();
     setState(() => _isProcessing = true);
@@ -225,7 +239,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 20),
                   Text(
-                    "INITIALIZING AI SCAN...",
+                    "INITIALIZING AI SCAN",
                     style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -288,7 +302,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
                                   .rotate(duration: 1.seconds),
                               const SizedBox(height: 24),
                               Text(
-                                "EXTRACTING DATA...",
+                                "EXTRACTING DATA",
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w900,
@@ -405,7 +419,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.appBlue.withOpacity(0.5),
+                  color: AppTheme.appBlue.withValues(alpha: 0.5),
                   blurRadius: 10,
                   spreadRadius: 2,
                 ),
@@ -413,7 +427,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
               gradient: LinearGradient(
                 colors: [
                   Colors.transparent,
-                  AppTheme.appBlue.withOpacity(0.8),
+                  AppTheme.appBlue.withValues(alpha: 0.8),
                   Colors.transparent,
                 ],
               ),
@@ -425,7 +439,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
   }
 
   Widget _buildCornerBrackets() {
-    bool isReady = _currentStatus == cameraStatus.ready;
+    bool isReady = _currentStatus == CameraStatus.ready;
     Color bracketColor = isReady ? AppTheme.appGreen : Colors.white;
 
     return Padding(
@@ -521,7 +535,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
   }
 
   Widget _buildCaptureButton() {
-    bool isReady = _currentStatus == cameraStatus.ready;
+    bool isReady = _currentStatus == CameraStatus.ready;
     return GestureDetector(
       onTap: _captureAndProcess,
       child: Center(
@@ -535,7 +549,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: AppTheme.appGreen.withOpacity(0.5),
+                        color: AppTheme.appGreen.withValues(alpha: 0.5),
                         width: 2,
                       ),
                     ),
@@ -557,7 +571,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
                   color: isReady ? AppTheme.appGreen : Colors.white,
                   width: 5,
                 ),
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
               ),
               child: Center(
                 child: Container(
@@ -569,7 +583,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
                     boxShadow: [
                       if (isReady)
                         BoxShadow(
-                          color: AppTheme.appGreen.withOpacity(0.5),
+                          color: AppTheme.appGreen.withValues(alpha: 0.5),
                           blurRadius: 20,
                         ),
                     ],
@@ -600,7 +614,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
           onTap: onTap,
           child: Container(
             padding: const EdgeInsets.all(12),
-            color: Colors.white.withOpacity(0.15),
+            color: Colors.white.withValues(alpha: 0.15),
             child: Icon(icon, color: color, size: 24),
           ),
         ),
@@ -615,12 +629,14 @@ class GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.2)
+      ..color = color.withValues(alpha: 0.2)
       ..strokeWidth = 0.5;
-    for (double i = 0; i <= size.width; i += 40)
+    for (double i = 0; i <= size.width; i += 40) {
       canvas.drawLine(Offset(i, 0), Offset(i, size.height), paint);
-    for (double i = 0; i <= size.height; i += 40)
+    }
+    for (double i = 0; i <= size.height; i += 40) {
       canvas.drawLine(Offset(0, i), Offset(size.width, i), paint);
+    }
   }
 
   @override

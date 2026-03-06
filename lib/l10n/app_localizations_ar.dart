@@ -1450,4 +1450,71 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get laterButton => 'لاحقاً';
+
+  @override
+  String get stepTrackerTitle => 'تفاصيل النشاط';
+
+  @override
+  String get totalSteps => 'إجمالي الخطوات';
+
+  @override
+  String stepsGoal(String goal) {
+    return 'الهدف: $goal';
+  }
+
+  @override
+  String get caloriesLabel => 'سعرة حرارية';
+
+  @override
+  String get distanceLabel => 'كيلومتر';
+
+  @override
+  String get km => 'كم';
+
+  @override
+  String get activeTimeLabel => 'دقيقة نشطة';
+
+  @override
+  String get powerIndexLabel => 'معدل القوة';
+
+  @override
+  String get heroEvolution => 'تطوير البطل';
+
+  @override
+  String get heroEvolutionDesc => 'حدث بياناتك لقوة أكبر';
+
+  @override
+  String get weeklyAnalysis => 'تحليل الأسبوع';
+
+  @override
+  String get risingHero => 'بطل صاعد';
+
+  @override
+  String get activeHero => 'بطل نشيط';
+
+  @override
+  String get legendaryHero => 'بطل متميز';
+
+  @override
+  String get congratsHero => 'عاش يا بطل! 🎉';
+
+  @override
+  String get goalReachedMsg =>
+      'لقد حققت هدف الـ 5210 خطوة لليوم. استمر في التحرك!';
+
+  @override
+  String get min => 'دق';
+
+  @override
+  String get activityToday => 'نشاط اليوم';
+
+  @override
+  String get heroSteps => 'خطوة بطل';
+
+  @override
+  String get activityTrackingRequired => 'تحتاج لصلاحية تتبع النشاط';
+
+  @override
+  String get activityTrackingDesc =>
+      'من فضلك فعل صلاحية تتبع النشاط من إعدادات الهاتف لمتابعة خطواتك';
 }

@@ -17,6 +17,7 @@ class NotificationCubit extends Cubit<NotificationState> {
   final LocalStorageService localStorageService;
   final NotificationService notificationService;
   String? _userId;
+  String _languageCode = 'ar';
 
   String get _boxName =>
       _userId != null ? 'notifications_$_userId' : 'notifications';
@@ -32,7 +33,8 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   DateTime? _userCreatedAt;
 
-  void setUserContext(String? userId, DateTime? createdAt, {String? role}) {
+  void setUserContext(String? userId, DateTime? createdAt, {String? role, String? langCode}) {
+    if (langCode != null) _languageCode = langCode;
     if (_userId == userId && _userCreatedAt == createdAt) return;
     _userId = userId;
     _userCreatedAt = createdAt;
@@ -50,7 +52,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     loadNotifications();
 
     if (role == 'child' || role == 'parent') {
-      scheduleMorningQuest(isAr: true);
+      scheduleMorningQuest(isAr: _languageCode == 'ar');
       scheduleDailyTipsIfNeeded(role!);
     }
   }
@@ -144,9 +146,10 @@ class NotificationCubit extends Cubit<NotificationState> {
             timestamp.isAfter(
               _sessionStartTime.subtract(const Duration(seconds: 10)),
             )) {
+          final isAr = _languageCode == 'ar';
           notificationService.showImmediateNotification(
-            title: notification.title,
-            body: notification.body,
+            title: isAr ? notification.title : (notification.titleEn ?? notification.title),
+            body: isAr ? notification.body : (notification.bodyEn ?? notification.body),
             imageUrl: notification.imageUrl,
             actionUrl: notification.actionUrl,
             showAction: true,
@@ -193,7 +196,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     }
   }
 
-  int _getUnreadCount(List<Map<String, dynamic>> notifications) {
+  int _getUnreadCount(List<dynamic> notifications) {
     return notifications.where((n) => n['isRead'] == false).length;
   }
 
@@ -277,10 +280,14 @@ class NotificationCubit extends Cubit<NotificationState> {
             (scheduledDate.month * 100) +
             scheduledDate.day;
 
+        final isAr = _languageCode == 'ar';
+        final title = isAr ? tip.title : (tip.titleEn ?? tip.title);
+        final body = isAr ? tip.description : (tip.descriptionEn ?? tip.description);
+
         await notificationService.scheduleDailyTip(
           id: uniqueIntId,
-          title: tip.title,
-          body: tip.description,
+          title: title,
+          body: body,
           scheduledDate: scheduledDate,
           payload: 'route:${AppRoutes.notifications}',
         );
@@ -291,6 +298,8 @@ class NotificationCubit extends Cubit<NotificationState> {
           id: id,
           title: tip.title,
           body: tip.description,
+          titleEn: tip.titleEn,
+          bodyEn: tip.descriptionEn,
           timestamp: scheduledDate,
           type: 'tip',
         );
@@ -308,20 +317,20 @@ class NotificationCubit extends Cubit<NotificationState> {
     required String gameName,
     required int score,
     required String reward,
-    bool isAr = true,
   }) async {
-    final title = isAr
-        ? "مبروك! إنجاز في $gameName"
-        : "Congrats! Achievement in $gameName";
-    final body = isAr
-        ? "حققت $score نقطة وفزت بـ $reward! استمر يا بطل ✨"
-        : "You scored $score and won $reward! Keep it up ✨";
+    const titleAr = "مبروك! إنجاز جديد";
+    final bodyAr = "لقد حققت $score نقطة في $gameName وفزت بـ $reward! ✨";
+    
+    const titleEn = "Congrats! New Achievement";
+    final bodyEn = "You scored $score in $gameName and won $reward! ✨";
 
     final id = "game_${DateTime.now().millisecondsSinceEpoch}";
     final notification = AppNotification(
       id: id,
-      title: title,
-      body: body,
+      title: titleAr,
+      body: bodyAr,
+      titleEn: titleEn,
+      bodyEn: bodyEn,
       timestamp: DateTime.now(),
       type: 'challenge',
       actionUrl: 'route:/games-list',
@@ -338,9 +347,10 @@ class NotificationCubit extends Cubit<NotificationState> {
     );
 
     final notifications = await localStorageService.getAll(_boxName);
+    final isAr = _languageCode == 'ar';
     notificationService.showImmediateNotification(
-      title: notification.title,
-      body: notification.body,
+      title: isAr ? notification.title : (notification.titleEn ?? notification.title),
+      body: isAr ? notification.body : (notification.bodyEn ?? notification.body),
       actionUrl: notification.actionUrl,
       showAction: true,
       badgeCount: _getUnreadCount(notifications),

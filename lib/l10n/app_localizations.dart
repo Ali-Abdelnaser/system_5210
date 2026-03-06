@@ -2851,6 +2851,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Later'**
   String get laterButton;
+
+  /// No description provided for @stepTrackerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity Details'**
+  String get stepTrackerTitle;
+
+  /// No description provided for @totalSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Steps'**
+  String get totalSteps;
+
+  /// No description provided for @stepsGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal: {goal}'**
+  String stepsGoal(String goal);
+
+  /// No description provided for @caloriesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Calories'**
+  String get caloriesLabel;
+
+  /// No description provided for @distanceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance'**
+  String get distanceLabel;
+
+  /// No description provided for @km.
+  ///
+  /// In en, this message translates to:
+  /// **'km'**
+  String get km;
+
+  /// No description provided for @activeTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Time'**
+  String get activeTimeLabel;
+
+  /// No description provided for @powerIndexLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Power Index'**
+  String get powerIndexLabel;
+
+  /// No description provided for @heroEvolution.
+  ///
+  /// In en, this message translates to:
+  /// **'Hero Evolution'**
+  String get heroEvolution;
+
+  /// No description provided for @heroEvolutionDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Update stats for power boost'**
+  String get heroEvolutionDesc;
+
+  /// No description provided for @weeklyAnalysis.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Analysis'**
+  String get weeklyAnalysis;
+
+  /// No description provided for @risingHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Rising Hero'**
+  String get risingHero;
+
+  /// No description provided for @activeHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Hero'**
+  String get activeHero;
+
+  /// No description provided for @legendaryHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Legendary Hero'**
+  String get legendaryHero;
+
+  /// No description provided for @congratsHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Congrats Hero! 🎉'**
+  String get congratsHero;
+
+  /// No description provided for @goalReachedMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve reached your 5210 steps goal today. Keep moving!'**
+  String get goalReachedMsg;
+
+  /// No description provided for @min.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get min;
+
+  /// No description provided for @activityToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Energy'**
+  String get activityToday;
+
+  /// No description provided for @heroSteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Hero Steps'**
+  String get heroSteps;
+
+  /// No description provided for @activityTrackingRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity Tracking Required'**
+  String get activityTrackingRequired;
+
+  /// No description provided for @activityTrackingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enable activity tracking permission in settings to track your steps'**
+  String get activityTrackingDesc;
 }
 
 class _AppLocalizationsDelegate

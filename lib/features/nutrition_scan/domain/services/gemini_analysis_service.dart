@@ -11,14 +11,14 @@ class GeminiAnalysisService {
   late final GenerativeModel _model;
 
   GeminiAnalysisService() {
-    final apiKey = dotenv.env['GEMINI_API_KEY'];
-    if (apiKey == null || apiKey.isEmpty) {
+    final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
+    if (apiKey.isEmpty) {
       debugPrint("CRITICAL: Gemini API Key is missing in .env!");
-      throw Exception("Gemini API Key is missing. Check your .env file.");
+    } else {
+      debugPrint(
+        "Gemini Service Initialized. Key found (Length: ${apiKey.length})",
+      );
     }
-    debugPrint(
-      "Gemini Service Initialized. Key found (Length: ${apiKey.length})",
-    );
     _model = GenerativeModel(
       model: 'gemini-2.0-flash',
       apiKey: apiKey,
@@ -50,6 +50,10 @@ class GeminiAnalysisService {
     String languageCode,
   ) async {
     try {
+      final apiKey = dotenv.env['GEMINI_API_KEY'] ?? '';
+      if (apiKey.isEmpty) {
+        throw Exception("Gemini API Key is missing. Check your .env file.");
+      }
       final imageFile = File(imagePath);
       if (!await imageFile.exists()) {
         throw Exception("Image file not found");

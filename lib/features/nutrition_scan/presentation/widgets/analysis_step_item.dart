@@ -25,7 +25,7 @@ class AnalysisStepItem extends StatelessWidget {
           Expanded(
             child: isProcessing
                 ? Shimmer.fromColors(
-                    baseColor: Colors.white.withOpacity(0.5),
+                    baseColor: Colors.white.withValues(alpha: 0.5),
                     highlightColor: Colors.white,
                     child: Text(
                       title,
@@ -41,7 +41,7 @@ class AnalysisStepItem extends StatelessWidget {
                     style: TextStyle(
                       color: isCompleted
                           ? Colors.white
-                          : Colors.white.withOpacity(0.4),
+                          : Colors.white.withValues(alpha: 0.4),
                       fontSize: 18,
                       fontWeight: isCompleted
                           ? FontWeight.bold
@@ -82,7 +82,10 @@ class AnalysisStepItem extends StatelessWidget {
       height: 24,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 2),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 2,
+        ),
       ),
     );
   }

@@ -80,7 +80,7 @@ class _ProceduralBackgroundState extends State<ProceduralBackground>
             Positioned.fill(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 0.8, sigmaY: 0.8),
-                child: Container(color: Colors.white.withValues(alpha: 0.10)),
+                child: Container(color: Colors.white.withOpacity(0.10)),
               ),
             ),
           ],
@@ -260,7 +260,7 @@ class _MotionArtPainter extends CustomPainter {
       _paintStandardPath(
         canvas,
         path,
-        color.withValues(alpha: 0.6),
+        color.withOpacity(0.6),
         individualProgress,
       );
     }
@@ -292,7 +292,7 @@ class _MotionArtPainter extends CustomPainter {
       canvas.drawPath(
         scribblePath,
         Paint()
-          ..color = color.withValues(alpha: fillOpacity)
+          ..color = color.withOpacity(fillOpacity)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 4,
       );
@@ -303,7 +303,7 @@ class _MotionArtPainter extends CustomPainter {
 
     // 2. Black Outline (Hand-drawn look)
     final outlinePaint = Paint()
-      ..color = Colors.black.withValues(alpha: 0.8 * progress)
+      ..color = Colors.black.withOpacity(0.8 * progress)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
@@ -324,7 +324,7 @@ class _MotionArtPainter extends CustomPainter {
     double progress,
   ) {
     final paint = Paint()
-      ..color = color.withValues(alpha: color.opacity * progress)
+      ..color = color.withOpacity(color.opacity * progress)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round

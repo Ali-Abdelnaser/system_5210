@@ -53,14 +53,12 @@ class NutritionRepositoryImpl implements NutritionRepository {
       for (var item in localData) {
         try {
           // Robust parsing
-          if (item is Map) {
-            final scan = NutritionResultModel.fromJson(
-              Map<String, dynamic>.from(item),
-              'local',
-            );
-            if (scan.userId == userId) {
-              validLocalScans.add(scan);
-            }
+          final scan = NutritionResultModel.fromJson(
+            Map<String, dynamic>.from(item as Map),
+            'local',
+          );
+          if (scan.userId == userId) {
+            validLocalScans.add(scan);
           }
         } catch (e) {
           debugPrint("Repository: Error parsing a local scan: $e");
@@ -155,7 +153,7 @@ class NutritionRepositoryImpl implements NutritionRepository {
     try {
       final recognizedText = await textRecognizer.processImage(inputImage);
       // If text count is extremely low, it's likely not a label or very blurry
-      if (recognizedText.text.trim().length < 15) {
+      if (recognizedText.text.trim().length < 5) {
         throw Exception(
           languageCode == 'ar'
               ? "الصورة غير واضحة أو لا تحتوي على نص كافٍ. يرجى المحاولة مرة أخرى."
@@ -198,6 +196,44 @@ class NutritionRepositoryImpl implements NutritionRepository {
       }
     } catch (e) {
       debugPrint("Repository: Error deleting remote scan: $e");
+    }
+  }
+
+  @override
+  Future<int> getDailyScanCount(String userId) async {
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final key = 'daily_scans_$userId';
+
+    final data = await _localStorage.get('user_usage', key);
+    if (data != null && data['date'] == today) {
+      return (data['count'] as num).toInt();
+    }
+    return 0;
+  }
+
+  @override
+  Future<void> incrementDailyScanCount(String userId) async {
+    final today = DateTime.now().toIso8601String().substring(0, 10);
+    final key = 'daily_scans_$userId';
+
+    final currentTotal = await getDailyScanCount(userId);
+    await _localStorage.save('user_usage', key, {
+      'count': currentTotal + 1,
+      'date': today,
+    });
+  }
+
+  @override
+  Future<bool> validateImageText(String imagePath) async {
+    final inputImage = InputImage.fromFilePath(imagePath);
+    final textRecognizer = TextRecognizer();
+    try {
+      final recognizedText = await textRecognizer.processImage(inputImage);
+      return recognizedText.text.trim().length >= 5;
+    } catch (_) {
+      return false;
+    } finally {
+      textRecognizer.close();
     }
   }
 }

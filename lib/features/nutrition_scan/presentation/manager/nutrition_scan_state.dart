@@ -90,3 +90,13 @@ class NutritionScanError extends NutritionScanState {
 }
 
 class NutritionScanSuccess extends NutritionScanState {}
+
+class NutritionScanLimitReached extends NutritionScanState {}
+
+class DailyScanCountLoaded extends NutritionScanState {
+  final int count;
+  const DailyScanCountLoaded(this.count);
+
+  @override
+  List<Object> get props => [count];
+}
