@@ -204,6 +204,60 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueButton => 'متابعة';
 
   @override
+  String get authNoInternetConnection =>
+      'لا يوجد اتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.';
+
+  @override
+  String get authPhoneNotRegistered =>
+      'رقم الهاتف غير مسجّل. أنشئ حساباً أولاً.';
+
+  @override
+  String get authPhoneAlreadyRegisteredSignIn =>
+      'رقم الهاتف مسجّل بالفعل. سجّل الدخول من هنا.';
+
+  @override
+  String get authSignInInstead => 'هذا البريد مسجّل ومفعّل. سجّل الدخول.';
+
+  @override
+  String get authWrongPasswordExistingEmail =>
+      'هذا البريد مسجّل بالفعل. استخدم كلمة السر الصحيحة أو «نسيت كلمة السر».';
+
+  @override
+  String get authVerificationCodeResent => 'تم إعادة إرسال الكود.';
+
+  @override
+  String get authEnterSixDigits => 'يرجى إدخال الكود المكوّن من 6 أرقام.';
+
+  @override
+  String get authSessionExpired => 'انتهت الجلسة. سجّل الدخول مرة أخرى.';
+
+  @override
+  String get authEmailNotRegistered =>
+      'هذا البريد غير مسجّل. أنشئ حساباً أولاً.';
+
+  @override
+  String get authEmailNotVerifiedYet =>
+      'لم يتم تأكيد البريد بعد. راجع صندوق الوارد.';
+
+  @override
+  String get authWrongPasswordTryAgain => 'كلمة السر غير صحيحة. حاول مرة أخرى.';
+
+  @override
+  String get authInvalidEmailAddress => 'عنوان البريد غير صالح.';
+
+  @override
+  String get authNoAccountFoundEmail => 'لا يوجد حساب بهذا البريد.';
+
+  @override
+  String get authEmailAlreadyExistsGeneric => 'يوجد حساب بهذا البريد بالفعل.';
+
+  @override
+  String get authInvalidVerificationCode => 'كود التحقق غير صحيح.';
+
+  @override
+  String get authTooManyRequests => 'محاولات كثيرة من هذا الجهاز. حاول لاحقاً.';
+
+  @override
   String get whoAreYou => 'عرفنا عليك أكثر؟';
 
   @override
@@ -389,7 +443,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favoriteHero => 'شخصية الطفل المفضلة';
 
   @override
-  String get familyPriority => 'الأولوية الصحية للأسرة';
+  String get familyPriority => 'أهم اهتمامات العائلة';
 
   @override
   String get selectDate => 'اختر التاريخ';
@@ -677,10 +731,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scanResultTitle => 'تحليل الغذاء الذكي';
 
   @override
-  String get healthReport => 'التقرير الصحي';
+  String get healthReport => 'ملخص النشاط';
 
   @override
-  String get healthScore => 'تقييم الصحة';
+  String get healthScore => 'تقييم العادات';
 
   @override
   String get nutritionFacts => 'الحقائق الغذائية';
@@ -774,6 +828,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get confirm => 'تأكيد';
+
+  @override
+  String get deleteAccount => 'حذف الحساب';
+
+  @override
+  String get deleteAccountConfirm =>
+      'هل أنت متأكد من حذف حسابك؟ هذا الإجراء نهائي ولا يمكن التراجع عنه.';
+
+  @override
+  String get deleteAccountWarning =>
+      'سيتم حذف جميع بياناتك وتقدمك وملفات الأطفال بشكل نهائي.';
 
   @override
   String get recentScansTitle => 'سجل الفحوصات';
@@ -908,7 +973,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get taskNotifications => 'إشعارات المهام اليومية';
 
   @override
-  String get insightsNotifications => 'إشعارات النصائح والمعلومات';
+  String get insightsNotifications => 'معلومات تهمك وتنبيهات';
 
   @override
   String get storage => 'الوصول للملفات والصور';
@@ -1036,7 +1101,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get lastUpdated => 'آخر تحديث: فبراير 2026';
 
   @override
-  String get healthyRecipes => 'وصفات صحية';
+  String get healthyRecipes => 'وصفات الطعام';
 
   @override
   String get ingredients => 'المكونات';
@@ -1057,7 +1122,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get healthyInsightsTitle => 'معلومات تهمك';
 
   @override
-  String get healthyInsightsSubTitle => 'حقائق طبية لصحة عائلتك';
+  String get healthyInsightsSubTitle => 'حقائق مفيدة لعادات عائلتك';
 
   @override
   String get didYouKnow => 'هل تعلم؟';
@@ -1434,22 +1499,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aboutMeetOurTeamTitle => 'فريق العمل';
-
-  @override
-  String get updateAvailable => 'تحديث جديد متاح 🚀';
-
-  @override
-  String get updateRequired => 'تحديث ضروري ⚠️';
-
-  @override
-  String get updateDesc =>
-      'يوجد إصدار جديد من تطبيق 5210 متاح الآن. حدث التطبيق للحصول على أفضل تجربة وأحدث الميزات.';
-
-  @override
-  String get updateButton => 'تحديث الآن';
-
-  @override
-  String get laterButton => 'لاحقاً';
 
   @override
   String get stepTrackerTitle => 'تفاصيل النشاط';

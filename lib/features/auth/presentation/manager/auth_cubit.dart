@@ -16,7 +16,7 @@ import '../../domain/usecases/verify_email_otp_usecase.dart';
 import '../../domain/usecases/update_password_usecase.dart';
 import '../../domain/usecases/update_email_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
-import 'package:system_5210/core/network/network_info.dart';
+import 'package:five2ten/core/network/network_info.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
@@ -154,6 +154,14 @@ class AuthCubit extends Cubit<AuthState> {
   /// Sends OTP for login; checks if phone is registered first.
   Future<void> sendPhoneVerificationForLogin(String phoneNumber) async {
     emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
     final checkResult = await checkPhoneRegisteredUseCase(phoneNumber);
 
     await checkResult.fold(
@@ -177,7 +185,11 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   /// Sends OTP to phone; on success emits [AuthPhoneCodeSent] with verificationId.
-  Future<void> sendPhoneVerificationCode(String phoneNumber) async {
+  /// When [isResend] is true, emits [AuthPhoneOtpResent] so login/register do not push another route.
+  Future<void> sendPhoneVerificationCode(
+    String phoneNumber, {
+    bool isResend = false,
+  }) async {
     emit(AuthLoading());
     if (!await networkInfo.isConnected) {
       emit(
@@ -190,7 +202,43 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await sendPhoneCodeUseCase(phoneNumber);
     result.fold(
       (failure) => emit(AuthFailure(failure.message)),
-      (verificationId) => emit(AuthPhoneCodeSent(verificationId)),
+      (verificationId) => emit(
+        isResend
+            ? AuthPhoneOtpResent(verificationId)
+            : AuthPhoneCodeSent(verificationId),
+      ),
+    );
+  }
+
+  /// Registration flow: send SMS only if this phone is not already in the app (Firestore).
+  Future<void> sendPhoneVerificationForRegistration(String phoneNumber) async {
+    emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
+    final checkResult = await checkPhoneRegisteredUseCase(phoneNumber);
+    await checkResult.fold(
+      (failure) async => emit(AuthFailure(failure.message)),
+      (isRegistered) async {
+        if (isRegistered) {
+          emit(
+            const AuthFailure(
+              "This phone number is already registered. Please sign in instead.",
+            ),
+          );
+        } else {
+          final result = await sendPhoneCodeUseCase(phoneNumber);
+          result.fold(
+            (failure) => emit(AuthFailure(failure.message)),
+            (verificationId) => emit(AuthPhoneCodeSent(verificationId)),
+          );
+        }
+      },
     );
   }
 
@@ -271,13 +319,21 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> forgotPassword(String email) async {
+  Future<void> forgotPassword(String email, {bool isResend = false}) async {
     emit(AuthLoading());
     if (!await networkInfo.isConnected) {
       emit(
         const AuthFailure(
           "No internet connection. Please check your network and try again.",
         ),
+      );
+      return;
+    }
+    if (isResend) {
+      final result = await forgotPasswordUseCase(email);
+      result.fold(
+        (failure) => emit(AuthFailure(failure.message)),
+        (_) => emit(AuthEmailOtpResent()),
       );
       return;
     }
@@ -335,12 +391,18 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> sendEmailVerificationOTP(String email, {String? name}) async {
+  Future<void> sendEmailVerificationOTP(
+    String email, {
+    String? name,
+    bool isResend = false,
+  }) async {
     emit(AuthLoading());
     final result = await sendEmailVerificationOTPUseCase(email, name: name);
     result.fold(
       (failure) => emit(AuthFailure(failure.message)),
-      (_) => emit(AuthEmailVerificationSent()),
+      (_) => emit(
+        isResend ? AuthEmailOtpResent() : AuthEmailVerificationSent(),
+      ),
     );
   }
 
@@ -407,6 +469,24 @@ class AuthCubit extends Cubit<AuthState> {
           "Email verification sent to $newEmail. Please verify to complete update.",
         ),
       ),
+    );
+  }
+
+  Future<void> deleteAccount() async {
+    emit(AuthLoading());
+    if (!await networkInfo.isConnected) {
+      emit(
+        const AuthFailure(
+          "No internet connection. Please check your network and try again.",
+        ),
+      );
+      return;
+    }
+    // We get the repository from any usecase (e.g., logoutUseCase)
+    final result = await logoutUseCase.repository.deleteAccount();
+    result.fold(
+      (failure) => emit(AuthFailure(failure.message)),
+      (_) => emit(Unauthenticated()),
     );
   }
 }

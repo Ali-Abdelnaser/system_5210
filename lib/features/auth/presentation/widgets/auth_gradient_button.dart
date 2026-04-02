@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
+import 'package:five2ten/core/widgets/app_loading_indicator.dart';
 
 class AuthGradientButton extends StatefulWidget {
   final String text;

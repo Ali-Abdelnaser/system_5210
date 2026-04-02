@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:system_5210/core/utils/app_audio.dart';
+import 'package:five2ten/core/utils/app_audio.dart';
 
 class CustomScratcher extends StatefulWidget {
   final Widget child;

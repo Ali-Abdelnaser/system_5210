@@ -4,15 +4,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
-import 'package:system_5210/features/specialists/data/models/doctor_model.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/utils/image_compressor.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_loading_indicator.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/specialists/data/models/doctor_model.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/image_compressor.dart';
 
 class AdminEditDoctorView extends StatefulWidget {
   final DoctorModel? doctor;

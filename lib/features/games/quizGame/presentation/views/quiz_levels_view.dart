@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
-import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_state.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+import 'package:five2ten/features/games/quizGame/presentation/cubit/quiz_state.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
-import 'package:system_5210/features/games/quizGame/presentation/widgets/quiz_glass_container.dart';
+import 'package:five2ten/core/widgets/app_loading_indicator.dart';
+import 'package:five2ten/features/games/quizGame/presentation/widgets/quiz_glass_container.dart';
 import 'quiz_game_view.dart';
 
 class QuizLevelsView extends StatefulWidget {
@@ -24,19 +24,13 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
   final int totalLevels = 14;
   final ScrollController _scrollController = ScrollController();
 
+  /// Scroll target: the island for the current progress level (not math-based height).
+  final GlobalKey _currentLevelKey = GlobalKey();
+
   @override
   void initState() {
     super.initState();
-    final cubit = context.read<QuizCubit>();
-    cubit.loadLevels();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (cubit.state is QuizLevelsLoaded) {
-        _scrollToCurrentLevel(
-          (cubit.state as QuizLevelsLoaded).lastUnlockedLevel,
-        );
-      }
-    });
+    context.read<QuizCubit>().loadLevels();
   }
 
   @override
@@ -47,32 +41,28 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
 
   bool _isInitialScrollDone = false;
 
-  void _scrollToCurrentLevel(int unlockedLevel, {bool immediate = false}) {
-    Future.delayed(const Duration(milliseconds: 100), () {
-      if (!mounted || !_scrollController.hasClients) return;
-
-      const double itemHeight = 280.0;
-      final double screenHeight = MediaQuery.of(context).size.height;
-      final double scrollPosition =
-          ((unlockedLevel - 1) * itemHeight) -
-          (screenHeight / 2) +
-          (itemHeight / 2);
-
-      final target = scrollPosition.clamp(
-        0.0,
-        _scrollController.position.maxScrollExtent,
-      );
-
-      if (immediate) {
-        _scrollController.jumpTo(target);
-      } else {
-        _scrollController.animateTo(
-          target,
-          duration: 1200.ms,
-          curve: Curves.easeInOutCubic,
-        );
+  /// Centers the current-level island in the scroll view after layout exists.
+  void _scrollCurrentLevelIntoView({required bool immediate}) {
+    void tryScroll([int attempt = 0]) {
+      if (!mounted) return;
+      final ctx = _currentLevelKey.currentContext;
+      if (ctx == null) {
+        if (attempt < 20) {
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => tryScroll(attempt + 1),
+          );
+        }
+        return;
       }
-    });
+      Scrollable.ensureVisible(
+        ctx,
+        duration: immediate ? Duration.zero : const Duration(milliseconds: 700),
+        curve: Curves.easeInOutCubic,
+        alignment: 0.45,
+      );
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => tryScroll());
   }
 
   @override
@@ -88,11 +78,10 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
 
           BlocConsumer<QuizCubit, QuizState>(
             listener: (context, state) {
-              if (state is QuizLevelsLoaded && !_isInitialScrollDone) {
-                _scrollToCurrentLevel(state.lastUnlockedLevel, immediate: true);
+              if (state is QuizLevelsLoaded) {
+                final firstOpen = !_isInitialScrollDone;
                 _isInitialScrollDone = true;
-              } else if (state is QuizLevelsLoaded) {
-                _scrollToCurrentLevel(state.lastUnlockedLevel);
+                _scrollCurrentLevelIntoView(immediate: firstOpen);
               }
             },
             builder: (context, state) {
@@ -646,6 +635,7 @@ class _QuizLevelsViewState extends State<QuizLevelsView> {
     final bool shouldShowStars = level < unlockedLevels && stars > 0;
 
     return Padding(
+      key: isCurrent ? _currentLevelKey : ValueKey('quiz_level_$level'),
       padding: EdgeInsets.only(
         top: 0,
         left: level % 2 != 0 ? 150 : 0,

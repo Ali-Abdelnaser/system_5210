@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 
 class GameStatCard extends StatelessWidget {
   final String label;

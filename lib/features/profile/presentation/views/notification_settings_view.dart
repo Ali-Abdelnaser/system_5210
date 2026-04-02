@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/widgets/glass_card.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/core/services/notification_service.dart';
-import 'package:system_5210/core/utils/injection_container.dart' as di;
-import 'dart:ui';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/daily_tasks_game/presentation/widgets/glass_card.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:five2ten/core/constants/notification_categories.dart';
+import 'package:five2ten/core/services/fcm_token_service.dart';
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/core/services/notification_service.dart';
+import 'package:five2ten/core/utils/injection_container.dart' as di;
+import 'package:five2ten/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_state.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class NotificationSettingsView extends StatefulWidget {
@@ -24,6 +30,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView>
     with WidgetsBindingObserver {
   final LocalStorageService _storage = di.sl<LocalStorageService>();
   final NotificationService _notificationService = di.sl<NotificationService>();
+  final FcmTokenService _fcmTokenService = di.sl<FcmTokenService>();
 
   bool _allNotifications = true;
   bool _soundsEnabled = true;
@@ -70,7 +77,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView>
     }
   }
 
-  Future<void> _saveSettings() async {
+  Future<void> _saveSettings({bool enablingAllFromOff = false}) async {
     await _storage.save('app_settings', 'notification_settings', {
       'all': _allNotifications,
       'sounds': _soundsEnabled,
@@ -79,9 +86,22 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView>
       'insights': _insightsNotifications,
     });
 
-    // If master switch turned off, cancel all local notifications
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      await _fcmTokenService.syncNotificationPreferences(uid);
+    }
+
     if (!_allNotifications) {
       await _notificationService.cancelAll();
+    } else if (enablingAllFromOff && mounted) {
+      final profileState = context.read<ProfileCubit>().state;
+      if (profileState is ProfileLoaded) {
+        final p = profileState.profile;
+        await context.read<NotificationCubit>().syncFcmAfterReenableNotifications(
+              userId: p.uid,
+              role: p.role,
+            );
+      }
     }
   }
 
@@ -116,6 +136,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView>
     await _notificationService.showImmediateNotification(
       title: l10n.testNotificationTitle,
       body: l10n.testNotificationBody,
+      category: NotificationCategories.daily,
     );
   }
 
@@ -198,6 +219,7 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView>
                               title: l10n.allowAllNotifications,
                               value: _allNotifications,
                               onChanged: (val) {
+                                final wasOff = !_allNotifications;
                                 setState(() {
                                   _allNotifications = val;
                                   if (!val) {
@@ -210,7 +232,9 @@ class _NotificationSettingsViewState extends State<NotificationSettingsView>
                                     _insightsNotifications = true;
                                   }
                                 });
-                                _saveSettings();
+                                _saveSettings(
+                                  enablingAllFromOff: wasOff && val,
+                                );
                               },
                               icon: Icons.notifications_none_rounded,
                               iconColor: AppTheme.appBlue,

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/utils/app_tips_data.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/utils/app_tips_data.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'dart:math';
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/core/utils/injection_container.dart';
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/core/utils/injection_container.dart';
 import 'package:flutter/services.dart';
 
 class ChildDailyTipCard extends StatefulWidget {
@@ -17,7 +17,7 @@ class ChildDailyTipCard extends StatefulWidget {
 }
 
 class _ChildDailyTipCardState extends State<ChildDailyTipCard> {
-  AppTip? _todayTip;
+  ChildTip? _todayTip;
   String _character = AppImages.gameSuccess1;
   bool _isDone = false;
   final String _boxName = 'child_tips_storage';
@@ -126,21 +126,14 @@ class _ChildDailyTipCardState extends State<ChildDailyTipCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                _todayTip!.title,
-                                style: GoogleFonts.dynaPuff(
-                                  color: primaryColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                _todayTip!.localizedText(
+                                  Localizations.localeOf(context),
                                 ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                _todayTip!.description,
                                 style: GoogleFonts.cairo(
                                   color: const Color(0xFF2D3142),
-                                  fontSize: 13,
-                                  height: 1.3,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                  height: 1.35,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                               if (!_isDone) ...[

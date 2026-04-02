@@ -50,4 +50,5 @@ abstract class AuthRepository {
     String currentPassword,
     String newEmail,
   );
+  Future<Either<Failure, void>> deleteAccount();
 }

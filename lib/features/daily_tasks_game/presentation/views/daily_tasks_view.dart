@@ -15,7 +15,7 @@ import 'water_stage_view.dart';
 import 'movement_stage_view.dart';
 import 'sleep_stage_view.dart';
 import '../../../../core/widgets/app_back_button.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
 
 class DailyTasksView extends StatelessWidget {
   const DailyTasksView({super.key});

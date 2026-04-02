@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_state.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
-import 'package:system_5210/features/user_setup/presentation/widgets/add_child_bottom_sheet.dart';
-import 'package:system_5210/features/user_setup/presentation/widgets/profile_child_card.dart';
+import 'package:five2ten/features/user_setup/presentation/manager/user_setup_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_state.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:five2ten/features/user_setup/presentation/widgets/add_child_bottom_sheet.dart';
+import 'package:five2ten/features/user_setup/presentation/widgets/profile_child_card.dart';
 import 'dart:ui';
-import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
 
 class EditChildrenView extends StatefulWidget {
   const EditChildrenView({super.key});

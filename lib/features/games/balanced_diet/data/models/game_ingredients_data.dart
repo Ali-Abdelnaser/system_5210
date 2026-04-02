@@ -1,4 +1,4 @@
-import 'package:system_5210/core/utils/app_images.dart';
+import 'package:five2ten/core/utils/app_images.dart';
 import '../../domain/entities/ingredient_entity.dart';
 
 class GameIngredientsData {

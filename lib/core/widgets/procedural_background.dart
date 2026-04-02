@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
 
 class ProceduralBackground extends StatefulWidget {
   final double parallaxOffset;

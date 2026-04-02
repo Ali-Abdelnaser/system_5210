@@ -2,15 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_result.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_state.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/pages/scan_result_page.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/features/nutrition_scan/domain/entities/nutrition_result.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_state.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/pages/scan_result_page.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
 
 class RecentScansPage extends StatefulWidget {
   const RecentScansPage({super.key});

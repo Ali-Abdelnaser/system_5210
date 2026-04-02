@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
 
 class PlateWidget extends StatelessWidget {
   final List<IngredientEntity> selectedIngredients;

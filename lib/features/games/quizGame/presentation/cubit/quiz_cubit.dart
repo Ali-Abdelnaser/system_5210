@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
 import '../../data/repositories/quiz_repository_impl.dart';
 import 'quiz_state.dart';
 

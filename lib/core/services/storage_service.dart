@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:system_5210/core/utils/image_compressor.dart';
+import 'package:five2ten/core/utils/image_compressor.dart';
 
 class StorageService {
   final FirebaseStorage _storage = FirebaseStorage.instance;

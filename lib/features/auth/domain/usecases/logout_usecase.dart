@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:system_5210/core/errors/failures.dart';
+import 'package:five2ten/core/errors/failures.dart';
 import '../repositories/auth_repository.dart';
 
 class LogoutUseCase {

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/camera_overlay.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/pages/scan_confirmation_page.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/camera_overlay.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/pages/scan_confirmation_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 

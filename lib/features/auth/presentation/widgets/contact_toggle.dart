@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 
 class ContactToggle extends StatelessWidget {
   final bool isEmailMode;

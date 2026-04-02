@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import '../../presentation/manager/user_setup_cubit.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/utils/app_images.dart';
-import 'package:system_5210/features/user_setup/presentation/widgets/discovery_input_field.dart';
+import 'package:five2ten/features/user_setup/presentation/widgets/discovery_input_field.dart';
 import '../../../auth/presentation/widgets/auth_gradient_button.dart';
 import '../../../../core/widgets/app_back_button.dart';
 

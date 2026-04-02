@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/local_storage_service.dart';
-import 'package:system_5210/features/game_center/data/models/user_points_model.dart';
+import 'package:five2ten/features/game_center/data/models/user_points_model.dart';
 
 abstract class UserPointsState extends Equatable {
   const UserPointsState();
@@ -261,27 +261,19 @@ class UserPointsCubit extends Cubit<UserPointsState> {
 
   Future<void> fetchLeaderboard() async {
     try {
-      final snapshot = await _firestore
-          .collection('user_points')
-          .orderBy('totalPoints', descending: true)
-          .get(); // Get ALL for rank calculation, limit locally for top 3
+      // Use a simple get() then sort in memory to avoid "Index Required" errors on new projects
+      // This is efficient enough for several hundred players.
+      final snapshot = await _firestore.collection('user_points').get();
 
       final allPlayers = <LeaderboardEntry>[];
 
       for (var doc in snapshot.docs) {
         final data = doc.data();
-        String name = data['userName'] ?? 'لاعب';
-        String? photo = data['userPhoto'];
-
-        allPlayers.add(
-          LeaderboardEntry(
-            uid: doc.id,
-            name: name,
-            photoUrl: photo,
-            points: data['totalPoints'] ?? 0,
-          ),
-        );
+        allPlayers.add(LeaderboardEntry.fromMap(data, doc.id));
       }
+
+      // Sort in memory: highest points first
+      allPlayers.sort((a, b) => b.points.compareTo(a.points));
 
       final top3 = allPlayers.take(3).toList();
       final userUid = _auth.currentUser?.uid;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_state.dart';
-import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_state.dart';
+import 'package:five2ten/features/user_setup/presentation/manager/user_setup_cubit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'edit_profile_view.dart';
@@ -16,15 +16,16 @@ import 'privacy_policy_view.dart';
 import 'notification_settings_view.dart';
 import 'about_app_view.dart';
 import 'developer_profile_view.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'dart:ui';
-import 'package:system_5210/core/widgets/profile_image_loader.dart';
-import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:five2ten/core/widgets/profile_image_loader.dart';
+import 'package:five2ten/features/notifications/presentation/manager/notification_cubit.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -294,7 +295,7 @@ class ProfileView extends StatelessWidget {
                                 onTap: () {
                                   Navigator.pushNamed(
                                     context,
-                                    AppRoutes.healthyInsights,
+                                    AppRoutes.dailyInsights,
                                   );
                                 },
                               ),
@@ -642,8 +643,10 @@ class ProfileView extends StatelessWidget {
   }
 
   Future<void> _launchRateUrl() async {
-    const url =
-        'https://play.google.com/store/apps/details?id=com.aliabdelnaser.system5210';
+    final packageInfo = await PackageInfo.fromPlatform();
+    final packageName = packageInfo.packageName;
+    final url = 'https://play.google.com/store/apps/details?id=$packageName';
+
     if (!await launchUrl(
       Uri.parse(url),
       mode: LaunchMode.externalApplication,

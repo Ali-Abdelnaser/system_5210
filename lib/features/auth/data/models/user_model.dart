@@ -1,4 +1,4 @@
-import 'package:system_5210/features/auth/domain/entities/user_entity.dart';
+import 'package:five2ten/features/auth/domain/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
   const UserModel({

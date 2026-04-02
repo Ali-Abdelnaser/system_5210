@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
 import 'dart:ui';
 import 'package:flutter_animate/flutter_animate.dart';
 

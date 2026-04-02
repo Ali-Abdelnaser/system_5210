@@ -470,6 +470,102 @@ abstract class AppLocalizations {
   /// **'Continue'**
   String get continueButton;
 
+  /// No description provided for @authNoInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection. Please check your network and try again.'**
+  String get authNoInternetConnection;
+
+  /// No description provided for @authPhoneNotRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone number is not registered. Please create an account first.'**
+  String get authPhoneNotRegistered;
+
+  /// No description provided for @authPhoneAlreadyRegisteredSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'This phone number is already registered. Please sign in instead.'**
+  String get authPhoneAlreadyRegisteredSignIn;
+
+  /// No description provided for @authSignInInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already registered and verified. Please sign in.'**
+  String get authSignInInstead;
+
+  /// No description provided for @authWrongPasswordExistingEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already registered. Sign in with the correct password, or use Forgot password.'**
+  String get authWrongPasswordExistingEmail;
+
+  /// No description provided for @authVerificationCodeResent.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code sent again.'**
+  String get authVerificationCodeResent;
+
+  /// No description provided for @authEnterSixDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the 6-digit code.'**
+  String get authEnterSixDigits;
+
+  /// No description provided for @authSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired. Please sign in again.'**
+  String get authSessionExpired;
+
+  /// No description provided for @authEmailNotRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is not registered. Please create an account first.'**
+  String get authEmailNotRegistered;
+
+  /// No description provided for @authEmailNotVerifiedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Email not verified yet. Please check your inbox.'**
+  String get authEmailNotVerifiedYet;
+
+  /// No description provided for @authWrongPasswordTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Wrong password. Please try again.'**
+  String get authWrongPasswordTryAgain;
+
+  /// No description provided for @authInvalidEmailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email address.'**
+  String get authInvalidEmailAddress;
+
+  /// No description provided for @authNoAccountFoundEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'No account found with this email.'**
+  String get authNoAccountFoundEmail;
+
+  /// No description provided for @authEmailAlreadyExistsGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'An account already exists with this email.'**
+  String get authEmailAlreadyExistsGeneric;
+
+  /// No description provided for @authInvalidVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid verification code.'**
+  String get authInvalidVerificationCode;
+
+  /// No description provided for @authTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts from this device. Please try again later.'**
+  String get authTooManyRequests;
+
   /// No description provided for @whoAreYou.
   ///
   /// In en, this message translates to:
@@ -833,7 +929,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyPriority.
   ///
   /// In en, this message translates to:
-  /// **'Family Health Priority'**
+  /// **'Family Wellness Priority'**
   String get familyPriority;
 
   /// No description provided for @selectDate.
@@ -1379,13 +1475,13 @@ abstract class AppLocalizations {
   /// No description provided for @healthReport.
   ///
   /// In en, this message translates to:
-  /// **'Health Report'**
+  /// **'Wellness Report'**
   String get healthReport;
 
   /// No description provided for @healthScore.
   ///
   /// In en, this message translates to:
-  /// **'Health Score'**
+  /// **'Wellness Score'**
   String get healthScore;
 
   /// No description provided for @nutritionFacts.
@@ -1567,6 +1663,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm'**
   String get confirm;
+
+  /// No description provided for @deleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccount;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account? This action is permanent and cannot be undone.'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'All your data, progress, and children profiles will be permanently erased.'**
+  String get deleteAccountWarning;
 
   /// No description provided for @recentScansTitle.
   ///
@@ -1829,7 +1943,7 @@ abstract class AppLocalizations {
   /// No description provided for @insightsNotifications.
   ///
   /// In en, this message translates to:
-  /// **'Health Insights & Tips'**
+  /// **'Lifestyle Insights & Tips'**
   String get insightsNotifications;
 
   /// No description provided for @storage.
@@ -2063,7 +2177,7 @@ abstract class AppLocalizations {
   /// No description provided for @healthyRecipes.
   ///
   /// In en, this message translates to:
-  /// **'Healthy Recipes'**
+  /// **'Meal Recipes'**
   String get healthyRecipes;
 
   /// No description provided for @ingredients.
@@ -2099,13 +2213,13 @@ abstract class AppLocalizations {
   /// No description provided for @healthyInsightsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Healthy Insights'**
+  /// **'Wellness Insights'**
   String get healthyInsightsTitle;
 
   /// No description provided for @healthyInsightsSubTitle.
   ///
   /// In en, this message translates to:
-  /// **'Medical facts for your family\'s health'**
+  /// **'Family Wellness Facts'**
   String get healthyInsightsSubTitle;
 
   /// No description provided for @didYouKnow.
@@ -2821,36 +2935,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Meet Our Team'**
   String get aboutMeetOurTeamTitle;
-
-  /// No description provided for @updateAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'New Update Available 🚀'**
-  String get updateAvailable;
-
-  /// No description provided for @updateRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'Critical Update Required ⚠️'**
-  String get updateRequired;
-
-  /// No description provided for @updateDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'A new version of 5210 is available. Please update now to get the latest features and best experience.'**
-  String get updateDesc;
-
-  /// No description provided for @updateButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Update Now'**
-  String get updateButton;
-
-  /// No description provided for @laterButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Later'**
-  String get laterButton;
 
   /// No description provided for @stepTrackerTitle.
   ///

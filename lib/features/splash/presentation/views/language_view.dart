@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/main.dart';
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/core/utils/injection_container.dart' as di;
+import 'package:five2ten/core/utils/app_routes.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/main.dart';
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/core/utils/injection_container.dart' as di;
 import 'dart:ui';
 
 class LanguageView extends StatelessWidget {

@@ -1,4 +1,4 @@
-package com.aliabdelnaser.system5210
+package com.aliabdelnaser.five2ten
 
 import io.flutter.embedding.android.FlutterActivity
 

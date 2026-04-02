@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/healthy_recipes/domain/entities/recipe.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/healthy_recipes/domain/entities/recipe.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/theme/app_theme.dart';
 

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/features/game_center/data/models/user_points_model.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
-import 'package:system_5210/features/games/presentation/views/games_list_view.dart';
-import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
-import 'package:system_5210/core/widgets/profile_image_loader.dart';
-import 'package:system_5210/features/games/presentation/views/wipe_progress_view.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/features/game_center/data/models/user_points_model.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/features/games/presentation/views/games_list_view.dart';
+import 'package:five2ten/features/specialists/presentation/views/admin_login_view.dart';
+import 'package:five2ten/core/widgets/profile_image_loader.dart';
+import 'package:five2ten/features/games/presentation/views/wipe_progress_view.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
 
 class GameCenterView extends StatefulWidget {
   const GameCenterView({super.key});

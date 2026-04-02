@@ -4,17 +4,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_routes.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_state.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_header.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/core/utils/app_utils.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_state.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_header.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/core/utils/app_utils.dart';
+import 'package:five2ten/core/utils/auth_message_localizer.dart';
 
 class VerificationView extends StatefulWidget {
   final bool isEmail;
@@ -37,13 +38,17 @@ class VerificationView extends StatefulWidget {
 }
 
 class _VerificationViewState extends State<VerificationView> {
-  /// Phone OTP: 6 digits. Email link: no boxes, just "Continue".
-  late final bool _isPhoneVerification;
+  /// Phone OTP: updated when SMS is resent (new verification id).
+  String? _phoneVerificationId;
+
+  /// True when verifying phone SMS (not email OTP).
+  bool get _isPhoneFlow => _phoneVerificationId != null;
+
   late final int _codeLength;
   late final List<TextEditingController> _controllers;
   late final List<FocusNode> _focusNodes;
 
-  late Timer _timer;
+  Timer? _timer;
   int _start = 60;
   bool _canResend = false;
   bool _hasError = false;
@@ -51,9 +56,11 @@ class _VerificationViewState extends State<VerificationView> {
   @override
   void initState() {
     super.initState();
-    _isPhoneVerification = widget.verificationId != null;
+    _phoneVerificationId = widget.verificationId;
     _codeLength =
-        (_isPhoneVerification || widget.isPasswordReset || widget.isEmail)
+        (_phoneVerificationId != null ||
+            widget.isPasswordReset ||
+            widget.isEmail)
         ? 6
         : 0;
     _controllers = _codeLength > 0
@@ -76,18 +83,19 @@ class _VerificationViewState extends State<VerificationView> {
             ),
           )
         : [];
-    if (_isPhoneVerification) {
+    if (_codeLength > 0) {
       startTimer();
     }
   }
 
   void startTimer() {
+    _timer?.cancel();
     _start = 60;
     _canResend = false;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_start == 0) {
         setState(() {
-          _timer.cancel();
+          timer.cancel();
           _canResend = true;
         });
       } else {
@@ -107,9 +115,7 @@ class _VerificationViewState extends State<VerificationView> {
     for (var node in _focusNodes) {
       node.dispose();
     }
-    if (_isPhoneVerification) {
-      _timer.cancel();
-    }
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -142,22 +148,34 @@ class _VerificationViewState extends State<VerificationView> {
 
   void _onVerify(BuildContext context) async {
     if (!await AppUtils.checkInternet(context)) return;
-    if (_isPhoneVerification) {
+    if (_isPhoneFlow) {
       final code = _controllers.map((c) => c.text).join();
       if (code.length != _codeLength) {
         setState(() => _hasError = true);
-        AppAlerts.showAlert(context, message: "Please enter 6 digits");
+        AppAlerts.showAlert(
+          context,
+          message: localizeAuthMessage(
+            context,
+            'Please enter 6 digits',
+          ),
+        );
         return;
       }
       context.read<AuthCubit>().verifyPhoneCode(
-        verificationId: widget.verificationId!,
+        verificationId: _phoneVerificationId!,
         smsCode: code,
       );
     } else if (widget.isPasswordReset) {
       final code = _controllers.map((c) => c.text).join();
       if (code.length != _codeLength) {
         setState(() => _hasError = true);
-        AppAlerts.showAlert(context, message: "Please enter 6 digits");
+        AppAlerts.showAlert(
+          context,
+          message: localizeAuthMessage(
+            context,
+            'Please enter 6 digits',
+          ),
+        );
         return;
       }
       // Verify OTP through Cubit
@@ -169,7 +187,13 @@ class _VerificationViewState extends State<VerificationView> {
       final code = _controllers.map((c) => c.text).join();
       if (code.length != _codeLength) {
         setState(() => _hasError = true);
-        AppAlerts.showAlert(context, message: "Please enter 6 digits");
+        AppAlerts.showAlert(
+          context,
+          message: localizeAuthMessage(
+            context,
+            'Please enter 6 digits',
+          ),
+        );
         return;
       }
       context.read<AuthCubit>().verifyEmailOTP(
@@ -207,7 +231,22 @@ class _VerificationViewState extends State<VerificationView> {
 
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccess) {
+        if (state is AuthPhoneOtpResent) {
+          setState(() => _phoneVerificationId = state.verificationId);
+          startTimer();
+          AppAlerts.showAlert(
+            context,
+            message: AppLocalizations.of(context)!.authVerificationCodeResent,
+            type: AlertType.success,
+          );
+        } else if (state is AuthEmailOtpResent) {
+          startTimer();
+          AppAlerts.showAlert(
+            context,
+            message: AppLocalizations.of(context)!.authVerificationCodeResent,
+            type: AlertType.success,
+          );
+        } else if (state is AuthSuccess) {
           _showSuccessDialog(context, state);
         } else if (state is AuthEmailVerificationVerified) {
           // Success dialog already shown or we can just wait for AuthSuccess which cubit emits after verification
@@ -218,7 +257,10 @@ class _VerificationViewState extends State<VerificationView> {
             arguments: widget.email,
           );
         } else if (state is AuthFailure) {
-          AppAlerts.showAlert(context, message: state.message);
+          AppAlerts.showAlert(
+            context,
+            message: localizeAuthMessage(context, state.message),
+          );
         }
       },
       child: Scaffold(
@@ -263,7 +305,7 @@ class _VerificationViewState extends State<VerificationView> {
                     Text(
                       widget.isPasswordReset
                           ? l10n.forgotPasswordDesc
-                          : (_isPhoneVerification
+                          : (_isPhoneFlow
                                 ? l10n.verifyPhoneDesc
                                 : (widget.isEmail
                                       ? l10n.emailVerificationLinkSent
@@ -277,43 +319,46 @@ class _VerificationViewState extends State<VerificationView> {
                     ).animate().fadeIn(delay: 300.ms),
 
                     if (_codeLength > 0) ...[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          _codeLength,
-                          (index) => Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 4,
-                              ),
-                              child: Container(
-                                height: 55,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ],
+                      Directionality(
+                        textDirection: TextDirection.ltr,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            _codeLength,
+                            (index) => Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
                                 ),
-                                child: TextField(
-                                  controller: _controllers[index],
-                                  focusNode: _focusNodes[index],
-                                  onChanged: (value) =>
-                                      _onChanged(index, value),
-                                  textAlign: TextAlign.center,
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                  ],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF2D3142),
+                                child: Container(
+                                  height: 55,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
                                   ),
+                                  child: TextField(
+                                    controller: _controllers[index],
+                                    focusNode: _focusNodes[index],
+                                    onChanged: (value) =>
+                                        _onChanged(index, value),
+                                    textAlign: TextAlign.center,
+                                    textDirection: TextDirection.ltr,
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF2D3142),
+                                    ),
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.zero,
                                     counterText: "",
@@ -343,6 +388,7 @@ class _VerificationViewState extends State<VerificationView> {
                             ),
                           ),
                         ),
+                      ),
                       ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
                       const SizedBox(height: 40),
                     ],
@@ -350,7 +396,7 @@ class _VerificationViewState extends State<VerificationView> {
                     BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
                         return AuthGradientButton(
-                          text: _isPhoneVerification
+                          text: _isPhoneFlow
                               ? l10n.verify
                               : l10n.continueButton,
                           onTap: () => _onVerify(context),
@@ -369,28 +415,25 @@ class _VerificationViewState extends State<VerificationView> {
                                   if (widget.isPasswordReset) {
                                     context.read<AuthCubit>().forgotPassword(
                                       widget.email!,
+                                      isResend: true,
                                     );
                                   } else {
                                     context
                                         .read<AuthCubit>()
                                         .sendEmailVerificationOTP(
                                           widget.email!,
+                                          isResend: true,
                                         );
                                   }
-                                } else if (_isPhoneVerification &&
+                                } else if (_isPhoneFlow &&
                                     widget.phoneNumber != null) {
                                   context
                                       .read<AuthCubit>()
                                       .sendPhoneVerificationCode(
                                         widget.phoneNumber!,
+                                        isResend: true,
                                       );
                                 }
-                                startTimer();
-                                AppAlerts.showAlert(
-                                  context,
-                                  message: "Verification code resent!",
-                                  type: AlertType.success,
-                                );
                               }
                             : null,
                         child: Text(

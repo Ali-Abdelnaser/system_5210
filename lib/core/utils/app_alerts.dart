@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
-
 enum AlertType { success, error, warning, info }
+
+TextDirection _snackBarTextDirection(BuildContext context) {
+  final code = Localizations.localeOf(context).languageCode;
+  return code == 'ar' ? TextDirection.rtl : TextDirection.ltr;
+}
+
+TextStyle _snackBarTextStyle(BuildContext context) {
+  final code = Localizations.localeOf(context).languageCode;
+  if (code == 'ar') {
+    return GoogleFonts.cairo(
+      color: const Color(0xFF1E293B),
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+    );
+  }
+  return GoogleFonts.poppins(
+    color: const Color(0xFF1E293B),
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+  );
+}
 
 class AppAlerts {
   static void showAlert(
@@ -44,6 +64,7 @@ class AppAlerts {
                 ],
               ),
               child: Row(
+                textDirection: TextDirection.ltr,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(icon, color: baseColor.withAlpha(255), size: 24),
@@ -52,12 +73,8 @@ class AppAlerts {
                     child: Text(
                       message,
                       textAlign: TextAlign.center,
-                      textDirection: TextDirection.rtl,
-                      style: GoogleFonts.cairo(
-                        color: const Color(0xFF1E293B),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      textDirection: _snackBarTextDirection(context),
+                      style: _snackBarTextStyle(context),
                     ),
                   ),
                 ],

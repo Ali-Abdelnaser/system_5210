@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../presentation/manager/user_setup_cubit.dart';

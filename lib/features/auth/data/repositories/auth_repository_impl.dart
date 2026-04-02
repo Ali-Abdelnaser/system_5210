@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:system_5210/core/errors/failures.dart';
-import 'package:system_5210/features/auth/domain/entities/user_entity.dart';
-import 'package:system_5210/features/auth/domain/repositories/auth_repository.dart';
-import 'package:system_5210/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:five2ten/core/errors/failures.dart';
+import 'package:five2ten/features/auth/domain/entities/user_entity.dart';
+import 'package:five2ten/features/auth/domain/repositories/auth_repository.dart';
+import 'package:five2ten/features/auth/data/datasources/auth_remote_data_source.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
@@ -11,6 +11,13 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({required this.remoteDataSource});
 
   static String _messageFromError(Object e) {
+    final raw = e.toString();
+    if (raw.contains('##AUTH_SIGN_IN_INSTEAD')) {
+      return '##AUTH_SIGN_IN_INSTEAD';
+    }
+    if (raw.contains('##AUTH_WRONG_PASSWORD')) {
+      return '##AUTH_WRONG_PASSWORD';
+    }
     if (e is FirebaseAuthException) {
       switch (e.code) {
         case 'user-not-found':
@@ -39,6 +46,8 @@ class AuthRepositoryImpl implements AuthRepository {
           return 'SMS quota exceeded. Please try again later.';
         case 'account-exists-with-different-credential':
           return 'An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.';
+        case 'requires-recent-login':
+          return 'For security reasons, you must log out and log in again before deleting your account.';
         default:
           return e.message ?? e.code;
       }
@@ -268,6 +277,16 @@ class AuthRepositoryImpl implements AuthRepository {
   ) async {
     try {
       await remoteDataSource.updateEmail(currentPassword, newEmail);
+      return const Right(null);
+    } catch (e) {
+      return Left(FirebaseFailure(_messageFromError(e)));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteAccount() async {
+    try {
+      await remoteDataSource.deleteAccount();
       return const Right(null);
     } catch (e) {
       return Left(FirebaseFailure(_messageFromError(e)));

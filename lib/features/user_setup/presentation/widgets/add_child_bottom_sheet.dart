@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../auth/presentation/widgets/auth_text_field.dart';
 import '../../../auth/presentation/widgets/auth_gradient_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:system_5210/core/utils/app_validators.dart';
+import 'package:five2ten/core/utils/app_validators.dart';
 
 class AddChildBottomSheet extends StatefulWidget {
   final Map<String, dynamic>? initialData;

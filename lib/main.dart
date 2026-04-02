@@ -1,28 +1,26 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/core/services/notification_service.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/firebase_options.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_strings.dart';
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'package:system_5210/core/utils/injection_container.dart' as di;
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
-import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
-import 'package:system_5210/core/network/network_cubit.dart';
-import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
-import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
-import 'package:system_5210/core/widgets/offline_wrapper.dart';
+import 'package:five2ten/core/services/notification_service.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/firebase_options.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_strings.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
+import 'package:five2ten/core/utils/injection_container.dart' as di;
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/user_setup/presentation/manager/user_setup_cubit.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
+import 'package:five2ten/features/home/presentation/manager/home_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:five2ten/core/network/network_cubit.dart';
+import 'package:five2ten/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
+import 'package:five2ten/core/widgets/offline_wrapper.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('ar'));
@@ -35,16 +33,16 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     // Initialize App Check only if you need it, wrapped in try-catch to not block auth
-    try {
-      await FirebaseAppCheck.instance.activate(
-        // ignore: deprecated_member_use
-        androidProvider: AndroidProvider.playIntegrity,
-        // ignore: deprecated_member_use
-        appleProvider: AppleProvider.deviceCheck,
-      );
-    } catch (e) {
-      debugPrint("App Check Initialization ignored: $e");
-    }
+    // try {
+    //   await FirebaseAppCheck.instance.activate(
+    //     // ignore: deprecated_member_use
+    //     androidProvider: AndroidProvider.playIntegrity,
+    //     // ignore: deprecated_member_use
+    //     appleProvider: AppleProvider.deviceCheck,
+    //   );
+    // } catch (e) {
+    //   debugPrint("App Check Initialization ignored: $e");
+    // }
   } catch (e) {
     debugPrint("Firebase Initialization Error: $e");
   }
@@ -57,7 +55,7 @@ void main() async {
 
   await di.init();
 
-  _initializeServices();
+  await _initializeServices();
 
   String langCode = 'ar';
   try {
@@ -76,17 +74,9 @@ void main() async {
 
 Future<void> _initializeServices() async {
   try {
-    final notificationService = di.sl<NotificationService>();
-    await notificationService.init();
-    final currentLocale = appLocale.value;
-    final l10n = await AppLocalizations.delegate.load(currentLocale);
-
-    await notificationService.scheduleDailyReminder(
-      title: l10n.streakNotificationTitle,
-      body: l10n.streakNotificationMessage,
-    );
+    await di.sl<NotificationService>().init();
   } catch (e) {
-    debugPrint("Notification Scheduling Error: $e");
+    debugPrint("Notification init error: $e");
   }
 }
 
@@ -129,9 +119,10 @@ class MyApp extends StatelessWidget {
             BlocProvider<DailyTasksCubit>(
               create: (_) => di.sl<DailyTasksCubit>()..init(),
             ),
-            BlocProvider<StepTrackerCubit>(
-              create: (_) => di.sl<StepTrackerCubit>()..init(),
-            ),
+            // Step Tracker disabled for Play Store compliance
+            // BlocProvider<StepTrackerCubit>(
+            //   create: (_) => di.sl<StepTrackerCubit>()..init(),
+            // ),
           ],
           child: GestureDetector(
             onTap: () => FocusManager.instance.primaryFocus?.unfocus(),

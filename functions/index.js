@@ -8,14 +8,20 @@ admin.initializeApp();
 // Configuration
 const APP_COLOR = "#2D3142";
 
-// Create transporter once
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "five.two.ten5210eg@gmail.com",
-    pass: "wmnb hxze wksh ljae",
-  },
-});
+// Lazy init avoids slow module evaluation during `firebase deploy` discovery
+let transporter;
+function getTransporter() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "five.two.ten5210eg@gmail.com",
+        pass: "wmnb hxze wksh ljae",
+      },
+    });
+  }
+  return transporter;
+}
 
 /**
  * 1. Send Password Reset OTP
@@ -33,7 +39,7 @@ exports.sendPasswordResetOTP = onCall(async (request) => {
   });
 
   const mailOptions = {
-    from: "\"5210EG\" <no-reply@system5210.com>",
+    from: "\"5210EG\" <no-reply@five2ten.com>",
     to: email,
     subject: "Reset your password - 5210EG",
     html: `
@@ -52,7 +58,7 @@ exports.sendPasswordResetOTP = onCall(async (request) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await getTransporter().sendMail(mailOptions);
     return {success: true};
   } catch (error) {
     throw new HttpsError("internal", error.message);
@@ -107,7 +113,7 @@ exports.sendEmailVerificationOTP = onCall(async (request) => {
   });
 
   const mailOptions = {
-    from: "\"5210EG\" <no-reply@system5210.com>",
+    from: "\"5210EG\" <no-reply@five2ten.com>",
     to: email,
     subject: "Activate your account - 5210EG",
     html: `
@@ -134,7 +140,7 @@ exports.sendEmailVerificationOTP = onCall(async (request) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await getTransporter().sendMail(mailOptions);
     return {success: true};
   } catch (error) {
     throw new HttpsError("internal", error.message);
@@ -206,7 +212,7 @@ exports.onUserCreated = auth.user().onCreate(async (user) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await getTransporter().sendMail(mailOptions);
   } catch (error) {
     console.error("Error sending welcome email:", error);
   }
@@ -242,7 +248,7 @@ exports.onUserCreated = auth.user().onCreate(async (user) => {
 //         </div>
 //         `,
 //       };
-//       await transporter.sendMail(mailOptions);
+//       await getTransporter().sendMail(mailOptions);
 //     }
 //   }
 //
@@ -267,7 +273,13 @@ exports.onUserCreated = auth.user().onCreate(async (user) => {
 //         </div>
 //         `,
 //       };
-//       await transporter.sendMail(mailOptions);
+//       await getTransporter().sendMail(mailOptions);
 //     }
 //   }
 // });
+
+/**
+ * 8. Daily FCM (scheduled) — see sendDailyFCM.js
+ */
+const {sendDaily5210ReminderFCM} = require("./sendDailyFCM");
+exports.sendDaily5210ReminderFCM = sendDaily5210ReminderFCM;

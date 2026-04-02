@@ -4,74 +4,76 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get_it/get_it.dart';
-import 'package:system_5210/features/specialists/data/datasources/specialists_remote_data_source.dart';
-import 'package:system_5210/features/specialists/data/datasources/specialists_remote_data_source_impl.dart';
-import 'package:system_5210/features/specialists/data/repositories/specialists_repository_impl.dart';
-import 'package:system_5210/features/specialists/domain/repositories/specialists_repository.dart';
-import 'package:system_5210/features/specialists/domain/usecases/get_specialists.dart';
-import 'package:system_5210/features/auth/data/datasources/auth_remote_data_source.dart';
-import 'package:system_5210/features/auth/data/datasources/auth_remote_data_source_impl.dart';
-import 'package:system_5210/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:system_5210/features/auth/domain/repositories/auth_repository.dart';
-import 'package:system_5210/features/auth/domain/usecases/login_with_email_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/login_with_social_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/register_with_email_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/send_phone_code_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/sign_in_with_phone_code_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/check_user_data_exists_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/check_phone_registered_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/update_display_name_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/check_email_exists_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/forgot_password_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/verify_password_reset_otp_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/reset_password_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/send_email_verification_otp_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/verify_email_otp_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/update_password_usecase.dart';
-import 'package:system_5210/features/auth/domain/usecases/update_email_usecase.dart';
-import 'package:system_5210/features/user_setup/data/repositories/user_setup_repository_impl.dart';
-import 'package:system_5210/features/user_setup/domain/repositories/user_setup_repository.dart';
-import 'package:system_5210/features/user_setup/domain/usecases/save_user_profile_usecase.dart';
-import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/user_setup/domain/usecases/get_user_profile_usecase.dart';
-import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
-import 'package:system_5210/features/auth/domain/usecases/logout_usecase.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
-import 'package:system_5210/core/services/storage_service.dart';
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/core/services/step_tracker_service.dart';
-import 'package:system_5210/features/healthy_recipes/data/datasources/recipe_remote_data_source.dart';
-import 'package:system_5210/features/healthy_recipes/data/repositories/recipe_repository_impl.dart';
-import 'package:system_5210/features/healthy_recipes/domain/repositories/recipe_repository.dart';
-import 'package:system_5210/features/healthy_recipes/domain/usecases/get_recipes_usecase.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
-import 'package:system_5210/features/nutrition_scan/data/repositories/nutrition_repository_impl.dart';
-import 'package:system_5210/features/nutrition_scan/domain/repositories/nutrition_repository.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import 'package:system_5210/features/games/balanced_diet/data/datasources/game_remote_data_source.dart';
-import 'package:system_5210/features/games/balanced_diet/data/datasources/game_remote_data_source_impl.dart';
-import 'package:system_5210/features/games/balanced_diet/data/repositories/game_repository_impl.dart';
-import 'package:system_5210/features/games/food_matching/presentation/cubit/food_matching_cubit.dart';
-import 'package:system_5210/features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
-import 'package:system_5210/features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
-import 'package:system_5210/features/games/balanced_diet/domain/repositories/game_repository.dart';
-import 'package:system_5210/features/games/quizGame/data/datasources/quiz_local_data_source.dart';
-import 'package:system_5210/features/games/quizGame/data/datasources/quiz_remote_data_source.dart';
-import 'package:system_5210/features/games/quizGame/data/repositories/quiz_repository_impl.dart';
-import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+import 'package:five2ten/features/specialists/data/datasources/specialists_remote_data_source.dart';
+import 'package:five2ten/features/specialists/data/datasources/specialists_remote_data_source_impl.dart';
+import 'package:five2ten/features/specialists/data/repositories/specialists_repository_impl.dart';
+import 'package:five2ten/features/specialists/domain/repositories/specialists_repository.dart';
+import 'package:five2ten/features/specialists/domain/usecases/get_specialists.dart';
+import 'package:five2ten/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:five2ten/features/auth/data/datasources/auth_remote_data_source_impl.dart';
+import 'package:five2ten/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:five2ten/features/auth/domain/repositories/auth_repository.dart';
+import 'package:five2ten/features/auth/domain/usecases/login_with_email_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/login_with_social_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/register_with_email_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/send_phone_code_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/sign_in_with_phone_code_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/check_user_data_exists_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/check_phone_registered_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/update_display_name_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/check_email_exists_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/verify_password_reset_otp_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/send_email_verification_otp_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/verify_email_otp_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/update_password_usecase.dart';
+import 'package:five2ten/features/auth/domain/usecases/update_email_usecase.dart';
+import 'package:five2ten/features/user_setup/data/repositories/user_setup_repository_impl.dart';
+import 'package:five2ten/features/user_setup/domain/repositories/user_setup_repository.dart';
+import 'package:five2ten/features/user_setup/domain/usecases/save_user_profile_usecase.dart';
+import 'package:five2ten/features/user_setup/presentation/manager/user_setup_cubit.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/user_setup/domain/usecases/get_user_profile_usecase.dart';
+import 'package:five2ten/features/home/presentation/manager/home_cubit.dart';
+import 'package:five2ten/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:five2ten/core/services/storage_service.dart';
+import 'package:five2ten/core/services/local_storage_service.dart';
+// Step Tracker disabled for Play Store compliance
+// import 'package:five2ten/core/services/step_tracker_service.dart';
+import 'package:five2ten/features/healthy_recipes/data/datasources/recipe_remote_data_source.dart';
+import 'package:five2ten/features/healthy_recipes/data/repositories/recipe_repository_impl.dart';
+import 'package:five2ten/features/healthy_recipes/domain/repositories/recipe_repository.dart';
+import 'package:five2ten/features/healthy_recipes/domain/usecases/get_recipes_usecase.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
+import 'package:five2ten/features/nutrition_scan/data/repositories/nutrition_repository_impl.dart';
+import 'package:five2ten/features/nutrition_scan/domain/repositories/nutrition_repository.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:five2ten/features/games/balanced_diet/data/datasources/game_remote_data_source.dart';
+import 'package:five2ten/features/games/balanced_diet/data/datasources/game_remote_data_source_impl.dart';
+import 'package:five2ten/features/games/balanced_diet/data/repositories/game_repository_impl.dart';
+import 'package:five2ten/features/games/food_matching/presentation/cubit/food_matching_cubit.dart';
+import 'package:five2ten/features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
+import 'package:five2ten/features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
+import 'package:five2ten/features/games/balanced_diet/domain/repositories/game_repository.dart';
+import 'package:five2ten/features/games/quizGame/data/datasources/quiz_local_data_source.dart';
+import 'package:five2ten/features/games/quizGame/data/datasources/quiz_remote_data_source.dart';
+import 'package:five2ten/features/games/quizGame/data/repositories/quiz_repository_impl.dart';
+import 'package:five2ten/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
-import 'package:system_5210/core/network/network_info.dart';
-import 'package:system_5210/core/network/network_cubit.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
-import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
-import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
+import 'package:five2ten/core/network/network_info.dart';
+import 'package:five2ten/core/network/network_cubit.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:five2ten/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
+import 'package:five2ten/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
+// Step Tracker disabled for Play Store compliance
+// import 'package:five2ten/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
 
-import 'package:system_5210/core/services/notification_service.dart';
-import 'package:system_5210/core/services/streak_service.dart';
-import 'package:system_5210/core/services/update_service.dart';
+import 'package:five2ten/core/services/notification_service.dart';
+import 'package:five2ten/core/services/fcm_token_service.dart';
+import 'package:five2ten/core/services/streak_service.dart';
 
 final sl = GetIt.instance;
 
@@ -80,9 +82,12 @@ Future<void> init() async {
   sl.registerLazySingleton(() => InternetConnection());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   sl.registerLazySingleton(() => NotificationService());
+  sl.registerLazySingleton(
+    () => FcmTokenService(localStorage: sl()),
+  );
   sl.registerLazySingleton(() => StreakService(sl()));
-  sl.registerLazySingleton(() => StepTrackerService(sl(), sl()));
-  sl.registerLazySingleton(() => UpdateService(sl(), sl()));
+  // Step Tracker disabled for Play Store compliance
+  // sl.registerLazySingleton(() => StepTrackerService(sl(), sl()));
   // Use cases
   sl.registerLazySingleton(() => GetSpecialists(sl()));
   sl.registerLazySingleton(() => LoginWithEmailUseCase(sl()));
@@ -172,10 +177,15 @@ Future<void> init() async {
   sl.registerFactory(() => DailyTasksCubit(sl(), sl()));
   sl.registerFactory(
     () =>
-        NotificationCubit(localStorageService: sl(), notificationService: sl()),
+        NotificationCubit(
+          localStorageService: sl(),
+          notificationService: sl(),
+          fcmTokenService: sl(),
+        ),
   );
   sl.registerLazySingleton(() => UserPointsCubit(sl(), sl(), sl()));
-  sl.registerFactory(() => StepTrackerCubit(sl()));
+  // Step Tracker disabled for Play Store compliance
+  // sl.registerFactory(() => StepTrackerCubit(sl()));
 
   // Repository
   // Repository

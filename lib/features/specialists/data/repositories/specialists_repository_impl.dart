@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
-import 'package:system_5210/core/errors/failures.dart';
-import 'package:system_5210/features/specialists/data/datasources/specialists_remote_data_source.dart';
-import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
-import 'package:system_5210/features/specialists/domain/repositories/specialists_repository.dart';
+import 'package:five2ten/core/errors/failures.dart';
+import 'package:five2ten/features/specialists/data/datasources/specialists_remote_data_source.dart';
+import 'package:five2ten/features/specialists/domain/entities/doctor.dart';
+import 'package:five2ten/features/specialists/domain/repositories/specialists_repository.dart';
 
 class SpecialistsRepositoryImpl implements SpecialistsRepository {
   final SpecialistsRemoteDataSource remoteDataSource;

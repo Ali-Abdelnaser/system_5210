@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
-import 'package:system_5210/features/auth/data/models/user_model.dart';
+import 'package:five2ten/features/auth/data/models/user_model.dart';
 import 'auth_remote_data_source.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -35,15 +35,58 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     String password,
     String name,
   ) async {
-    final credential = await firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    final user = credential.user!;
-    await user.updateDisplayName(name);
-    // Send professional OTP instead of standard link
-    await sendEmailVerificationOTP(email, name: name);
-    return _mapFirebaseUserToModel(user);
+    try {
+      final credential = await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = credential.user!;
+      try {
+        await user.updateDisplayName(name);
+        await sendEmailVerificationOTP(email, name: name);
+        return _mapFirebaseUserToModel(user);
+      } catch (e) {
+        try {
+          await user.delete();
+        } catch (_) {
+          // Best-effort cleanup; surface original error
+        }
+        rethrow;
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        return _resumeExistingEmailRegistration(email, password, name);
+      }
+      rethrow;
+    }
+  }
+
+  /// Same email/password: if account exists unverified, resend OTP; if verified, error.
+  Future<UserModel> _resumeExistingEmailRegistration(
+    String email,
+    String password,
+    String name,
+  ) async {
+    try {
+      final credential = await firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final user = credential.user!;
+      if (user.emailVerified) {
+        throw Exception('##AUTH_SIGN_IN_INSTEAD');
+      }
+      await user.updateDisplayName(name);
+      await sendEmailVerificationOTP(email, name: name);
+      return _mapFirebaseUserToModel(user);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password' ||
+          e.code == 'invalid-credential' ||
+          e.code == 'user-not-found') {
+        throw Exception('##AUTH_WRONG_PASSWORD');
+      }
+      rethrow;
+    }
   }
 
   @override
@@ -343,5 +386,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     );
     await user.reauthenticateWithCredential(cred);
     await user.verifyBeforeUpdateEmail(newEmail);
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    final user = firebaseAuth.currentUser;
+    if (user == null) throw Exception("User not logged in");
+
+    // 1. Delete user data from Firestore
+    await firestore.collection('users').doc(user.uid).delete();
+
+    // 2. Delete the user from Firebase Auth
+    await user.delete();
+
+    // 3. Sign out from everything
+    await logout();
   }
 }

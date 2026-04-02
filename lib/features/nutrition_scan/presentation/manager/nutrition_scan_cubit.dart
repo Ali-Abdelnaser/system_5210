@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/features/nutrition_scan/domain/repositories/nutrition_repository.dart';
+import 'package:five2ten/features/nutrition_scan/domain/repositories/nutrition_repository.dart';
 import 'nutrition_scan_state.dart';
-import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_result.dart';
+import 'package:five2ten/features/nutrition_scan/domain/entities/nutrition_result.dart';
 
 class NutritionScanCubit extends Cubit<NutritionScanState> {
   final NutritionRepository repository;
@@ -32,11 +32,10 @@ class NutritionScanCubit extends Cubit<NutritionScanState> {
       final data = await repository.analyzeImage(imagePath, languageCode);
       debugPrint("Cubit: Gemini Analysis Complete: $data");
 
-      // 2. Increment Daily Count (only if successful and not from cache)
+      // Daily count is incremented when [ScanResultPage] opens (new scan only),
+      // so cached analyses still consume a slot and the UI counter stays in sync.
+
       final bool isFromCache = data['_isFromCache'] as bool? ?? false;
-      if (!isFromCache) {
-        await repository.incrementDailyScanCount(userId);
-      }
 
       // Extract and Safely Cast Data
       final Map<String, double> nutrition = {};
@@ -107,7 +106,8 @@ class NutritionScanCubit extends Cubit<NutritionScanState> {
   }
 
   Future<void> saveScanResult(NutritionResult result) async {
-    emit(NutritionScanLoading());
+    // Avoid emitting [NutritionScanLoading]: it forces full-screen loaders on
+    // Recent Scans (still in the stack) and feels like the app "reset".
     try {
       await repository.saveScanResult(result);
       emit(NutritionScanSuccess());
@@ -149,6 +149,14 @@ class NutritionScanCubit extends Cubit<NutritionScanState> {
     try {
       final count = await repository.getDailyScanCount(userId);
       emit(DailyScanCountLoaded(count));
+    } catch (_) {}
+  }
+
+  /// Call when the user sees a new scan result (not history). Updates quota + intro counter.
+  Future<void> recordScanCompletion(String userId) async {
+    try {
+      await repository.incrementDailyScanCount(userId);
+      await updateDailyScanCount(userId);
     } catch (_) {}
   }
 

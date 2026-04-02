@@ -19,5 +19,5 @@ class AppStrings {
   static const String desc0 =
       'ابعد عن السكر والمشروبات الغازية، وخليك مع الماية والعصائر الطبيعية لصحة أحسن.';
   static const String storeUrl =
-      'https://play.google.com/store/apps/details?id=com.ali.system_5210';
+      ' ';
 }

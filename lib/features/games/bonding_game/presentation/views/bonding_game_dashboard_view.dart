@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_state.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/views/bonding_game_selection_view.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/views/bonding_wall_view.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
-import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/manager/bonding_game_state.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/views/bonding_game_selection_view.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/views/bonding_wall_view.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 
 class BondingGameDashboardView extends StatelessWidget {
   const BondingGameDashboardView({super.key});

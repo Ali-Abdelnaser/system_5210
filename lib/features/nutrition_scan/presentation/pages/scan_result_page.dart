@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_result.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/nutrition_scan/domain/entities/nutrition_result.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:system_5210/core/utils/app_images.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
 
 class ScanResultPage extends StatelessWidget {
   final Map<String, double> nutritionValues;
@@ -29,6 +30,9 @@ class ScanResultPage extends StatelessWidget {
   final String heroMessage;
   final DateTime? timestamp;
 
+  /// When true, opening this page counts as one daily scan (new analysis flow only).
+  final bool consumeDailyScanSlot;
+
   const ScanResultPage({
     super.key,
     required this.nutritionValues,
@@ -47,6 +51,7 @@ class ScanResultPage extends StatelessWidget {
     this.system5210Impact = '',
     this.heroMessage = '',
     this.timestamp,
+    this.consumeDailyScanSlot = false,
   });
 
   String _getScoreLabel(AppLocalizations l10n) {
@@ -60,9 +65,11 @@ class ScanResultPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFF9FAFB),
-      body: Stack(
+    return _ScanResultDailyScanHook(
+      consume: consumeDailyScanSlot,
+      child: Scaffold(
+        backgroundColor: const Color(0xFFF9FAFB),
+        body: Stack(
         children: [
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
@@ -137,6 +144,7 @@ class ScanResultPage extends StatelessWidget {
           ),
           Positioned(top: 50, left: 20, child: const AppBackButton()),
         ],
+        ),
       ),
     );
   }
@@ -604,8 +612,20 @@ class ScanResultPage extends StatelessWidget {
           context.read<NutritionScanCubit>().loadRecentScans(user.uid);
         }
       });
-      Navigator.popUntil(context, (route) => route.isFirst);
+      _popBackToMainShell(context);
     }
+  }
+
+  /// Pops scan / history / result stack without landing on splash or login by mistake.
+  void _popBackToMainShell(BuildContext context) {
+    Navigator.of(context).popUntil((route) {
+      final name = route.settings.name;
+      if (name == AppRoutes.home || name == AppRoutes.login) {
+        return true;
+      }
+      // Legacy routes (no name): stop at bottom of stack.
+      return route.isFirst;
+    });
   }
 
   String _getLocalLabel(AppLocalizations l10n, String key) {
@@ -630,4 +650,38 @@ class ScanResultPage extends StatelessWidget {
         return key;
     }
   }
+}
+
+/// Counts a daily scan when the result screen is shown (post-frame, once).
+class _ScanResultDailyScanHook extends StatefulWidget {
+  final bool consume;
+  final Widget child;
+
+  const _ScanResultDailyScanHook({
+    required this.consume,
+    required this.child,
+  });
+
+  @override
+  State<_ScanResultDailyScanHook> createState() =>
+      _ScanResultDailyScanHookState();
+}
+
+class _ScanResultDailyScanHookState extends State<_ScanResultDailyScanHook> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.consume) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          context.read<NutritionScanCubit>().recordScanCompletion(user.uid);
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => widget.child;
 }

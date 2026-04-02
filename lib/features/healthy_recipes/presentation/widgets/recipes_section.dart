@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/app_routes.dart';
@@ -9,7 +9,7 @@ import '../../../../core/widgets/app_shimmer.dart';
 import '../manager/recipe_cubit.dart';
 import '../manager/recipe_state.dart';
 import '../widgets/recipe_card.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 
 class RecipesSection extends StatelessWidget {
   const RecipesSection({super.key});
@@ -26,7 +26,7 @@ class RecipesSection extends StatelessWidget {
           title: l10n.healthyRecipes,
           actionText: l10n.seeAll,
           onActionTap: () =>
-              Navigator.pushNamed(context, AppRoutes.healthyRecipes),
+              Navigator.pushNamed(context, AppRoutes.recipesList),
           languageCode: languageCode,
         ),
         SizedBox(
@@ -126,7 +126,7 @@ class RecipesSection extends StatelessWidget {
     String languageCode,
   ) {
     return GestureDetector(
-      onTap: () => Navigator.pushNamed(context, AppRoutes.healthyRecipes),
+      onTap: () => Navigator.pushNamed(context, AppRoutes.recipesList),
       child: GlassContainer(
         width: 140,
         borderRadius: BorderRadius.circular(24),

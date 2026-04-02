@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_validators.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_state.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_validators.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
+import 'package:five2ten/core/utils/auth_message_localizer.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_state.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_gradient_button.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/widgets/app_back_button.dart';
@@ -56,7 +57,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
             },
           );
         } else if (state is AuthFailure) {
-          AppAlerts.showAlert(context, message: state.message);
+          AppAlerts.showAlert(
+            context,
+            message: localizeAuthMessage(context, state.message),
+          );
         }
       },
       child: Scaffold(
@@ -119,6 +123,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         controller: _emailController,
                         label: l10n.parentsEmail,
                         iconPath: AppImages.iconEmail,
+                        ltrInput: true,
                         validator: (value) =>
                             AppValidators.validateEmail(value, context),
                       ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),

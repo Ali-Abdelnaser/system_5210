@@ -4,16 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_state.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/pages/scan_result_page.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_state.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/pages/scan_result_page.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import 'dart:ui';
-import 'package:system_5210/core/widgets/app_error_view.dart';
+import 'package:five2ten/core/widgets/app_error_view.dart';
 
 class ProcessingView extends StatefulWidget {
   final String imagePath;
@@ -156,6 +156,7 @@ class _ProcessingViewState extends State<ProcessingView>
             healthyAlternatives: state.healthyAlternatives,
             system5210Impact: state.system5210Impact,
             heroMessage: state.heroMessage,
+            consumeDailyScanSlot: true,
           ),
         ),
       );

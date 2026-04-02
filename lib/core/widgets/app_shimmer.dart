@@ -308,48 +308,51 @@ class AppShimmer extends StatelessWidget {
   }
 
   static Widget profileShimmer() {
-    return Column(
-      children: [
-        const SizedBox(height: 80),
-        AppShimmer(
-          width: 170,
-          height: 170,
-          borderRadius: BorderRadius.circular(85),
-        ),
-        const SizedBox(height: 24),
-        AppShimmer(width: 200, height: 32),
-        const SizedBox(height: 10),
-        AppShimmer(
-          width: 100,
-          height: 28,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        const SizedBox(height: 40),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              AppShimmer(
-                width: double.infinity,
-                height: 180,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              const SizedBox(height: 32),
-              AppShimmer(
-                width: double.infinity,
-                height: 180,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              const SizedBox(height: 32),
-              AppShimmer(
-                width: double.infinity,
-                height: 180,
-                borderRadius: BorderRadius.circular(24),
-              ),
-            ],
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        children: [
+          const SizedBox(height: 80),
+          AppShimmer(
+            width: 170,
+            height: 170,
+            borderRadius: BorderRadius.circular(85),
           ),
-        ),
-      ],
+          const SizedBox(height: 24),
+          AppShimmer(width: 200, height: 32),
+          const SizedBox(height: 10),
+          AppShimmer(
+            width: 100,
+            height: 28,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          const SizedBox(height: 40),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                AppShimmer(
+                  width: double.infinity,
+                  height: 180,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                const SizedBox(height: 32),
+                AppShimmer(
+                  width: double.infinity,
+                  height: 180,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                const SizedBox(height: 32),
+                AppShimmer(
+                  width: double.infinity,
+                  height: 180,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

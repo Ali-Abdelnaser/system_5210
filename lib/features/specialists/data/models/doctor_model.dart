@@ -1,4 +1,4 @@
-import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
+import 'package:five2ten/features/specialists/domain/entities/doctor.dart';
 
 class DoctorModel extends Doctor {
   const DoctorModel({

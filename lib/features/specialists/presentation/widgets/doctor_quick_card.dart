@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
+import 'package:five2ten/features/specialists/domain/entities/doctor.dart';
 import '../../../../core/theme/app_theme.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
 import 'dart:ui';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 
 class DoctorQuickCard extends StatelessWidget {
   final Doctor doctor;

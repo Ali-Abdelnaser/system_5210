@@ -1,21 +1,20 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/core/services/notification_service.dart';
-import 'package:system_5210/core/utils/app_tips_data.dart';
-import 'package:system_5210/features/notifications/data/models/notification_model.dart';
-import 'dart:math';
+import 'package:five2ten/core/constants/notification_categories.dart';
+import 'package:five2ten/core/services/fcm_token_service.dart';
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/core/services/notification_service.dart';
+import 'package:five2ten/features/notifications/data/models/notification_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
-
-import 'package:system_5210/core/utils/app_routes.dart';
 
 part 'notification_state.dart';
 
 class NotificationCubit extends Cubit<NotificationState> {
   final LocalStorageService localStorageService;
   final NotificationService notificationService;
+  final FcmTokenService fcmTokenService;
   String? _userId;
   String _languageCode = 'ar';
 
@@ -29,31 +28,51 @@ class NotificationCubit extends Cubit<NotificationState> {
   NotificationCubit({
     required this.localStorageService,
     required this.notificationService,
+    required this.fcmTokenService,
   }) : super(NotificationInitial());
 
   DateTime? _userCreatedAt;
 
   void setUserContext(String? userId, DateTime? createdAt, {String? role, String? langCode}) {
     if (langCode != null) _languageCode = langCode;
-    if (_userId == userId && _userCreatedAt == createdAt) return;
-    _userId = userId;
-    _userCreatedAt = createdAt;
 
-    if (_userId == null) {
-      _broadcastSubscription?.cancel();
-      _personalSubscription?.cancel();
-      _broadcastSubscription = null;
-      _personalSubscription = null;
-      emit(const NotificationLoaded([]));
-      return;
+    final sameUser = _userId == userId && _userCreatedAt == createdAt;
+
+    if (!sameUser) {
+      final previousUid = _userId;
+      _userId = userId;
+      _userCreatedAt = createdAt;
+
+      if (_userId == null) {
+        if (previousUid != null) {
+          fcmTokenService.unbindAndClearFirestore(previousUid);
+        }
+        _broadcastSubscription?.cancel();
+        _personalSubscription?.cancel();
+        _broadcastSubscription = null;
+        _personalSubscription = null;
+        emit(const NotificationLoaded([]));
+        return;
+      }
+
+      fcmTokenService.bindToUser(_userId!, previousUid: previousUid);
+      _setupNotificationListeners();
+      loadNotifications();
     }
+  }
 
-    _setupNotificationListeners();
-    loadNotifications();
-
-    if (role == 'child' || role == 'parent') {
-      scheduleMorningQuest(isAr: _languageCode == 'ar');
-      scheduleDailyTipsIfNeeded(role!);
+  /// Re-register FCM token after user re-enables notifications (local schedules removed; FCM handles daily push).
+  Future<void> syncFcmAfterReenableNotifications({
+    String? userId,
+    required String role,
+  }) async {
+    if (userId != null) _userId = userId;
+    if (_userId == null) return;
+    if (role != 'child' && role != 'parent') return;
+    try {
+      await fcmTokenService.bindToUser(_userId!);
+    } catch (e) {
+      debugPrint('syncFcmAfterReenableNotifications: $e');
     }
   }
 
@@ -147,6 +166,9 @@ class NotificationCubit extends Cubit<NotificationState> {
               _sessionStartTime.subtract(const Duration(seconds: 10)),
             )) {
           final isAr = _languageCode == 'ar';
+          final category = notification.type == 'challenge'
+              ? NotificationCategories.tasks
+              : NotificationCategories.insights;
           notificationService.showImmediateNotification(
             title: isAr ? notification.title : (notification.titleEn ?? notification.title),
             body: isAr ? notification.body : (notification.bodyEn ?? notification.body),
@@ -154,6 +176,7 @@ class NotificationCubit extends Cubit<NotificationState> {
             actionUrl: notification.actionUrl,
             showAction: true,
             badgeCount: _getUnreadCount(notificationsData),
+            category: category,
           );
         }
       }
@@ -200,119 +223,6 @@ class NotificationCubit extends Cubit<NotificationState> {
     return notifications.where((n) => n['isRead'] == false).length;
   }
 
-  Future<void> scheduleMorningQuest({required bool isAr}) async {
-    if (_userId == null) return;
-    try {
-      final key = 'morning_quest_scheduled_$_userId';
-      final lastScheduled = await localStorageService.get('settings', key);
-      final today = DateTime.now().toIso8601String().split('T')[0];
-
-      if (lastScheduled != null && lastScheduled['date'] == today) return;
-
-      final title = isAr ? "يا بطل، يوم جديد! ✨" : "Good morning, Champ! ✨";
-      final body = isAr
-          ? "جاهز لتحدي الـ 5210 النهاردة؟ افتح الأبلكيشن وشوف مهمتك."
-          : "Ready for today's 5210 challenge? Open and see your mission.";
-
-      await notificationService.scheduleDailyTip(
-        id: 9999,
-        title: title,
-        body: body,
-        scheduledDate: _nextMorning10AM(),
-        category: 'tasks',
-        payload: 'route:${AppRoutes.home}',
-      );
-
-      await localStorageService.save('settings', key, {'date': today});
-    } catch (e) {
-      debugPrint("Error scheduling morning quest: $e");
-    }
-  }
-
-  DateTime _nextMorning10AM() {
-    final now = DateTime.now();
-    DateTime scheduled = DateTime(now.year, now.month, now.day, 10, 0);
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
-    }
-    return scheduled;
-  }
-
-  Future<void> scheduleDailyTipsIfNeeded(String role) async {
-    if (_userId == null) return;
-
-    try {
-      final tipKey = 'last_tip_scheduled_date_$_userId';
-      final lastScheduled = await localStorageService.get('settings', tipKey);
-      final today = DateTime.now().toIso8601String().split('T')[0];
-
-      if (lastScheduled != null && lastScheduled['date'] == today) return;
-
-      final now = DateTime.now();
-      for (int i = 0; i < 7; i++) {
-        final scheduledDay = now.add(Duration(days: i));
-        final scheduledDate = DateTime(
-          scheduledDay.year,
-          scheduledDay.month,
-          scheduledDay.day,
-          10,
-          0,
-        );
-
-        if (i == 0 && now.hour >= 10) continue;
-
-        final dayOfYear = scheduledDate
-            .difference(DateTime(scheduledDate.year, 1, 1))
-            .inDays;
-        final random = Random(
-          dayOfYear + scheduledDate.year + (_userId.hashCode),
-        );
-        final tipsList = role == 'parent'
-            ? AppTipsData.parentTips
-            : AppTipsData.childTips;
-        if (tipsList.isEmpty) continue;
-        final tipIndex = random.nextInt(tipsList.length);
-        final tip = tipsList[tipIndex];
-
-        final uniqueIntId =
-            1000 +
-            (scheduledDate.year % 100 * 10000) +
-            (scheduledDate.month * 100) +
-            scheduledDate.day;
-
-        final isAr = _languageCode == 'ar';
-        final title = isAr ? tip.title : (tip.titleEn ?? tip.title);
-        final body = isAr ? tip.description : (tip.descriptionEn ?? tip.description);
-
-        await notificationService.scheduleDailyTip(
-          id: uniqueIntId,
-          title: title,
-          body: body,
-          scheduledDate: scheduledDate,
-          payload: 'route:${AppRoutes.notifications}',
-        );
-
-        // Also save to internal notifications list so it appears in the screen
-        final id = "tip_$uniqueIntId";
-        final notification = AppNotification(
-          id: id,
-          title: tip.title,
-          body: tip.description,
-          titleEn: tip.titleEn,
-          bodyEn: tip.descriptionEn,
-          timestamp: scheduledDate,
-          type: 'tip',
-        );
-        await localStorageService.save(_boxName, id, notification.toMap());
-      }
-
-      await localStorageService.save('settings', tipKey, {'date': today});
-      loadNotifications();
-    } catch (e) {
-      debugPrint("Error scheduling multi-day tips: $e");
-    }
-  }
-
   Future<void> addGameRewardNotification({
     required String gameName,
     required int score,
@@ -348,12 +258,16 @@ class NotificationCubit extends Cubit<NotificationState> {
 
     final notifications = await localStorageService.getAll(_boxName);
     final isAr = _languageCode == 'ar';
+    final category = notification.type == 'challenge'
+        ? NotificationCategories.tasks
+        : NotificationCategories.insights;
     notificationService.showImmediateNotification(
       title: isAr ? notification.title : (notification.titleEn ?? notification.title),
       body: isAr ? notification.body : (notification.bodyEn ?? notification.body),
       actionUrl: notification.actionUrl,
       showAction: true,
       badgeCount: _getUnreadCount(notifications),
+      category: category,
     );
 
     if (state is NotificationLoaded) {

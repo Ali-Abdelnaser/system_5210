@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/core/widgets/streak_widget.dart';
-import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:five2ten/core/widgets/streak_widget.dart';
+import 'package:five2ten/features/notifications/presentation/manager/notification_cubit.dart';
 
-import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
+import 'package:five2ten/features/specialists/presentation/views/admin_login_view.dart';
 import 'dart:async';
 
 class HomeAppBar extends StatefulWidget {
@@ -84,34 +84,44 @@ class _HomeAppBarState extends State<HomeAppBar> {
           hasUnread = state.notifications.any((n) => !n.isRead);
         }
 
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            IconButton(
-              icon: const Icon(
-                Icons.notifications_none_rounded,
-                color: Color.fromARGB(255, 81, 81, 82),
-                size: 38,
+        return GestureDetector(
+          onTap: () => Navigator.pushNamed(context, '/notifications'),
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 1.5,
               ),
-              onPressed: () => Navigator.pushNamed(context, '/notifications'),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
             ),
-            if (hasUnread)
-              Positioned(
-                right: 2,
-                top: 2,
-                child: Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                const Icon(
+                  Icons.notifications_none_rounded,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                  size: 28,
                 ),
-              ),
-          ],
+                if (hasUnread)
+                  Positioned(
+                    right: 12,
+                    top: 12,
+                    child: Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white, width: 2),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         );
       },
     );

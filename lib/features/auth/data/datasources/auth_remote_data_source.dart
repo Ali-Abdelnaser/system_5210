@@ -29,4 +29,5 @@ abstract class AuthRemoteDataSource {
   Future<void> verifyEmailOTP(String email, String code);
   Future<void> updatePassword(String currentPassword, String newPassword);
   Future<void> updateEmail(String currentPassword, String newEmail);
+  Future<void> deleteAccount();
 }

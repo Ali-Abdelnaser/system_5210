@@ -204,6 +204,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
+  String get authNoInternetConnection =>
+      'No internet connection. Please check your network and try again.';
+
+  @override
+  String get authPhoneNotRegistered =>
+      'This phone number is not registered. Please create an account first.';
+
+  @override
+  String get authPhoneAlreadyRegisteredSignIn =>
+      'This phone number is already registered. Please sign in instead.';
+
+  @override
+  String get authSignInInstead =>
+      'This email is already registered and verified. Please sign in.';
+
+  @override
+  String get authWrongPasswordExistingEmail =>
+      'This email is already registered. Sign in with the correct password, or use Forgot password.';
+
+  @override
+  String get authVerificationCodeResent => 'Verification code sent again.';
+
+  @override
+  String get authEnterSixDigits => 'Please enter the 6-digit code.';
+
+  @override
+  String get authSessionExpired => 'Session expired. Please sign in again.';
+
+  @override
+  String get authEmailNotRegistered =>
+      'This email is not registered. Please create an account first.';
+
+  @override
+  String get authEmailNotVerifiedYet =>
+      'Email not verified yet. Please check your inbox.';
+
+  @override
+  String get authWrongPasswordTryAgain => 'Wrong password. Please try again.';
+
+  @override
+  String get authInvalidEmailAddress => 'Invalid email address.';
+
+  @override
+  String get authNoAccountFoundEmail => 'No account found with this email.';
+
+  @override
+  String get authEmailAlreadyExistsGeneric =>
+      'An account already exists with this email.';
+
+  @override
+  String get authInvalidVerificationCode => 'Invalid verification code.';
+
+  @override
+  String get authTooManyRequests =>
+      'Too many attempts from this device. Please try again later.';
+
+  @override
   String get whoAreYou => 'Who are you?';
 
   @override
@@ -392,7 +449,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get favoriteHero => 'Child\'s Favorite Character';
 
   @override
-  String get familyPriority => 'Family Health Priority';
+  String get familyPriority => 'Family Wellness Priority';
 
   @override
   String get selectDate => 'Select Date';
@@ -681,10 +738,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanResultTitle => 'AI Food Analysis';
 
   @override
-  String get healthReport => 'Health Report';
+  String get healthReport => 'Wellness Report';
 
   @override
-  String get healthScore => 'Health Score';
+  String get healthScore => 'Wellness Score';
 
   @override
   String get nutritionFacts => 'Nutrition Facts';
@@ -780,6 +837,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get confirm => 'Confirm';
+
+  @override
+  String get deleteAccount => 'Delete Account';
+
+  @override
+  String get deleteAccountConfirm =>
+      'Are you sure you want to delete your account? This action is permanent and cannot be undone.';
+
+  @override
+  String get deleteAccountWarning =>
+      'All your data, progress, and children profiles will be permanently erased.';
 
   @override
   String get recentScansTitle => 'Scan History';
@@ -914,7 +982,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get taskNotifications => 'Daily Task Notifications';
 
   @override
-  String get insightsNotifications => 'Health Insights & Tips';
+  String get insightsNotifications => 'Lifestyle Insights & Tips';
 
   @override
   String get storage => 'Storage & Photos Access';
@@ -1042,7 +1110,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lastUpdated => 'Last updated: February 2026';
 
   @override
-  String get healthyRecipes => 'Healthy Recipes';
+  String get healthyRecipes => 'Meal Recipes';
 
   @override
   String get ingredients => 'Ingredients';
@@ -1060,11 +1128,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noRecipes => 'No recipes found';
 
   @override
-  String get healthyInsightsTitle => 'Healthy Insights';
+  String get healthyInsightsTitle => 'Wellness Insights';
 
   @override
-  String get healthyInsightsSubTitle =>
-      'Medical facts for your family\'s health';
+  String get healthyInsightsSubTitle => 'Family Wellness Facts';
 
   @override
   String get didYouKnow => 'Did you know?';
@@ -1446,22 +1513,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutMeetOurTeamTitle => 'Meet Our Team';
-
-  @override
-  String get updateAvailable => 'New Update Available 🚀';
-
-  @override
-  String get updateRequired => 'Critical Update Required ⚠️';
-
-  @override
-  String get updateDesc =>
-      'A new version of 5210 is available. Please update now to get the latest features and best experience.';
-
-  @override
-  String get updateButton => 'Update Now';
-
-  @override
-  String get laterButton => 'Later';
 
   @override
   String get stepTrackerTitle => 'Activity Details';

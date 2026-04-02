@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 import '../../domain/entities/ingredient_entity.dart';
 import 'ingredient_item.dart';
 

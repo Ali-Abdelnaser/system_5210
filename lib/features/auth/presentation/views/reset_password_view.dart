@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'package:system_5210/core/utils/app_validators.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_state.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_header.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
+import 'package:five2ten/core/utils/app_validators.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_state.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_header.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/auth_message_localizer.dart';
 
 class ResetPasswordView extends StatefulWidget {
   final String email;
@@ -66,7 +67,10 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
             },
           );
         } else if (state is AuthFailure) {
-          AppAlerts.showAlert(context, message: state.message);
+          AppAlerts.showAlert(
+            context,
+            message: localizeAuthMessage(context, state.message),
+          );
         }
       },
       child: Scaffold(
@@ -86,7 +90,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                       AuthHeader(title: l10n.password),
                       const SizedBox(height: 10),
                       Text(
-                        "Please enter your new password below.",
+                        l10n.forgotPasswordDesc,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 14,
@@ -99,6 +103,7 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         label: l10n.password,
                         iconPath: AppImages.iconLock,
                         isPassword: true,
+                        ltrInput: true,
                         validator: (value) =>
                             AppValidators.validatePassword(value, context),
                       ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.1),
@@ -108,9 +113,18 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                         label: l10n.confirmPassword,
                         iconPath: AppImages.iconLock,
                         isPassword: true,
+                        ltrInput: true,
                         validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return l10n.passwordRequired;
+                          }
                           if (value != _passwordController.text) {
-                            return "Passwords do not match";
+                            return Localizations.localeOf(
+                                      context,
+                                    ).languageCode ==
+                                    'ar'
+                                ? "كلمات السر غير متطابقة"
+                                : "Passwords do not match";
                           }
                           return null;
                         },
@@ -119,7 +133,11 @@ class _ResetPasswordViewState extends State<ResetPasswordView> {
                       BlocBuilder<AuthCubit, AuthState>(
                         builder: (context, state) {
                           return AuthGradientButton(
-                            text: "Update Password",
+                            text:
+                                Localizations.localeOf(context).languageCode ==
+                                    'ar'
+                                ? "تحديث كلمة السر"
+                                : "Update Password",
                             onTap: _submit,
                             colors: const [AppTheme.appRed, AppTheme.appRed],
                             isLoading: state is AuthLoading,

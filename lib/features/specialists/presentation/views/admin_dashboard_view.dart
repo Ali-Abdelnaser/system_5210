@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
-import 'package:system_5210/features/specialists/data/models/doctor_model.dart';
-import 'package:system_5210/features/specialists/presentation/views/admin_edit_doctor_view.dart';
-import 'package:system_5210/features/healthy_recipes/data/models/recipe_model.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/views/admin_edit_recipe_view.dart';
-import 'package:system_5210/features/game_center/data/models/user_points_model.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/specialists/data/models/doctor_model.dart';
+import 'package:five2ten/features/specialists/presentation/views/admin_edit_doctor_view.dart';
+import 'package:five2ten/features/healthy_recipes/data/models/recipe_model.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/views/admin_edit_recipe_view.dart';
+import 'package:five2ten/features/game_center/data/models/user_points_model.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/core/widgets/profile_image_loader.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
-import 'package:system_5210/core/utils/app_strings.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/widgets/profile_image_loader.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
+import 'package:five2ten/core/utils/app_strings.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:system_5210/features/healthy_insights/domain/entities/healthy_insight.dart';
-import 'package:system_5210/features/healthy_insights/presentation/views/admin_edit_insight_view.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
-import 'package:system_5210/features/healthy_insights/data/models/healthy_insights_data.dart';
+import 'package:five2ten/features/healthy_insights/domain/entities/healthy_insight.dart';
+import 'package:five2ten/features/healthy_insights/presentation/views/admin_edit_insight_view.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
+import 'package:five2ten/features/healthy_insights/data/models/healthy_insights_data.dart';
 
 class AdminDashboardView extends StatefulWidget {
   const AdminDashboardView({super.key});
@@ -69,7 +69,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
             IconButton(
               onPressed: () => _showUpdateConfigDialog(l10n),
               icon: const Icon(
-                Icons.settings_suggest_rounded,
+                Icons.system_update_rounded,
                 color: AppTheme.appBlue,
               ),
             ),
@@ -914,21 +914,68 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
 
   Future<void> _showUpdateConfigDialog(AppLocalizations l10n) async {
     final isAr = Localizations.localeOf(context).languageCode == 'ar';
+    
+    // Fetch current settings first
+    final doc = await FirebaseFirestore.instance
+        .collection('app_config')
+        .doc('update_settings')
+        .get();
+    
+    final data = doc.data() ?? {};
+    final packageInfo = await PackageInfo.fromPlatform();
+    
+    final latestController = TextEditingController(text: data['latestVersion'] ?? packageInfo.version);
+    final minController = TextEditingController(text: data['minRequiredVersion'] ?? packageInfo.version);
+    final urlController = TextEditingController(text: data['updateUrl'] ?? AppStrings.storeUrl);
+
+    if (!mounted) return;
 
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          isAr ? 'إعدادات التحديثات' : 'Update Settings',
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Row(
+          children: [
+            const Icon(Icons.system_update_rounded, color: AppTheme.appBlue),
+            const SizedBox(width: 12),
+            Text(
+              isAr ? 'إعدادات التحديثات' : 'Update Settings',
+              style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+          ],
         ),
-        content: Text(
-          isAr
-              ? 'هل تريد إنشاء/تحديث إعدادات التحديثات التلقائية في قاعدة البيانات؟'
-              : 'Do you want to create/update the automatic update settings in the database?',
-          style: GoogleFonts.cairo(),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildConfigField(
+                label: isAr ? 'آخر إصدار (Latest)' : 'Latest Version',
+                controller: latestController,
+                hint: '1.0.0',
+              ),
+              const SizedBox(height: 16),
+              _buildConfigField(
+                label: isAr ? 'أدنى إصدار مطلوب (Min Required)' : 'Min Required Version',
+                controller: minController,
+                hint: '1.0.0',
+              ),
+              const SizedBox(height: 16),
+              _buildConfigField(
+                label: isAr ? 'رابط المتجر (Update URL)' : 'Update URL',
+                controller: urlController,
+                hint: 'https://...',
+              ),
+              const SizedBox(height: 12),
+              Text(
+                isAr 
+                  ? 'إصدار التطبيق الحالي: ${packageInfo.version}'
+                  : 'Current App Version: ${packageInfo.version}',
+                style: GoogleFonts.cairo(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -940,12 +987,24 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
           ),
           ElevatedButton(
             onPressed: () async {
+              final latest = latestController.text.trim();
+              final min = minController.text.trim();
+              final url = urlController.text.trim();
+              
+              if (latest.isEmpty || min.isEmpty || url.isEmpty) {
+                AppAlerts.showAlert(context, message: isAr ? "يرجى ملء جميع الحقول" : "Please fill all fields", type: AlertType.error);
+                return;
+              }
+
               Navigator.pop(context);
-              await _initializeUpdateConfig();
+              await _updateConfig(latest, min, url);
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.appBlue),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.appBlue,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
             child: Text(
-              isAr ? 'إنشاء الإعدادات' : 'Initialize Config',
+              isAr ? 'حفظ الإعدادات' : 'Save Config',
               style: GoogleFonts.cairo(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -957,25 +1016,58 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
     );
   }
 
-  Future<void> _initializeUpdateConfig() async {
-    try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      final currentVersion = packageInfo.version;
+  Widget _buildConfigField({
+    required String label,
+    required TextEditingController controller,
+    required String hint,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.cairo(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: const Color(0xFF1E293B),
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hint,
+            filled: true,
+            fillColor: Colors.grey[100],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+        ),
+      ],
+    );
+  }
 
+  Future<void> _updateConfig(String latest, String min, String url) async {
+    try {
       await FirebaseFirestore.instance
           .collection('app_config')
           .doc('update_settings')
           .set({
-            'latestVersion': currentVersion,
-            'minRequiredVersion': currentVersion,
-            'updateUrl': AppStrings.storeUrl,
+            'latestVersion': latest,
+            'minRequiredVersion': min,
+            'updateUrl': url,
             'lastUpdated': FieldValue.serverTimestamp(),
           }, SetOptions(merge: true));
 
       if (mounted) {
         AppAlerts.showAlert(
           context,
-          message: "تم إنشاء إعدادات التحديث بنجاح للفيرجن $currentVersion",
+          message: Localizations.localeOf(context).languageCode == 'ar'
+              ? "تم حفظ إعدادات التحديث بنجاح"
+              : "Update settings saved successfully",
           type: AlertType.success,
         );
       }
@@ -983,7 +1075,7 @@ class _AdminDashboardViewState extends State<AdminDashboardView> {
       if (mounted) {
         AppAlerts.showAlert(
           context,
-          message: "خطأ أثناء إنشاء الإعدادات: $e",
+          message: "Error: $e",
           type: AlertType.error,
         );
       }

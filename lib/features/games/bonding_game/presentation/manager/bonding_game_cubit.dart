@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
-import 'package:system_5210/features/games/bonding_game/data/bonding_challenges_data.dart';
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/features/games/bonding_game/data/bonding_challenges_data.dart';
 
 import '../../data/models/bonding_challenge.dart';
 import '../../data/models/bonding_memory.dart';

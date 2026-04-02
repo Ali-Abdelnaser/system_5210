@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:sensors_plus/sensors_plus.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../widgets/glass_card.dart';
@@ -21,48 +20,18 @@ class _MovementStageViewState extends State<MovementStageView> {
   int jumps = 0;
   final int targetJumps = 20;
   bool isJumping = false;
-  StreamSubscription? _subscription;
 
-  @override
-  void initState() {
-    super.initState();
-    _startDetection();
-  }
+  void _onTapJump() {
+    if (jumps >= targetJumps) return;
 
-  void _startDetection() {
-    _subscription = userAccelerometerEvents.listen((
-      UserAccelerometerEvent event,
-    ) {
-      // Logic to detect a jump (spike in Y axis)
-      // Usually when jumping, there's a quick up and down acceleration
-      if (event.y.abs() > 12.0 && !isJumping) {
-        if (mounted) {
-          setState(() {
-            jumps++;
-            isJumping = true;
-          });
-
-          if (jumps >= targetJumps) {
-            _onTargetReached();
-          }
-
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (mounted) setState(() => isJumping = false);
-          });
-        }
-      }
+    setState(() {
+      jumps++;
+      isJumping = true;
     });
-  }
 
-  void _onTargetReached() {
-    _subscription?.cancel();
-    // Show confetti or success
-  }
-
-  @override
-  void dispose() {
-    _subscription?.cancel();
-    super.dispose();
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) setState(() => isJumping = false);
+    });
   }
 
   @override
@@ -92,7 +61,7 @@ class _MovementStageViewState extends State<MovementStageView> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'نط في مكانك 20 نطة',
+                  'اضغط على الزرار مع كل نطة',
                   style: GoogleFonts.cairo(
                     fontSize: 18,
                     color: AppTheme.appGreen.withOpacity(0.7),
@@ -101,8 +70,9 @@ class _MovementStageViewState extends State<MovementStageView> {
 
                 const Spacer(),
 
-                // Jump Animation/Icon
-                Center(
+                // Tap-to-jump button
+                GestureDetector(
+                  onTap: _onTapJump,
                   child: Container(
                     height: 200,
                     width: 200,

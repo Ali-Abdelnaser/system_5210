@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'dart:ui';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
 
 class PromoSlider extends StatelessWidget {
   const PromoSlider({super.key});
@@ -22,7 +21,7 @@ class PromoSlider extends StatelessWidget {
             ? "رتب طبقك بالأكل الصحي الملون!"
             : "Fill your plate with colorful healthy food!",
         "badge": isAr ? "اللعبة 1" : "GAME 1",
-        "colors": [AppTheme.appRed, const Color(0xFFFF6B6B)],
+        "colors": [AppTheme.appRed, AppTheme.appRed],
         "mainAsset": AppImages.plate,
         "floatingAssets": [
           AppImages.apple,
@@ -38,7 +37,7 @@ class PromoSlider extends StatelessWidget {
             ? "وصل الأكلات المتشابهة بأسرع وقت!"
             : "Match the similar foods as fast as you can!",
         "badge": isAr ? "اللعبة 2" : "GAME 2",
-        "colors": [AppTheme.appYellow, const Color(0xFFFDCB6E)],
+        "colors": [AppTheme.appYellow, AppTheme.appYellow],
         "mainAsset": AppImages.connect,
         "type": "connect",
         "route": AppRoutes.matchingGame,
@@ -49,7 +48,7 @@ class PromoSlider extends StatelessWidget {
             ? "خض غمار المغامرة في جزر المعرفة!"
             : "Embark on a journey through knowledge islands!",
         "badge": isAr ? "اللعبة 3" : "GAME 3",
-        "colors": [const Color(0xFF6C5CE7), const Color(0xFFA29BFE)],
+        "colors": [AppTheme.appBlue, AppTheme.appBlue],
         "mainAsset": AppImages.island,
         "type": "quiz",
         "route": AppRoutes.quizGame,
@@ -60,7 +59,7 @@ class PromoSlider extends StatelessWidget {
             ? "تحديات ممتعة تجمعك أنت وأهلك!"
             : "Fun challenges for you and your family!",
         "badge": isAr ? "اللعبة 4" : "GAME 4",
-        "colors": [AppTheme.appGreen, const Color(0xFF55E6C1)],
+        "colors": [AppTheme.appGreen, AppTheme.appGreen],
         "mainAsset": AppImages.challengeParent,
         "secondaryAsset": AppImages.challengeChild,
         "type": "bonding",
@@ -72,7 +71,7 @@ class PromoSlider extends StatelessWidget {
             ? "أنجز مهامك الـ 6 لتبني عاداتك الصحية!"
             : "Complete 6 tasks to build your healthy habits!",
         "badge": isAr ? "اللعبة 5" : "GAME 5",
-        "colors": [AppTheme.appBlue, const Color.fromARGB(255, 83, 157, 231)],
+        "colors": [AppTheme.appBlue, AppTheme.appBlue],
         "mainAsset": AppImages.island,
         "secondaryAsset": AppImages.gameSuccess1,
         "type": "tasks",

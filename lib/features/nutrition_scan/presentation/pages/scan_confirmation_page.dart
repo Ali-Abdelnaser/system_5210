@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/pages/processing_view.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/pages/processing_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/manager/nutrition_scan_cubit.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 
 class ScanConfirmationPage extends StatefulWidget {
   final String imagePath;

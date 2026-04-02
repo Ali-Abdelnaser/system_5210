@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
-import 'package:system_5210/features/specialists/presentation/views/admin_notification_control_view.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_loading_indicator.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/specialists/presentation/views/admin_notification_control_view.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 
 class AdminBroadcastLoginView extends StatefulWidget {
   const AdminBroadcastLoginView({super.key});
@@ -125,6 +125,7 @@ class _AdminBroadcastLoginViewState extends State<AdminBroadcastLoginView> {
                           controller: _usernameController,
                           label: l10n.username,
                           iconPath: AppImages.iconEmail,
+                          ltrInput: true,
                         ),
                         const SizedBox(height: 20),
                         AuthTextField(
@@ -132,6 +133,7 @@ class _AdminBroadcastLoginViewState extends State<AdminBroadcastLoginView> {
                           label: l10n.password,
                           iconPath: AppImages.iconLock,
                           isPassword: true,
+                          ltrInput: true,
                         ),
                       ],
                     ),

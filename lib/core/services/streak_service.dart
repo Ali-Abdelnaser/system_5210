@@ -1,5 +1,5 @@
-import 'package:system_5210/features/user_setup/data/models/user_profile_model.dart';
-import 'package:system_5210/features/user_setup/domain/repositories/user_setup_repository.dart';
+import 'package:five2ten/features/user_setup/data/models/user_profile_model.dart';
+import 'package:five2ten/features/user_setup/domain/repositories/user_setup_repository.dart';
 class StreakService {
   final UserSetupRepository repository;
 

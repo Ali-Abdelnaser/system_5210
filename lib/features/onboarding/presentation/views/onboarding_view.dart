@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/features/onboarding/data/models/onboarding_model.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/features/onboarding/data/models/onboarding_model.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/app_routes.dart';
+
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/core/utils/injection_container.dart' as di;
 
 class OnboardingView extends StatefulWidget {
   const OnboardingView({super.key});
@@ -17,6 +20,13 @@ class OnboardingView extends StatefulWidget {
 class _OnboardingViewState extends State<OnboardingView> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  Future<void> _finishOnboarding(BuildContext context) async {
+    await di.sl<LocalStorageService>().save('settings', 'is_first_time', {'value': false});
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +123,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                               end: 0,
                               duration: 800.ms,
                               curve: Curves.easeOutBack,
-                            )
+                              )
                             .fadeIn(duration: 800.ms),
                       ],
                     ),
@@ -161,8 +171,7 @@ class _OnboardingViewState extends State<OnboardingView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () =>
-                      Navigator.pushReplacementNamed(context, AppRoutes.login),
+                  onPressed: () => _finishOnboarding(context),
                   child: Text(
                     l10n.skip,
                     style: GoogleFonts.cairo(
@@ -199,7 +208,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                         curve: Curves.easeInOut,
                       );
                     } else {
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
+                      _finishOnboarding(context);
                     }
                   },
                   child: AnimatedContainer(

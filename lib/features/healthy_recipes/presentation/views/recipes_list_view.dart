@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/healthy_recipes/domain/entities/recipe.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/healthy_recipes/domain/entities/recipe.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_images.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 import '../manager/recipe_cubit.dart';
 import '../manager/recipe_state.dart';
 import '../widgets/recipe_card.dart';
-import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
+import 'package:five2ten/features/specialists/presentation/views/admin_login_view.dart';
 
 class RecipesListView extends StatefulWidget {
   const RecipesListView({super.key});

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
-import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_state.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+import 'package:five2ten/features/games/quizGame/presentation/cubit/quiz_state.dart';
 import '../widgets/drifting_cloud.dart';
 import '../widgets/quiz_hud.dart';
 import '../widgets/quiz_progress_bar.dart';
@@ -12,7 +12,7 @@ import '../widgets/options_grid.dart';
 import '../widgets/quiz_lifelines.dart';
 import 'dart:ui';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
 
 class QuizGameView extends StatefulWidget {
   final int level;

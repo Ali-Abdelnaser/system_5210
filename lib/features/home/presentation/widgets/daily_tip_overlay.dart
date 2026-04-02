@@ -4,14 +4,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/utils/app_tips_data.dart';
-import 'package:system_5210/core/services/local_storage_service.dart';
-import 'package:system_5210/core/utils/injection_container.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/utils/app_tips_data.dart';
+import 'package:five2ten/core/services/local_storage_service.dart';
+import 'package:five2ten/core/utils/injection_container.dart';
 
 class DailyTipOverlay extends StatefulWidget {
-  final AppTip tip;
+  final ChildTip tip;
   final String character;
 
   const DailyTipOverlay({
@@ -87,10 +87,15 @@ class _DailyTipOverlayState extends State<DailyTipOverlay> {
   bool _showButton = false;
   Timer? _typewriterTimer;
   int _charIndex = 0;
+  String _fullTipText = "";
+  bool _started = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _started = true;
+    _fullTipText = widget.tip.localizedText(Localizations.localeOf(context));
     _startTypewriter();
     _startButtonTimer();
   }
@@ -99,9 +104,9 @@ class _DailyTipOverlayState extends State<DailyTipOverlay> {
     _typewriterTimer = Timer.periodic(const Duration(milliseconds: 50), (
       timer,
     ) {
-      if (_charIndex < widget.tip.description.length) {
+      if (_charIndex < _fullTipText.length) {
         setState(() {
-          _displayedText += widget.tip.description[_charIndex];
+          _displayedText += _fullTipText[_charIndex];
           _charIndex++;
         });
       } else {
@@ -194,15 +199,6 @@ class _DailyTipOverlayState extends State<DailyTipOverlay> {
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    widget.tip.title,
-                                    style: GoogleFonts.dynaPuff(
-                                      color: AppTheme.appBlue,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
                                   Text(
                                     _displayedText,
                                     style: GoogleFonts.cairo(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import 'dart:ui';
 
 class PrivacyPolicyView extends StatelessWidget {
@@ -88,11 +88,11 @@ class PrivacyPolicyView extends StatelessWidget {
                         ),
                         _buildSection(
                           isAr
-                              ? "بيانات الصحة والنشاط (Health Connect)"
-                              : "Health & Activity Data (Health Connect)",
+                              ? "بيانات النشاط البدني (حساس الحركة)"
+                              : "Physical Activity Data (Motion Sensors)",
                           isAr
-                              ? "يستخدم تطبيقنا Health Connect للوصول إلى بيانات خطواتك اليومية. نحن نقوم بقراءة هذه البيانات فقط لعرض تقدمك نحو أهدافك الصحية (5210). لا نقوم بمشاركة هذه البيانات مع أي جهات خارجية ولا نستخدمها لأغراض إعلانية."
-                              : "Our app uses Health Connect to access your daily step count. We only read this data to display your progress towards your health goals (5210). We do not share this data with any third parties or use it for advertising purposes.",
+                              ? "يستخدم تطبيقنا حساسات الحركة (Pedometer) في جهازك للوصول إلى بيانات خطواتك اليومية. نحن نقوم بقراءة هذه البيانات فقط لعرض تقدمك نحو أهدافك الصحية (5210). يتم تخزين هذه البيانات محلياً على جهازك ولا نقوم بمشاركتها مع أي جهات خارجية أو استخدامها لأغراض إعلانية."
+                              : "Our app uses your device's motion sensors (Pedometer) to access your daily step count. We only read this data to display your progress towards your health goals (5210). This data is stored locally on your device and we do not share it with any third parties or use it for advertising purposes.",
                           isAr,
                         ),
                         _buildSection(

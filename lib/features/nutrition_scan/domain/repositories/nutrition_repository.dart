@@ -1,4 +1,4 @@
-import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_result.dart';
+import 'package:five2ten/features/nutrition_scan/domain/entities/nutrition_result.dart';
 
 abstract class NutritionRepository {
   Future<void> saveScanResult(NutritionResult result);

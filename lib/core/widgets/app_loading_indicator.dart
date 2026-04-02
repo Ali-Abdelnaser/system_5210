@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'package:system_5210/core/theme/app_theme.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
 
 class AppLoadingIndicator extends StatefulWidget {
   final double size;

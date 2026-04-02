@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:system_5210/features/user_setup/presentation/manager/user_setup_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_state.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_state.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:five2ten/features/user_setup/presentation/manager/user_setup_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_state.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_state.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_gradient_button.dart';
 import 'dart:ui';
-import 'package:system_5210/core/utils/app_alerts.dart';
-import 'package:system_5210/core/utils/app_validators.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
+import 'package:five2ten/core/utils/app_validators.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:system_5210/core/widgets/profile_image_loader.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/core/widgets/profile_image_loader.dart';
+import 'package:five2ten/core/widgets/app_loading_indicator.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
@@ -174,12 +174,15 @@ class _EditProfileViewState extends State<EditProfileView> {
             onPressed: () => Navigator.pop(context),
           );
         } else if (state is AuthFailure) {
-          Navigator.pop(context); // Close loading dialog if open
+          Navigator.pop(context); // Close loading dialog
           AppAlerts.showAlert(
             context,
             message: state.message,
             type: AlertType.error,
           );
+        } else if (state is Unauthenticated) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          Navigator.pushReplacementNamed(context, '/login');
         } else if (state is AuthLoading) {
           showDialog(
             context: context,
@@ -313,12 +316,40 @@ class _EditProfileViewState extends State<EditProfileView> {
                   onTap: () => _showChangeEmailDialog(context),
                   actionText: l10n.change,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 40),
+                const Divider(color: Colors.white24, thickness: 1),
+                const SizedBox(height: 24),
+                _buildSecurityOption(
+                  context,
+                  title: l10n.deleteAccount,
+                  subtitle: l10n.deleteAccountWarning,
+                  icon: Icons.delete,
+                  onTap: () => _showDeleteAccountConfirm(context, l10n),
+                  iconColor: AppTheme.appRed,
+                  titleColor: AppTheme.appRed,
+                ),
+                const SizedBox(height: 16),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  void _showDeleteAccountConfirm(BuildContext context, AppLocalizations l10n) {
+    AppAlerts.showCustomDialog(
+      context,
+      title: l10n.deleteAccount,
+      message: l10n.deleteAccountConfirm,
+      buttonText: l10n.deleteAccount,
+      isSuccess: false,
+      cancelText: l10n.cancel,
+      icon: Icons.warning_amber_rounded,
+      onPressed: () {
+        Navigator.pop(context); // Close dialog
+        context.read<AuthCubit>().deleteAccount();
+      },
     );
   }
 
@@ -329,7 +360,12 @@ class _EditProfileViewState extends State<EditProfileView> {
     required IconData icon,
     required VoidCallback onTap,
     String? actionText,
+    Color? iconColor,
+    Color? titleColor,
   }) {
+    final effectiveIconColor = iconColor ?? const Color(0xFF1565C0);
+    final effectiveTitleColor = titleColor ?? const Color(0xFF1E293B);
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
@@ -345,10 +381,10 @@ class _EditProfileViewState extends State<EditProfileView> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFF1565C0).withOpacity(0.1),
+                color: effectiveIconColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: const Color(0xFF1565C0), size: 20),
+              child: Icon(icon, color: effectiveIconColor, size: 20),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -360,7 +396,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     style: GoogleFonts.poppins(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1E293B),
+                      color: effectiveTitleColor,
                     ),
                   ),
                   if (subtitle != null)
@@ -384,7 +420,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1565C0).withOpacity(0.1),
+                  color: effectiveIconColor.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -392,7 +428,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   style: GoogleFonts.poppins(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF1565C0),
+                    color: effectiveIconColor,
                   ),
                 ),
               )

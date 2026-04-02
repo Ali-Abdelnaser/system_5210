@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'package:system_5210/features/auth/domain/repositories/auth_repository.dart';
-import 'package:system_5210/features/user_setup/domain/usecases/get_user_profile_usecase.dart';
-import 'package:system_5210/core/services/storage_service.dart';
-import 'package:system_5210/features/user_setup/domain/repositories/user_setup_repository.dart';
+import 'package:five2ten/features/auth/domain/repositories/auth_repository.dart';
+import 'package:five2ten/features/user_setup/domain/usecases/get_user_profile_usecase.dart';
+import 'package:five2ten/core/services/storage_service.dart';
+import 'package:five2ten/features/user_setup/domain/repositories/user_setup_repository.dart';
 import 'dart:io';
-import 'package:system_5210/features/user_setup/data/models/user_profile_model.dart';
+import 'package:five2ten/features/user_setup/data/models/user_profile_model.dart';
 import 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
@@ -80,7 +80,9 @@ class ProfileCubit extends Cubit<ProfileState> {
           emit(ProfileLoaded(updatedProfile));
         },
       );
-    } catch (e) {}
+    } catch (e) {
+      emit(ProfileFailure("Failed to upload image: ${e.toString()}"));
+    }
   }
 
   Future<void> updateBioData({

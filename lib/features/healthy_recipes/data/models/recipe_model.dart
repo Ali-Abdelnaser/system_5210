@@ -1,4 +1,4 @@
-import 'package:system_5210/features/healthy_recipes/domain/entities/recipe.dart';
+import 'package:five2ten/features/healthy_recipes/domain/entities/recipe.dart';
 
 class RecipeModel extends Recipe {
   const RecipeModel({

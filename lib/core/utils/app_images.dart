@@ -50,6 +50,7 @@ class AppImages {
   static const String iconWeight = '${_svgPath}icon_weight.svg';
   static const String iconHeight = '${_svgPath}icon_height.svg';
   static const String iconWhatsApp = '${_svgPath}icon_WhatsApp.svg';
+  static const String iconLinkedIn = '${_svgPath}linkedin.svg';
 
   // Game 1: Balanced Plate
   static const String _game1Path = 'assets/img/games/game1/';

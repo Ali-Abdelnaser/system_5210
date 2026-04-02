@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
-import 'package:system_5210/core/errors/failures.dart';
-import 'package:system_5210/features/healthy_recipes/domain/entities/recipe.dart';
+import 'package:five2ten/core/errors/failures.dart';
+import 'package:five2ten/features/healthy_recipes/domain/entities/recipe.dart';
 import '../../domain/repositories/recipe_repository.dart';
 import '../datasources/recipe_remote_data_source.dart';
 

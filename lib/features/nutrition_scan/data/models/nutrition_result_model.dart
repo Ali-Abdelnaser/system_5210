@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_result.dart';
+import 'package:five2ten/features/nutrition_scan/domain/entities/nutrition_result.dart';
 
 class NutritionResultModel extends NutritionResult {
   const NutritionResultModel({

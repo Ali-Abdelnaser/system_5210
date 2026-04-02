@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
 import '../../../../core/services/local_storage_service.dart';
 import '../../data/models/daily_task_model.dart';
 import 'daily_tasks_state.dart';

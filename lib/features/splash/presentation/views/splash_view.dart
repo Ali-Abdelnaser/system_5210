@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/services/permission_service.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/services/permission_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:system_5210/features/home/presentation/manager/home_cubit.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
-import 'package:system_5210/core/utils/injection_container.dart' as di;
-import 'package:system_5210/core/services/local_storage_service.dart';
+import 'package:five2ten/features/home/presentation/manager/home_cubit.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
+import 'package:five2ten/core/utils/injection_container.dart' as di;
+import 'package:five2ten/core/services/local_storage_service.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -105,36 +105,64 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 
   Future<void> _navigateNext() async {
+    try {
+      // Add a safety timeout to ensure we don't hang forever
+      await Future.any([
+        _doNavigation(),
+        Future.delayed(const Duration(seconds: 4), () {
+           // Fallback navigation if logic hangs
+           if (mounted) {
+             Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+           }
+        }),
+      ]);
+    } catch (e) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
+      }
+    }
+  }
+
+  Future<void> _doNavigation() async {
     final localStorage = di.sl<LocalStorageService>();
     final settings = await localStorage.get('settings', 'language');
     final bool hasLanguage = settings != null;
+    final bool isFirstTime =
+        (await localStorage.get('settings', 'is_first_time'))?['value'] ?? true;
 
-    if (!mounted) return;
-
+    final user = FirebaseAuth.instance.currentUser;
     String nextRoute;
+
     if (!hasLanguage) {
       nextRoute = AppRoutes.language;
+    } else if (isFirstTime) {
+      nextRoute = AppRoutes.onboarding;
+    } else if (user != null) {
+      nextRoute = AppRoutes.home;
     } else {
-      final user = FirebaseAuth.instance.currentUser;
-      nextRoute = (user != null) ? AppRoutes.home : AppRoutes.onboarding;
+      nextRoute = AppRoutes.login;
     }
 
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, anim, secAnim) {
-          final route = AppRoutes.onGenerateRoute(
-            RouteSettings(name: nextRoute),
-          );
-          return (route is MaterialPageRoute)
-              ? route.builder(context)
-              : const Scaffold();
-        },
-        transitionsBuilder: (context, anim, secAnim, child) =>
-            FadeTransition(opacity: anim, child: child),
-        transitionDuration: const Duration(milliseconds: 1000),
-      ),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          settings: RouteSettings(name: nextRoute),
+          pageBuilder: (context, anim, secAnim) {
+            final route = AppRoutes.onGenerateRoute(
+              RouteSettings(name: nextRoute),
+            );
+            if (route is MaterialPageRoute) {
+              return route.builder(context);
+            }
+            return const Scaffold();
+          },
+          transitionsBuilder: (context, anim, secAnim, child) =>
+              FadeTransition(opacity: anim, child: child),
+          transitionDuration: const Duration(milliseconds: 1000),
+        ),
+      );
+    }
   }
 
   @override

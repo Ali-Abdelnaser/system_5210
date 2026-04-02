@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:system_5210/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
+import 'package:five2ten/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
 
 abstract class FoodMatchingState extends Equatable {
   const FoodMatchingState();

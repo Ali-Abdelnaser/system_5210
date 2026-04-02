@@ -5,7 +5,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:system_5210/core/utils/image_compressor.dart';
+import 'package:five2ten/core/utils/image_compressor.dart';
 
 class GeminiAnalysisService {
   late final GenerativeModel _model;

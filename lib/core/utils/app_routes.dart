@@ -1,40 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/features/specialists/presentation/views/data_uploader_view.dart';
-import 'package:system_5210/features/step_tracker/presentation/views/health_rationale_view.dart';
-import 'package:system_5210/core/utils/injection_container.dart';
-import 'package:system_5210/features/auth/presentation/views/forgot_password_view.dart';
-import 'package:system_5210/features/auth/presentation/views/login_view.dart';
-import 'package:system_5210/features/auth/presentation/views/register_view.dart';
-import 'package:system_5210/features/auth/presentation/views/verification_view.dart';
-import 'package:system_5210/features/auth/presentation/views/reset_password_view.dart';
-import 'package:system_5210/features/onboarding/presentation/views/onboarding_view.dart';
-import 'package:system_5210/features/home/presentation/views/main_layout_view.dart';
-import 'package:system_5210/features/splash/presentation/views/language_view.dart';
-import 'package:system_5210/features/splash/presentation/views/splash_view.dart';
-import 'package:system_5210/features/user_setup/presentation/views/role_selection_view.dart';
-import 'package:system_5210/features/user_setup/presentation/views/child_quiz_view.dart';
-import 'package:system_5210/features/user_setup/presentation/views/parent_quiz_view.dart';
-import 'package:system_5210/features/user_setup/presentation/views/parent_profile_setup_view.dart';
-import 'package:system_5210/features/user_setup/presentation/views/congratulations_view.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/pages/scan_page.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/pages/recent_scans_page.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/views/recipes_list_view.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/views/recipe_details_view.dart';
-import 'package:system_5210/features/healthy_recipes/domain/entities/recipe.dart';
-import 'package:system_5210/features/games/balanced_diet/presentation/views/balanced_plate_view.dart';
-import 'package:system_5210/features/games/balanced_diet/presentation/views/game_stats_view.dart';
-import 'package:system_5210/features/games/presentation/views/games_list_view.dart';
-import 'package:system_5210/features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
-import 'package:system_5210/features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
-import 'package:system_5210/features/games/food_matching/presentation/views/food_matching_view.dart';
-import 'package:system_5210/features/games/food_matching/presentation/views/matching_stats_view.dart';
-import 'package:system_5210/features/games/food_matching/presentation/cubit/food_matching_cubit.dart';
-import 'package:system_5210/features/games/quizGame/presentation/views/quiz_levels_view.dart';
-import 'package:system_5210/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/views/bonding_game_dashboard_view.dart';
-import 'package:system_5210/features/healthy_insights/presentation/views/healthy_insights_view.dart';
-import 'package:system_5210/features/notifications/presentation/views/notifications_view.dart';
+import 'package:five2ten/features/specialists/presentation/views/data_uploader_view.dart';
+// Step Tracker disabled for Play Store compliance
+// import 'package:five2ten/features/step_tracker/presentation/views/health_rationale_view.dart';
+import 'package:five2ten/core/utils/injection_container.dart';
+import 'package:five2ten/features/auth/presentation/views/forgot_password_view.dart';
+import 'package:five2ten/features/auth/presentation/views/login_view.dart';
+import 'package:five2ten/features/auth/presentation/views/register_view.dart';
+import 'package:five2ten/features/auth/presentation/views/verification_view.dart';
+import 'package:five2ten/features/auth/presentation/views/reset_password_view.dart';
+import 'package:five2ten/features/onboarding/presentation/views/onboarding_view.dart';
+import 'package:five2ten/features/home/presentation/views/main_layout_view.dart';
+import 'package:five2ten/features/splash/presentation/views/language_view.dart';
+import 'package:five2ten/features/splash/presentation/views/splash_view.dart';
+import 'package:five2ten/features/user_setup/presentation/views/role_selection_view.dart';
+import 'package:five2ten/features/user_setup/presentation/views/child_quiz_view.dart';
+import 'package:five2ten/features/user_setup/presentation/views/parent_quiz_view.dart';
+import 'package:five2ten/features/user_setup/presentation/views/parent_profile_setup_view.dart';
+import 'package:five2ten/features/user_setup/presentation/views/congratulations_view.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/pages/scan_page.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/pages/recent_scans_page.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/views/recipes_list_view.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/views/recipe_details_view.dart';
+import 'package:five2ten/features/healthy_recipes/domain/entities/recipe.dart';
+import 'package:five2ten/features/games/balanced_diet/presentation/views/balanced_plate_view.dart';
+import 'package:five2ten/features/games/balanced_diet/presentation/views/game_stats_view.dart';
+import 'package:five2ten/features/games/presentation/views/games_list_view.dart';
+import 'package:five2ten/features/games/balanced_diet/presentation/cubit/balanced_plate_cubit.dart';
+import 'package:five2ten/features/games/balanced_diet/presentation/cubit/game_stats_cubit.dart';
+import 'package:five2ten/features/games/food_matching/presentation/views/food_matching_view.dart';
+import 'package:five2ten/features/games/food_matching/presentation/views/matching_stats_view.dart';
+import 'package:five2ten/features/games/food_matching/presentation/cubit/food_matching_cubit.dart';
+import 'package:five2ten/features/games/quizGame/presentation/views/quiz_levels_view.dart';
+import 'package:five2ten/features/games/quizGame/presentation/cubit/quiz_cubit.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/views/bonding_game_dashboard_view.dart';
+import 'package:five2ten/features/healthy_insights/presentation/views/healthy_insights_view.dart';
+import 'package:five2ten/features/notifications/presentation/views/notifications_view.dart';
 
 class AppRoutes {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -56,12 +57,13 @@ class AppRoutes {
   static const String home = '/home';
   static const String nutritionScan = '/scan';
   static const String recentScans = '/recent-scans';
-  static const String healthyRecipes = '/recipes-list';
+  static const String recipesList = '/recipes-list';
   static const String recipeDetails = '/recipe-details';
   static const String uploader = '/data-uploader';
-  static const String healthyInsights = '/healthy-insights';
+  static const String dailyInsights = '/daily-insights';
   static const String notifications = '/notifications';
-  static const String healthRationale = '/health-rationale';
+  // Step Tracker disabled for Play Store compliance
+  // static const String healthRationale = '/health-rationale';
 
   // Games
   static const String gamesList = '/games-list';
@@ -132,7 +134,7 @@ class AppRoutes {
       case recentScans:
         page = const RecentScansPage();
         break;
-      case healthyRecipes:
+      case recipesList:
         page = const RecipesListView();
         break;
       case recipeDetails:
@@ -180,15 +182,16 @@ class AppRoutes {
       case bondingGame:
         page = const BondingGameDashboardView();
         break;
-      case healthyInsights:
+      case dailyInsights:
         page = const HealthyInsightsView();
         break;
       case notifications:
         page = const NotificationsView();
         break;
-      case healthRationale:
-        page = const HealthRationaleView();
-        break;
+      // Step Tracker disabled for Play Store compliance
+      // case healthRationale:
+      //   page = const HealthRationaleView();
+      //   break;
       default:
         return null;
     }

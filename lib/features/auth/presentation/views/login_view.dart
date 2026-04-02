@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_validators.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_validators.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_routes.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_state.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_header.dart';
-import 'package:system_5210/features/auth/presentation/widgets/contact_toggle.dart';
-import 'package:system_5210/features/auth/presentation/widgets/social_login_section.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_footer_link.dart';
-import 'package:system_5210/core/utils/app_utils.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_state.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_header.dart';
+import 'package:five2ten/features/auth/presentation/widgets/social_login_section.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_footer_link.dart';
+import 'package:five2ten/core/utils/app_utils.dart';
+import 'package:five2ten/core/utils/auth_message_localizer.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -69,27 +69,34 @@ class _LoginViewState extends State<LoginView> {
             });
           }
         } else if (state is AuthPhoneCodeSent) {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.verification,
-            arguments: {
-              'isEmail': false,
-              'verificationId': state.verificationId,
-              'phoneNumber': _phoneController.text.trim(),
-            },
-          );
+          if (ModalRoute.of(context)?.isCurrent ?? false) {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.verification,
+              arguments: {
+                'isEmail': false,
+                'verificationId': state.verificationId,
+                'phoneNumber': _phoneController.text.trim(),
+              },
+            );
+          }
         } else if (state is AuthEmailVerificationSent) {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.verification,
-            arguments: {
-              'isEmail': true,
-              'verificationId': null,
-              'email': _emailController.text.trim(),
-            },
-          );
+          if (ModalRoute.of(context)?.isCurrent ?? false) {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.verification,
+              arguments: {
+                'isEmail': true,
+                'verificationId': null,
+                'email': _emailController.text.trim(),
+              },
+            );
+          }
         } else if (state is AuthFailure) {
-          AppAlerts.showAlert(context, message: state.message);
+          AppAlerts.showAlert(
+            context,
+            message: localizeAuthMessage(context, state.message),
+          );
         }
       },
       builder: (context, state) {
@@ -112,11 +119,11 @@ class _LoginViewState extends State<LoginView> {
                         const SizedBox(height: 40),
                         AuthHeader(title: l10n.loginTitle),
                         const SizedBox(height: 30),
-                        ContactToggle(
-                          isEmailMode: isEmailMode,
-                          onChanged: (v) => setState(() => isEmailMode = v),
-                        ),
-                        const SizedBox(height: 16),
+                        // ContactToggle(
+                        //   isEmailMode: isEmailMode,
+                        //   onChanged: (v) => setState(() => isEmailMode = v),
+                        // ),
+                        // const SizedBox(height: 16),
                         AuthTextField(
                           controller: isEmailMode
                               ? _emailController
@@ -128,6 +135,7 @@ class _LoginViewState extends State<LoginView> {
                               ? AppImages.iconEmail
                               : AppImages.iconPhone,
                           isNumeric: !isEmailMode,
+                          ltrInput: isEmailMode,
                           validator: (value) => isEmailMode
                               ? AppValidators.validateEmail(value, context)
                               : AppValidators.validatePhone(value, context),
@@ -143,6 +151,7 @@ class _LoginViewState extends State<LoginView> {
                             label: l10n.password,
                             iconPath: AppImages.iconLock,
                             isPassword: true,
+                            ltrInput: true,
                             validator: (value) =>
                                 AppValidators.validatePassword(value, context),
                             textInputAction: TextInputAction.done,
@@ -190,7 +199,7 @@ class _LoginViewState extends State<LoginView> {
                           onTap: () =>
                               Navigator.pushNamed(context, AppRoutes.register),
                         ),
-                        const SizedBox(height: 100),
+                        const SizedBox(height: 35),
                       ],
                     ),
                   ),

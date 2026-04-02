@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:system_5210/features/nutrition_scan/domain/entities/nutrition_result.dart';
+import 'package:five2ten/features/nutrition_scan/domain/entities/nutrition_result.dart';
 
 abstract class NutritionScanState extends Equatable {
   const NutritionScanState();

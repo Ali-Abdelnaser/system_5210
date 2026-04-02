@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:system_5210/features/game_center/data/models/user_points_model.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
-import 'package:system_5210/core/widgets/profile_image_loader.dart';
+import 'package:five2ten/features/game_center/data/models/user_points_model.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/core/widgets/profile_image_loader.dart';
 
 class AdminView extends StatefulWidget {
   const AdminView({super.key});

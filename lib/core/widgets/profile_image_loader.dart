@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/widgets/app_loading_indicator.dart';
 
 class ProfileImageLoader extends StatelessWidget {
   final String? photoUrl;

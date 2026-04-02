@@ -1,38 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/app_images.dart';
 import '../widgets/promo_slider.dart';
 import '../widgets/home_app_bar.dart';
-import '../widgets/mystery_mission_card.dart';
-import '../widgets/daily_summary_card.dart';
-import 'package:system_5210/features/daily_challenge/presentation/views/daily_challenge_view.dart';
-import 'package:system_5210/features/specialists/presentation/views/specialists_view.dart';
-import 'package:system_5210/features/specialists/presentation/widgets/doctor_quick_card.dart';
-import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
-import 'package:system_5210/features/specialists/presentation/views/doctor_details_view.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/widgets/recipes_section.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/widgets/recipes_section.dart';
 import '../manager/home_cubit.dart';
-import 'package:system_5210/features/healthy_insights/presentation/widgets/insight_promo_banner.dart';
-import 'package:system_5210/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
-import 'package:system_5210/features/profile/presentation/manager/profile_cubit.dart';
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/widgets/bonding_daily_card.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
-import 'package:system_5210/features/games/bonding_game/presentation/manager/bonding_game_state.dart';
-import 'package:system_5210/features/notifications/presentation/manager/notification_cubit.dart';
+import 'package:five2ten/features/healthy_insights/presentation/widgets/insight_promo_banner.dart';
+import 'package:five2ten/features/healthy_recipes/presentation/manager/recipe_cubit.dart';
+import 'package:five2ten/features/profile/presentation/manager/profile_cubit.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/widgets/bonding_daily_card.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/manager/bonding_game_cubit.dart';
+import 'package:five2ten/features/games/bonding_game/presentation/manager/bonding_game_state.dart';
+import 'package:five2ten/features/notifications/presentation/manager/notification_cubit.dart';
 import '../widgets/daily_tip_overlay.dart';
-import 'package:system_5210/features/step_tracker/presentation/widgets/step_tracker_card.dart';
-import 'package:system_5210/features/step_tracker/presentation/manager/step_tracker_cubit.dart';
-import 'package:system_5210/features/step_tracker/presentation/views/activity_details_view.dart';
-import 'package:system_5210/core/services/update_service.dart';
-import 'package:system_5210/core/utils/injection_container.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/specialists/presentation/views/specialists_view.dart';
+import 'package:five2ten/features/specialists/presentation/widgets/doctor_quick_card.dart';
+import 'package:five2ten/features/specialists/domain/entities/doctor.dart';
+import 'package:five2ten/features/specialists/presentation/views/doctor_details_view.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -46,11 +37,6 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
-    // Check for app updates
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      sl<UpdateService>().checkForUpdate(context);
-    });
   }
 
   @override
@@ -60,17 +46,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      // Re-init StepTracker to check permissions again
-      context.read<StepTrackerCubit>().init();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isAr = Localizations.localeOf(context).languageCode == 'ar';
 
     return Scaffold(
       body: Stack(
@@ -90,35 +67,12 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                   role: state.userProfile.role,
                   langCode: Localizations.localeOf(context).languageCode,
                 );
-
-                if (state.streakResult != null) {
-                  final status = state.streakResult!['status'];
-                  final previousStreak = state.streakResult!['previousStreak'];
-
-                  if (status == 'reset' && previousStreak > 0) {
-                    AppAlerts.showCustomDialog(
-                      context,
-                      title: l10n.streakResetTitle,
-                      message: l10n.streakResetMessage(previousStreak),
-                      buttonText: l10n.streakContinue,
-                      isSuccess: false,
-                      icon: Icons.refresh_rounded,
-                      onPressed: () => Navigator.pop(context),
-                    );
-                  }
-                }
-
-                context.read<NotificationCubit>().scheduleDailyTipsIfNeeded(
-                  state.userProfile.role,
-                );
               }
             },
             child: RefreshIndicator(
               onRefresh: () async {
                 await Future.wait([
-                  context
-                      .read<HomeCubit>()
-                      .loadUserProfile(), // Now loads specialists too
+                  context.read<HomeCubit>().loadUserProfile(),
                   context.read<RecipeCubit>().getRecipes(),
                   context.read<ProfileCubit>().getProfile(),
                 ]);
@@ -181,33 +135,7 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                                       .slideY(begin: 0.2),
                           ),
 
-                          // 3. Activity Section (Glassified)
-                          SliverToBoxAdapter(
-                            child: Column(
-                              children: [
-                                if (!isHomeLoading)
-                                  _buildSectionTitle(
-                                    title: l10n.activityToday,
-                                    actionText: l10n.seeAll,
-                                    onActionTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ActivityDetailsView(),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 25),
-                                  child: isHomeLoading
-                                      ? AppShimmer.activityCard()
-                                      : const StepTrackerCard(),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // 3. Activity Section (Removed for Compliance)
 
                           // 4. Bonding Game Section
                           SliverToBoxAdapter(
@@ -257,12 +185,13 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                                   : InsightPromoBanner(
                                       onTap: () => Navigator.pushNamed(
                                         context,
-                                        AppRoutes.healthyInsights,
+                                        AppRoutes.dailyInsights,
                                       ),
                                     ),
                             ),
                           ),
 
+                          // 6. Specialists Section
                           SliverToBoxAdapter(
                             child: Column(
                               children: [
@@ -312,6 +241,8 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
                                               final specialists =
                                                   (homeState as HomeLoaded)
                                                       .specialists;
+                                              final isAr = Localizations.localeOf(context).languageCode == 'ar';
+                                              
                                               if (index ==
                                                   (specialists.length > 5
                                                       ? 5
@@ -412,52 +343,6 @@ class _HomeViewState extends State<HomeView> with WidgetsBindingObserver {
             ),
         ],
       ),
-    );
-  }
-
-  void _navigateToDailyChallenge(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const DailyChallengeView()),
-    );
-  }
-
-  void _showSurpriseMissionDialog(BuildContext context, AppLocalizations l10n) {
-    final List<Map<String, dynamic>> missions = [
-      {
-        "icon": Icons.water_drop,
-        "title": l10n.missionHydrationTitle,
-        "text": l10n.missionHydrationText,
-      },
-      {
-        "icon": Icons.directions_run,
-        "title": l10n.missionEnergyTitle,
-        "text": l10n.missionEnergyText,
-      },
-      {
-        "icon": Icons.apple,
-        "title": l10n.missionSnackTitle,
-        "text": l10n.missionSnackText,
-      },
-      {
-        "icon": Icons.favorite,
-        "title": l10n.missionLoveTitle,
-        "text": l10n.missionLoveText,
-      },
-    ];
-
-    final mission = (missions..shuffle()).first;
-
-    AppAlerts.showCustomDialog(
-      context,
-      title: mission['title'],
-      message: mission['text'],
-      buttonText: l10n.missionComplete,
-      isSuccess: true,
-      icon: mission['icon'],
-      iconColor: const Color(0xFF8B5CF6),
-      buttonColors: const [Color(0xFF8B5CF6), Color(0xFF7C3AED)],
-      onPressed: () => Navigator.pop(context),
     );
   }
 

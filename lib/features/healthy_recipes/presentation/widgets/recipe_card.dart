@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/features/healthy_recipes/domain/entities/recipe.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/features/healthy_recipes/domain/entities/recipe.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_loading_indicator.dart';
 

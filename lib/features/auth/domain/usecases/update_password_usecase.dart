@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
-import 'package:system_5210/core/errors/failures.dart';
-import 'package:system_5210/features/auth/domain/repositories/auth_repository.dart';
-import 'package:system_5210/core/usecases/usecase.dart';
+import 'package:five2ten/core/errors/failures.dart';
+import 'package:five2ten/features/auth/domain/repositories/auth_repository.dart';
+import 'package:five2ten/core/usecases/usecase.dart';
 
 class UpdatePasswordUseCase extends UseCase<void, UpdatePasswordParams> {
   final AuthRepository repository;

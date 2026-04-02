@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
 
 class MatchingCard extends StatelessWidget {
   final IngredientEntity item;

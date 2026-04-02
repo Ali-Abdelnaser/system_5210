@@ -1,4 +1,4 @@
-import 'package:system_5210/features/healthy_insights/domain/entities/healthy_insight.dart';
+import 'package:five2ten/features/healthy_insights/domain/entities/healthy_insight.dart';
 
 class HealthyInsightsData {
   static const List<HealthyInsight> insights = [

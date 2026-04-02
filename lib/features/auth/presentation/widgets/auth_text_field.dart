@@ -13,12 +13,16 @@ class AuthTextField extends StatefulWidget {
   final void Function(String)? onFieldSubmitted;
   final Iterable<String>? autofillHints;
 
+  /// Forces LTR typing (email, phone, OTP, passwords). [isNumeric] implies LTR.
+  final bool ltrInput;
+
   const AuthTextField({
     super.key,
     required this.label,
     this.iconPath,
     this.isPassword = false,
     this.isNumeric = false,
+    this.ltrInput = false,
     this.controller,
     this.validator,
     this.textInputAction,
@@ -83,6 +87,9 @@ class _AuthTextFieldState extends State<AuthTextField> {
             textInputAction: widget.textInputAction,
             onFieldSubmitted: widget.onFieldSubmitted,
             autofillHints: widget.autofillHints,
+            textDirection: (widget.isNumeric || widget.ltrInput)
+                ? TextDirection.ltr
+                : null,
             keyboardType: widget.isNumeric
                 ? TextInputType.number
                 : TextInputType.text,

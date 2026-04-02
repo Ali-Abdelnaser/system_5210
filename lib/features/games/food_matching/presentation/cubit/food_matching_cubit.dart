@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/features/game_center/presentation/manager/user_points_cubit.dart';
-import 'package:system_5210/features/games/balanced_diet/data/models/game_ingredients_data.dart';
-import 'package:system_5210/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
+import 'package:five2ten/features/game_center/presentation/manager/user_points_cubit.dart';
+import 'package:five2ten/features/games/balanced_diet/data/models/game_ingredients_data.dart';
+import 'package:five2ten/features/games/balanced_diet/domain/entities/ingredient_entity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:system_5210/features/games/balanced_diet/data/models/game_result_model.dart';
-import 'package:system_5210/features/games/balanced_diet/domain/repositories/game_repository.dart';
-import 'package:system_5210/features/games/food_matching/presentation/cubit/food_matching_state.dart';
+import 'package:five2ten/features/games/balanced_diet/data/models/game_result_model.dart';
+import 'package:five2ten/features/games/balanced_diet/domain/repositories/game_repository.dart';
+import 'package:five2ten/features/games/food_matching/presentation/cubit/food_matching_state.dart';
 
 class FoodMatchingCubit extends Cubit<FoodMatchingState> {
   final GameRepository repository;

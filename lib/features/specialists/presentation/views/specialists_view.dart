@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/features/specialists/domain/entities/doctor.dart';
-import 'package:system_5210/features/specialists/domain/usecases/get_specialists.dart';
-import 'package:system_5210/core/utils/injection_container.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
+import 'package:five2ten/features/specialists/domain/entities/doctor.dart';
+import 'package:five2ten/features/specialists/domain/usecases/get_specialists.dart';
+import 'package:five2ten/core/utils/injection_container.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
 import '../../../../core/theme/app_theme.dart';
-import 'package:system_5210/core/widgets/app_shimmer.dart';
-import 'package:system_5210/features/specialists/presentation/views/doctor_details_view.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/features/specialists/presentation/views/admin_login_view.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/core/widgets/app_shimmer.dart';
+import 'package:five2ten/features/specialists/presentation/views/doctor_details_view.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/features/specialists/presentation/views/admin_login_view.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../widgets/doctor_quick_card.dart';
 

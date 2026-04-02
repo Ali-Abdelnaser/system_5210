@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_images.dart';
-import 'package:system_5210/core/utils/app_routes.dart';
-import 'package:system_5210/features/nutrition_scan/presentation/widgets/glass_container.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_images.dart';
+import 'package:five2ten/core/utils/app_routes.dart';
+import 'package:five2ten/features/nutrition_scan/presentation/widgets/glass_container.dart';
 import 'package:provider/provider.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
-import 'package:system_5210/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
+import 'package:five2ten/features/daily_tasks_game/presentation/manager/daily_tasks_cubit.dart';
+import 'package:five2ten/features/daily_tasks_game/presentation/views/daily_tasks_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
 
 class GamesListView extends StatelessWidget {
   const GamesListView({super.key});

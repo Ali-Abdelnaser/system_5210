@@ -42,6 +42,18 @@ class AuthPhoneCodeSent extends AuthState {
 /// Email verification link was sent after registration; show confirmation page.
 class AuthEmailVerificationSent extends AuthState {}
 
+/// Email OTP was resent from verification screen; do not push another route.
+class AuthEmailOtpResent extends AuthState {}
+
+/// Phone OTP was resent; includes new [verificationId] for the same screen.
+class AuthPhoneOtpResent extends AuthState {
+  final String verificationId;
+  const AuthPhoneOtpResent(this.verificationId);
+
+  @override
+  List<Object?> get props => [verificationId];
+}
+
 class AuthEmailVerificationVerified extends AuthState {}
 
 class AuthPasswordResetSent extends AuthState {}

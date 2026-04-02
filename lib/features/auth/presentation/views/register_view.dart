@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/core/utils/app_validators.dart';
-import 'package:system_5210/l10n/app_localizations.dart';
-import 'package:system_5210/core/utils/app_alerts.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/core/utils/app_validators.dart';
+import 'package:five2ten/l10n/app_localizations.dart';
+import 'package:five2ten/core/utils/app_alerts.dart';
 import '../../../../core/utils/app_images.dart';
 import '../../../../core/utils/app_routes.dart';
 import '../../../../core/widgets/app_back_button.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_cubit.dart';
-import 'package:system_5210/features/auth/presentation/manager/auth_state.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_gradient_button.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_header.dart';
-import 'package:system_5210/features/auth/presentation/widgets/contact_toggle.dart';
-import 'package:system_5210/features/auth/presentation/widgets/social_login_section.dart';
-import 'package:system_5210/features/auth/presentation/widgets/auth_footer_link.dart';
-import 'package:system_5210/core/utils/app_utils.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_cubit.dart';
+import 'package:five2ten/features/auth/presentation/manager/auth_state.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_text_field.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_gradient_button.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_header.dart';
+import 'package:five2ten/features/auth/presentation/widgets/social_login_section.dart';
+import 'package:five2ten/features/auth/presentation/widgets/auth_footer_link.dart';
+import 'package:five2ten/core/utils/app_utils.dart';
+import 'package:five2ten/core/utils/auth_message_localizer.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -66,27 +66,34 @@ class _RegisterViewState extends State<RegisterView> {
             });
           }
         } else if (state is AuthPhoneCodeSent) {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.verification,
-            arguments: {
-              'isEmail': false,
-              'verificationId': state.verificationId,
-              'phoneNumber': _phoneController.text.trim(),
-            },
-          );
+          if (ModalRoute.of(context)?.isCurrent ?? false) {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.verification,
+              arguments: {
+                'isEmail': false,
+                'verificationId': state.verificationId,
+                'phoneNumber': _phoneController.text.trim(),
+              },
+            );
+          }
         } else if (state is AuthEmailVerificationSent) {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.verification,
-            arguments: {
-              'isEmail': true,
-              'verificationId': null,
-              'email': _emailController.text.trim(),
-            },
-          );
+          if (ModalRoute.of(context)?.isCurrent ?? false) {
+            Navigator.pushNamed(
+              context,
+              AppRoutes.verification,
+              arguments: {
+                'isEmail': true,
+                'verificationId': null,
+                'email': _emailController.text.trim(),
+              },
+            );
+          }
         } else if (state is AuthFailure) {
-          AppAlerts.showAlert(context, message: state.message);
+          AppAlerts.showAlert(
+            context,
+            message: localizeAuthMessage(context, state.message),
+          );
         }
       },
       builder: (context, state) {
@@ -116,11 +123,11 @@ class _RegisterViewState extends State<RegisterView> {
                         const SizedBox(height: 40),
                         AuthHeader(title: l10n.createAccount),
                         const SizedBox(height: 30),
-                        ContactToggle(
-                          isEmailMode: isEmailMode,
-                          onChanged: (v) => setState(() => isEmailMode = v),
-                        ),
-                        const SizedBox(height: 16),
+                        // ContactToggle(
+                        //   isEmailMode: isEmailMode,
+                        //   onChanged: (v) => setState(() => isEmailMode = v),
+                        // ),
+                        // const SizedBox(height: 16),
                         AuthTextField(
                           controller: _nameController,
                           label: l10n.fullName,
@@ -141,10 +148,16 @@ class _RegisterViewState extends State<RegisterView> {
                               ? AppImages.iconEmail
                               : AppImages.iconPhone,
                           isNumeric: !isEmailMode,
+                          ltrInput: isEmailMode,
                           validator: (value) => isEmailMode
                               ? AppValidators.validateEmail(value, context)
                               : AppValidators.validatePhone(value, context),
-                          textInputAction: TextInputAction.next,
+                          textInputAction: isEmailMode
+                              ? TextInputAction.next
+                              : TextInputAction.done,
+                          onFieldSubmitted: isEmailMode
+                              ? null
+                              : (_) => _onRegister(context),
                         ),
                         if (isEmailMode) ...[
                           const SizedBox(height: 16),
@@ -163,6 +176,7 @@ class _RegisterViewState extends State<RegisterView> {
                             label: l10n.confirmPassword,
                             iconPath: AppImages.iconLock,
                             isPassword: true,
+                            ltrInput: true,
                             validator: (value) =>
                                 AppValidators.validateConfirmPassword(
                                   value,
@@ -191,6 +205,7 @@ class _RegisterViewState extends State<RegisterView> {
                           actionText: l10n.login,
                           onTap: () => Navigator.pop(context),
                         ),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -217,7 +232,7 @@ class _RegisterViewState extends State<RegisterView> {
       context.read<AuthCubit>().setPendingDisplayName(
         _nameController.text.trim(),
       );
-      context.read<AuthCubit>().sendPhoneVerificationCode(
+      context.read<AuthCubit>().sendPhoneVerificationForRegistration(
         _phoneController.text.trim(),
       );
     }

@@ -1,3 +1,5 @@
+import 'dart:ui' show Locale;
+
 class AppTip {
   final String title;
   final String description;
@@ -12,12 +14,28 @@ class AppTip {
   });
 }
 
+class ChildTip {
+  const ChildTip({required this.text, this.textEn});
+
+  final String text;
+  final String? textEn;
+
+  String localizedText(Locale locale) {
+    if (locale.languageCode == 'en' &&
+        textEn != null &&
+        textEn!.isNotEmpty) {
+      return textEn!;
+    }
+    return text;
+  }
+}
+
 class AppTipsData {
   static const List<AppTip> parentTips = [
     AppTip(
       title: "الحقيقة اللي محدش قالهالك",
       description:
-          "راعي نفسية طفلك، وشجعيه بالألعاب الرياضيه بدل النقد عند التعامل مع وزنه الزائد.",
+          "راعي نفسية طفلك، ويه بالألعاب الرياضيه بدل النقد عند التعامل مع وزنه الزائد.",
       titleEn: "The Truth No One Told You",
       descriptionEn:
           "Take care of your child's mental health, and encourage them with sports instead of criticism when dealing with their weight.",
@@ -34,7 +52,8 @@ class AppTipsData {
       title: "بداية اليوم بتحدد النتيجة",
       description: "احرصي على إعداد وجبة إفطار غنية بالألياف ومنخفضة السكر.",
       titleEn: "The Start of the Day Sets the Result",
-      descriptionEn: "Make sure to prepare a breakfast rich in fiber and low in sugar.",
+      descriptionEn:
+          "Make sure to prepare a breakfast rich in fiber and low in sugar.",
     ),
     AppTip(
       title: "اختاري صح",
@@ -354,347 +373,148 @@ class AppTipsData {
     ),
   ];
 
-  static const List<AppTip> childTips = [
-    AppTip(
-      title: "قوس قزح في طبقك 🌈",
-      description:
-          "حاول تاكل فواكه وخضروات بألوان مختلفة كل يوم (أحمر، أخضر، أصفر..) عشان جسمك ياخد كل الفيتامينات.",
-      titleEn: "A Rainbow on Your Plate 🌈",
-      descriptionEn:
-          "Try to eat fruits and vegetables of different colors every day (red, green, yellow...) so your body gets all the vitamins.",
+
+  static const List<ChildTip> childTips = [
+    ChildTip(
+      text: "ابدأ يومك بوجبة إفطار متوازنة تحتوي على بروتين وألياف.",
     ),
-    AppTip(
-      title: "أبطال الحبوب الكاملة 🌾",
-      description:
-          "الشوفان والأرز البني والقمح بيخلوك شبعان لفترة طويلة وبيدوك طاقة قوية للعب.",
-      titleEn: "Whole Grain Heroes 🌾",
-      descriptionEn:
-          "Oats, brown rice, and wheat keep you full for a long time and give you strong energy for playing.",
+    ChildTip(
+      text: "لا تتخطى وجبة الإفطار حتى لا تشعر بالجوع الشديد فيما بعد.",
     ),
-    AppTip(
-      title: "مصنع العضلات 💪",
-      description:
-          "السمك والبيض واللحمة والحليب هم اللي بيبنوا عضلاتك القوية.. اختار منهم نوع كل يوم.",
-      titleEn: "Muscle Factory 💪",
-      descriptionEn:
-          "Fish, eggs, meat, and milk build your strong muscles. Choose one of them every day.",
+    ChildTip(
+      text: "قسّم وجباتك إلى 3 وجبات رئيسية و2 سناك.",
     ),
-    AppTip(
-      title: "سناك الأبطال الأذكياء 🧠",
-      description:
-          "لما تجوع بين الوجبات، اختار خيار وجزر مكسرات مش مملحة.. دي تسالي الأذكياء!",
-      titleEn: "Smart Heroes' Snack 🧠",
-      descriptionEn:
-          "When you get hungry between meals, choose cucumbers, carrots, and unsalted nuts. These are smart snacks!",
+    ChildTip(
+      text: "تناول الطعام ببطء وامضغه جيدًا لتحسين الهضم.",
     ),
-    AppTip(
-      title: "سر الملح المخفي 🧂",
-      description: "قلل الملح في أكلك عشان قلبك وجسمك يفضلوا بصحة ممتازة.",
-      titleEn: "Hidden Salt Secret 🧂",
-      descriptionEn:
-          "Reduce the salt in your food for your heart and body to stay in excellent health.",
+    ChildTip(
+      text: "استمع لإشارات الشبع وتوقف عن الأكل عند الشعور بالاكتفاء.",
     ),
-    AppTip(
-      title: "اختار الخفيف والمفيد 🐟",
-      description:
-          "السمك والفراخ المشوية أخف بكتير على معدتك وبيدوك نشاط أكتر من المقليات.",
-      titleEn: "Choose Light and Useful 🐟",
-      descriptionEn:
-          "Grilled fish and chicken are much lighter on your stomach and give you more energy than fried foods.",
+    ChildTip(
+      text: "احرص على تناول وجباتك في مواعيد منتظمة يوميًا.",
     ),
-    AppTip(
-      title: "كوب الحيوية 🥛",
-      description: "اشرب كوب لبن كل يوم عشان عضمك وسنانك يبقوا زي الحديد.",
-      titleEn: "Vitality Cup 🥛",
-      descriptionEn: "Drink a cup of milk every day for your bones and teeth to stay strong like iron.",
+    ChildTip(
+      text: "اصنع وجباتك في المنزل لتتحكم في المكونات والكميات.",
     ),
-    AppTip(
-      title: "ابعد عن المصنعات 🛑",
-      description:
-          "اللانشون والأكل المصنع بيتعب جسمك.. خليك دايمًا في الأكل الطبيعي اللي مامي بتعمله.",
-      titleEn: "Stay Away from Processed Foods 🛑",
-      descriptionEn:
-          "Lunch meat and processed food tire your body. Always stick to the natural food your mommy makes.",
+    ChildTip(
+      text: "استبدل الخبز الأبيض بالخبز الأسمر أو خبز الحبوب الكاملة.",
     ),
-    AppTip(
-      title: "عدو النشاط الصامت 🍭",
-      description:
-          "الحلويات والمشروبات الغازية بتهبط طاقتك بسرعة.. استبدلها بعصير طبيعي أو فاكهة.",
+    ChildTip(
+      text: "أضف الخضروات إلى كل وجبة رئيسية.",
     ),
-    AppTip(
-      title: "حلوى من الطبيعة 🍎",
-      description:
-          "الفاكهة هي أحسن حلويات ممكن تاكلها.. طعمها أحلى وبتقوي مناعتك.",
+    ChildTip(
+      text: "نوّع من الخضار أو الفواكه لتحصل على عناصر غذائية مختلفة.",
     ),
-    AppTip(
-      title: "كميات صغيرة لطاقة كبيرة 🍫",
-      description:
-          "لو أكلت حلويات، خليها كميات صغيرة جداً عشان طاقتك تدوم طول اليوم.",
+    ChildTip(
+      text: "تناول القليل من المكسرات يوميًا.",
     ),
-    AppTip(
-      title: "وقت الفاكهة الصح ⏰",
-      description:
-          "متآكلش فاكهة أو حلويات بعد الأكل مباشرة.. استنى شوية عشان معدتك تهضم الأكل صح.",
+    ChildTip(
+      text: "احتفظ بزجاجة ماء بجانبك طوال اليوم.",
     ),
-    AppTip(
-      title: "صديقك الوفي: الماء 💧",
-      description:
-          "المياه هي أهم مشروب لجسمك.. خليك دايمًا حريص إنك تشرب مياه كتير.",
+    ChildTip(
+      text: "احرص على شرب الماء قبل الشعور بالعطش.",
     ),
-    AppTip(
-      title: "المشروب الأرخص والأصح 🚰",
-      description:
-          "مياه الحنفية النظيفة هي أكتر حاجة صحية ومفيدة لجسمك.. جربها بدل العصائر الجاهزة.",
+    ChildTip(
+      text: "قلل من تناول الوجبات السريعة قدر الإمكان.",
     ),
-    AppTip(
-      title: "وداعاً للسكر 🚫",
-      description:
-          "لو عطشت، اشرب مياه بدل المشروبات السكرية.. دي أسهل طريقة تحافظ بيها على صحتك.",
+    ChildTip(
+      text: "اختر الزبادي الطبيعي بدلًا من الزبادي المُحلى.",
     ),
-    AppTip(
-      title: "درع النظافة 🧼",
-      description:
-          "اغسل إيدك بالماء والصابون لمدة 20 ثانية (زي ما بتغني أغنيتك المفضلة) عشان تقتل الجراثيم.",
+    ChildTip(
+      text: "احرص على تناول السمك مرتين أسبوعيًا.",
     ),
-    AppTip(
-      title: "الحركة بركة 🏃‍♂️",
-      description:
-          "العب واتحرك واجري.. النشاط بيخليك بطل حقيقي ومزاجك دايمًا رايق.",
+    ChildTip(
+      text: "تناول البيض باعتدال وضمن نظام متوازن.",
     ),
-    AppTip(
-      title: "غذي عقلك بالقراءة 📚",
-      description:
-          "بدل الموبيل، جرب تقرأ قصة النهاردة.. القراءة بتفتح مخك وتخليك تتخيل حاجات مذهلة.",
+    ChildTip(
+      text: "استخدم أطباق أصغر للتحكم في حجم الوجبة.",
     ),
-    AppTip(
-      title: "فطار الأبطال 🥙",
-      description:
-          "ابدأ يومك بوجبة إفطار متوازنة فيها بروتين وألياف عشان جسمك يفضل نشيط طول اليوم.",
+    ChildTip(
+      text: "جهّز سناك صحي معك عند الخروج من المنزل.",
     ),
-    AppTip(
-      title: "إوعى تنسى الفطار! ☀️",
-      description:
-          "الفطار هو أهم وجبة، بلاش تفوته عشان متجوعش بزيادة وبطريقة مش صحية بعدين.",
+    ChildTip(
+      text: "قلل من استهلاك الأطعمة المقلية.",
     ),
-    AppTip(
-      title: "تقسيمة بطل 🔢",
-      description:
-          "قسّم أكلك لـ 3 وجبات أساسية و2 سناك صحي في النص، عشان جسمك يفضل شغال بكفاءة.",
+    ChildTip(
+      text: "اختر منتجات الألبان قليلة الدسم.",
     ),
-    AppTip(
-      title: "على مهلك يا بطل 🐢",
-      description:
-          "كل براحة وامضغ الأكل كويس، ده بيساعد معدتك تهضم الأكل أحسن وبيريحك كتير.",
+    ChildTip(
+      text: "أضف بذور مثل الشيا أو الكتان إلى وجباتك.",
     ),
-    AppTip(
-      title: "إشارة الوقوف 🛑",
-      description:
-          "ركز مع جسمك، وأول ما تحس إنك شبعت وقف أكل.. جسمك أدرى باحتياجه.",
+    ChildTip(
+      text: "تناول الشوفان كخيار صحي للإفطار.",
     ),
-    AppTip(
-      title: "احترام المواعيد ⏰",
-      description:
-          "ثبت مواعيد أكلك كل يوم، ده بيظبط ساعتك البيولوجية وبيخلي جسمك في أحسن حالاته.",
+    ChildTip(
+      text: "جرّب وصفات صحية جديدة لتجنب الملل.",
     ),
-    AppTip(
-      title: "شيف المستقبل 👨‍🍳",
-      description:
-          "أكل البيت هو الأضمن! حاول تساعد في تحضير وجباتك عشان تظبط المكونات والكميات اللي جسمك محتاجها.",
+    ChildTip(
+      text:
+          "لا تحرم نفسك تمامًا من الأطعمة التي تحبها، ولكن بكميات معقولة.",
     ),
-    AppTip(
-      title: "الاختيار الأسمر 🍞",
-      description:
-          "بدل العيش الأبيض بالعيش الأسمر أو الحبوب الكاملة.. فايدة أكتر وشبع أطول.",
+    ChildTip(
+      text: "تناول طبق سلطة قبل الوجبة الرئيسية.",
     ),
-    AppTip(
-      title: "صديق الوجبات 🥦",
-      description:
-          "خلي الخضار ضيف دايم في كل وجبة أساسية، هو اللي بيديك الفيتامينات اللي ناقصاك.",
+    ChildTip(
+      text: "تجنب الأكل المتأخر جدًا قبل النوم.",
     ),
-    AppTip(
-      title: "لوحة فنية صحية 🎨",
-      description:
-          "خلي طبقك ملون بخضروات مختلفة.. كل لون فيه سحر وفائدة معينة لجسمك.",
+    ChildTip(
+      text: "احرص على التعرض للشمس لدعم فيتامين د.",
     ),
-    AppTip(
-      title: "منجم طاقة صغير 🥜",
-      description:
-          "شوية مكسرات صغيرة كل يوم بتفرق جداً في نشاط عقلك وصحة قلبك.",
+    ChildTip(
+      text: "تناول الفاكهة كوجبة خفيفة بين الوجبات.",
     ),
-    AppTip(
-      title: "رفيقك المبلل 💧",
-      description:
-          "خلي إزازة الماية جنبك دايمًا، عشان متنساش تشرب وتفضل جسمك رطب ومفرفش.",
+    ChildTip(
+      text: "احرص على تنويع مصادر البروتين.",
     ),
-    AppTip(
-      title: "قبل العطش! 🌊",
-      description:
-          "مستناش لما تعطش عشان تشرب، العطش إشارة إن جسمك بدأ ينشف.. خليك سابق بخطوة.",
+    ChildTip(
+      text: "اشرب كوب ماء بعد الاستيقاظ مباشرة.",
     ),
-    AppTip(
-      title: "خطر سريع 🍔",
-      description:
-          "الوجبات السريعة طعمها بيغري بس أضرارها كتير.. قللها على قد ما تقدر لسلامة جسمك.",
+    ChildTip(
+      text: "تجنب وضع الحلويات في متناول يدك.",
     ),
-    AppTip(
-      title: "زبادي طبيعي ومفيد 🥛",
-      description:
-          "اختار الزبادي السادة وضيف عليه فاكهة طبيعية أحسن بكتير من الزبادي المحلى بالصناعات.",
+    ChildTip(
+      text: "اجعل نصف طبقك من الخضروات.",
     ),
-    AppTip(
-      title: "غذاء الأذكياء 🐟",
-      description:
-          "السمك مرتين في الأسبوع بيخلي عقلك يشتغل زي الكمبيوتر ويقوي قلبك.",
+    ChildTip(
+      text: "لا تستبدل الوجبات بالمشروبات فقط.",
     ),
-    AppTip(
-      title: "بيضة بطل 🥚",
-      description:
-          "البيض مصدر ممتاز للبروتين.. كُل بيض باعتدال عشان تبني عضلاتك صح.",
+    ChildTip(
+      text: "لا تعتمد على الأنظمة الغذائية السريعة.",
     ),
-    AppTip(
-      title: "خدعة الطبق الصغير 🍽️",
-      description:
-          "ستقبل طبق أصغر شوية، ده بيساعدك تتحكم في الكمية اللي بتاكلها من غير ما تحس بالحرمان.",
+    ChildTip(
+      text: "تناول التمر كمصدر طاقة طبيعي.",
     ),
-    AppTip(
-      title: "سناك الطوارئ 🍏",
-      description:
-          "وانت خارج، خد معاك فاكهة أو مكسرات، عشان لما تجوع متضطرش تاكل حاجة مش صحية.",
+    ChildTip(
+      text:
+          "احرص على التوازن بين الكربوهيدرات والبروتين في كل وجبة.",
     ),
-    AppTip(
-      title: "وداعاً للزيوت 🍟",
-      description:
-          "المقليات فيها دهون تقيلة على جسمك.. جرب المشوي أو المسلوق هتحس بفرق كبير في نشاطك.",
+    ChildTip(
+      text: "اغسل الخضروات والفاكهة جيدًا قبل تناولها.",
     ),
-    AppTip(
-      title: "ألبان خفيفة 🥛",
-      description:
-          "الألبان قليلة الدسم بتديك الكالسيوم اللي محتاجه من غير الدهون الزيادة.",
+    ChildTip(
+      text: "احرص على تناول وجبة بعد التمرين تحتوي على بروتين.",
     ),
-    AppTip(
-      title: "بذور القوة 🌱",
-      description:
-          "رشة بذور شيا أو كتان على أكلك بتضيفلك أوميجا 3 وألياف مهمة جداً.",
+    ChildTip(
+      text: "اجعل هدفك تحسين صحتك لا مجرد إنقاص الوزن.",
     ),
-    AppTip(
-      title: "طاقة الشوفان 🥣",
-      description:
-          "الشوفان فطار مثالي بيديك طاقة بتكمل معاك لنص اليوم وبيريح معدتك.",
+    ChildTip(
+      text: "شارك عائلتك في تناول وجبات صحية.",
     ),
-    AppTip(
-      title: "مغامرة المطبخ 🥗",
-      description:
-          "جرب وصفات صحية جديدة كل أسبوع عشان متزهقش من نظامك وتستمتع بالأكل الصحي.",
+    ChildTip(
+      text: "لا تكافئ نفسك بالطعام فقط.",
     ),
-    AppTip(
-      title: "دلع بعقل 🍬",
-      description:
-          "مش لازم تحرم نفسك من اللي بتحبه، بس كل منه كميات صغنتوتة وعلى فترات بعيدة.",
+    ChildTip(
+      text: "خصص يومًا خاليًا من المشروبات الغازية.",
     ),
-    AppTip(
-      title: "البداية الخضراء 🥗",
-      description:
-          "ابدأ وجبتك بالسلطة، بتشبعك أسرع وبتحسن الهضم قبل ما تاكل الأكل التقيل.",
+    ChildTip(
+      text:
+          "احرص على الحركة قبل النوم إذا كنت تجلس لفترات طويلة.",
     ),
-    AppTip(
-      title: "نوم هادي 😴",
-      description:
-          "بلاش تاكل وجبات تقيلة قبل النوم مباشرة، سيب وقت لمعدتك ترتاح عشان تنام نوم عميق.",
+    ChildTip(
+      text: "مارس تمارين التنفس لتقليل التوتر.",
     ),
-    AppTip(
-      title: "صديقة الشمس ☀️",
-      description:
-          "اخرج في الشمس شوية كل يوم عشان جسمك يصنع فيتامين د اللي بيقوي عضمك.",
-    ),
-    AppTip(
-      title: "سناك الفاكهة 🍎",
-      description:
-          "لما تحس بجوع خفيف بين الوجبات، خلي اختيارك الأول هو الفاكهة الطازجة.",
-    ),
-    AppTip(
-      title: "بروتينات مشكلة 🍗",
-      description:
-          "نوع في مصادر البروتين (فراخ، سمك، بقوليات) عشان تاخد كل الأحماض الأمينية اللي جسمك محتاجها.",
-    ),
-    AppTip(
-      title: "إنعاش الصباح 💧",
-      description:
-          "أول ما تصحى اشرب كوباية ماية، بتغسل جسمك من السموم وبتنشط أعضاءك.",
-    ),
-    AppTip(
-      title: "بعيد عن العين 🍪",
-      description:
-          "خلي الحلويات في مكان بعيد ومستخبي، عشان متضعفش وتاكلها كل ما تشوفها.",
-    ),
-    AppTip(
-      title: "قانون النص 🥦",
-      description:
-          "خلي نص طبقك دايمًا خضار، الربع بروتين والربع نشويات.. دي المعادلة المثالية.",
-    ),
-    AppTip(
-      title: "الأكل أكل 🍕",
-      description:
-          "المشروبات مش بديل للأكل، جسمك محتاج ألياف وعناصر موجودة في الأكل الصلب بس.",
-    ),
-    AppTip(
-      title: "طريق طويل وصح 🏃",
-      description:
-          "بلاش تنجرف وراء الأنظمة السريعة والوهمية، الصحة مشوار محتاج صبر واستمرار.",
-    ),
-    AppTip(
-      title: "تمر الطاقة 🌴",
-      description:
-          "التمر سناك عبقري وبيديك طاقة فورية.. كُل وحدات قليلة منه في اليوم.",
-    ),
-    AppTip(
-      title: "توازن القوى ⚖️",
-      description:
-          "كل وجبة لازم يكون فيها توازن بين النشويات والبروتين عشان سكر الدم يفضل مضبوط.",
-    ),
-    AppTip(
-      title: "نظافة وأمان 🧼",
-      description:
-          "اغسل أكلك كويس جداً قبل ما تاكله عشان تحمي نفسك من أي جراثيم أو كيمياويات.",
-    ),
-    AppTip(
-      title: "غذاء العضلات 🦾",
-      description:
-          "بعد التمرين جسمك بيحتاج بروتين عشان يبني العضلات اللي اشتغلت.. بلاش تفوت الوجبة دي.",
-    ),
-    AppTip(
-      title: "هدفنا الصحة ❤️",
-      description:
-          "خلي هدفك إنك تكون بصحة كويسة ونشاط عالي، والوزن المثالي هييجي لوحده كنتيجة.",
-    ),
-    AppTip(
-      title: "قوة العيلة 👨‍👩‍👧‍👦",
-      description:
-          "شجع أهلك وأصحابك ياكلوا صحي معاك، الجماعة بتدي قوة وبتخلي الأكل طعمه أحلى.",
-    ),
-    AppTip(
-      title: "مكافأة غير الأكل 🎁",
-      description:
-          "لما تنجح في حاجة، كافئ نفسك بخروجة أو لعبة جديدة، مش لازم المكافأة تكون أكل دسم.",
-    ),
-    AppTip(
-      title: "يوم بدون صودا 🚫",
-      description:
-          "تحدى نفسك وخصص يوم (وبعدين أيام) مفيش فيه أي مشروبات غازية خالص.",
-    ),
-    AppTip(
-      title: "حركة خفيفة 🚶",
-      description:
-          "لو قضيت يومك قاعد، اتحرك شوية قبل ما تنام عشان تنشط الدورة الدموية وتريح جسمك.",
-    ),
-    AppTip(
-      title: "اتنفس بعمق 🧘",
-      description:
-          "لما تتوتر، خد نفس عميق.. التوتر بيخلينا ناكل أكتر من غير ما نحس، والتنفس بيهديك.",
-    ),
-    AppTip(
-      title: "أسلوب حياة ♾️",
-      description:
-          "الصحة مش فترة وهتخلص، دي رحلة مستمرة معانا طول العمر عشان نعيش بسعادة.",
+    ChildTip(
+      text: "اجعل أسلوب حياتك صحيًا بشكل مستمر وليس مؤقتًا.",
     ),
   ];
 }

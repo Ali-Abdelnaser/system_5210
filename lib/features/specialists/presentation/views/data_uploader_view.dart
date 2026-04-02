@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:system_5210/core/theme/app_theme.dart';
-import 'package:system_5210/features/specialists/data/models/doctor_model.dart';
-import 'package:system_5210/features/healthy_recipes/data/models/recipe_model.dart';
+import 'package:five2ten/core/theme/app_theme.dart';
+import 'package:five2ten/features/specialists/data/models/doctor_model.dart';
+import 'package:five2ten/features/healthy_recipes/data/models/recipe_model.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:system_5210/core/widgets/app_loading_indicator.dart';
-import 'package:system_5210/core/widgets/app_back_button.dart';
-import 'package:system_5210/core/utils/image_compressor.dart';
+import 'package:five2ten/core/widgets/app_loading_indicator.dart';
+import 'package:five2ten/core/widgets/app_back_button.dart';
+import 'package:five2ten/core/utils/image_compressor.dart';
 import 'dart:typed_data';
 
 class DataUploaderView extends StatefulWidget {
