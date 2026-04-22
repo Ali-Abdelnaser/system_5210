@@ -279,7 +279,9 @@ exports.onUserCreated = auth.user().onCreate(async (user) => {
 // });
 
 /**
- * 8. Daily FCM (scheduled) — see sendDailyFCM.js
+ * 8. Daily FCM (scheduled) — see sendDailyFCM.js & sendParentMorningTipFCM.js
  */
 const {sendDaily5210ReminderFCM} = require("./sendDailyFCM");
+const {sendParentMorningTipFCM} = require("./sendParentMorningTipFCM");
 exports.sendDaily5210ReminderFCM = sendDaily5210ReminderFCM;
+exports.sendParentMorningTipFCM = sendParentMorningTipFCM;

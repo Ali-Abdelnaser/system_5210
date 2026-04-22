@@ -2,7 +2,7 @@ name: five2ten
 description: "A new Flutter project."
 publish_to: "none"
 
-version: 1.1.2+6
+version: 1.1.4+8
 
 environment:
   sdk: ^3.10.1

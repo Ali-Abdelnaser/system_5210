@@ -42,6 +42,10 @@ class NotificationCubit extends Cubit<NotificationState> {
       final previousUid = _userId;
       _userId = userId;
       _userCreatedAt = createdAt;
+      _sessionStartTime = DateTime.now();
+      _initialBroadcastProcessed = false;
+      _initialPersonalProcessed = false;
+      _wasBoxEmptyOnStart = false;
 
       if (_userId == null) {
         if (previousUid != null) {
@@ -78,7 +82,7 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   StreamSubscription? _broadcastSubscription;
   StreamSubscription? _personalSubscription;
-  final DateTime _sessionStartTime = DateTime.now();
+  DateTime _sessionStartTime = DateTime.now();
   bool _initialBroadcastProcessed = false;
   bool _initialPersonalProcessed = false;
   bool _wasBoxEmptyOnStart = false;
@@ -165,19 +169,28 @@ class NotificationCubit extends Cubit<NotificationState> {
             timestamp.isAfter(
               _sessionStartTime.subtract(const Duration(seconds: 10)),
             )) {
-          final isAr = _languageCode == 'ar';
-          final category = notification.type == 'challenge'
-              ? NotificationCategories.tasks
-              : NotificationCategories.insights;
-          notificationService.showImmediateNotification(
-            title: isAr ? notification.title : (notification.titleEn ?? notification.title),
-            body: isAr ? notification.body : (notification.bodyEn ?? notification.body),
-            imageUrl: notification.imageUrl,
-            actionUrl: notification.actionUrl,
-            showAction: true,
-            badgeCount: _getUnreadCount(notificationsData),
-            category: category,
-          );
+          // Scheduled FCM already showed the system tray; avoid duplicate local notification.
+          final skipDuplicateToast = notification.type == 'daily_reminder' ||
+              notification.type == 'parent_tip';
+          if (!skipDuplicateToast) {
+            final isAr = _languageCode == 'ar';
+            final category = notification.type == 'challenge'
+                ? NotificationCategories.tasks
+                : NotificationCategories.insights;
+            notificationService.showImmediateNotification(
+              title: isAr
+                  ? notification.title
+                  : (notification.titleEn ?? notification.title),
+              body: isAr
+                  ? notification.body
+                  : (notification.bodyEn ?? notification.body),
+              imageUrl: notification.imageUrl,
+              actionUrl: notification.actionUrl,
+              showAction: true,
+              badgeCount: _getUnreadCount(notificationsData),
+              category: category,
+            );
+          }
         }
       }
     }

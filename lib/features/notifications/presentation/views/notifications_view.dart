@@ -253,7 +253,14 @@ class _NotificationsViewState extends State<NotificationsView>
   List<AppNotification> _filterNotifications(List<AppNotification> all) {
     switch (_tabController.index) {
       case 1:
-        return all.where((n) => n.type == 'tip').toList();
+        return all
+            .where(
+              (n) =>
+                  n.type == 'tip' ||
+                  n.type == 'parent_tip' ||
+                  n.type == 'daily_reminder',
+            )
+            .toList();
       case 2:
         return all
             .where((n) => n.type == 'challenge' || n.type == 'goal')
@@ -396,9 +403,13 @@ class _NotificationsViewState extends State<NotificationsView>
   Widget _buildTypeIcon(String type, {bool isLarge = false}) {
     Color color;
     IconData icon;
-    if (type == 'tip') {
+    if (type == 'tip' ||
+        type == 'parent_tip' ||
+        type == 'daily_reminder') {
       color = AppTheme.appBlue;
-      icon = Icons.lightbulb_rounded;
+      icon = type == 'daily_reminder'
+          ? Icons.nights_stay_rounded
+          : Icons.lightbulb_rounded;
     } else if (type == 'broadcast' || type == 'system') {
       color = Colors.orange;
       icon = Icons.campaign_rounded;

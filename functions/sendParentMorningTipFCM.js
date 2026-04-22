@@ -1,8 +1,9 @@
 /**
- * تذكير يومي مسائي (FCM) + تسجيل في users/{uid}/notifications لقائمة التطبيق والـ badge.
+ * صباحًا (10:00 Cairo): نصيحة للأم + تسجيل في Firestore لقائمة التطبيق والـ badge.
  */
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 const admin = require("firebase-admin");
+const {PARENT_TIPS} = require("./parentTipsData");
 const {
   cairoDateString,
   writePersonalScheduledNotifications,
@@ -10,10 +11,9 @@ const {
   clearInvalidFcmTokens,
 } = require("./scheduledNotificationFirestore");
 
-/** 21:00 Africa/Cairo */
-exports.sendDaily5210ReminderFCM = onSchedule(
+exports.sendParentMorningTipFCM = onSchedule(
   {
-    schedule: "0 21 * * *",
+    schedule: "0 10 * * *",
     timeZone: "Africa/Cairo",
     region: "us-central1",
     memory: "512MiB",
@@ -21,12 +21,14 @@ exports.sendDaily5210ReminderFCM = onSchedule(
   },
   async () => {
     const db = admin.firestore();
-    const title = "5210";
-    const body =
-      "خلّص يومك مع 5210: راجع تقدّمك وخطط ليومك الجاي";
     const dataRoute = "/home";
     const dateStr = cairoDateString();
-    const notifDocId = `daily_reminder_${dateStr}`;
+    const notifDocId = `parent_tip_${dateStr}`;
+
+    const dayIndex = cairoDayIndex();
+    const tip = PARENT_TIPS[dayIndex % PARENT_TIPS.length];
+    const title = tip.title;
+    const body = truncateBody(tip.description, 220);
 
     const batchSize = 400;
     let lastDoc = null;
@@ -57,6 +59,9 @@ exports.sendDaily5210ReminderFCM = onSchedule(
       const tokenToUids = new Map();
       for (const doc of snap.docs) {
         const d = doc.data();
+        if (d.role !== "parent") {
+          continue;
+        }
         if (d.fcmDailyPushEnabled === false) {
           continue;
         }
@@ -82,10 +87,14 @@ exports.sendDaily5210ReminderFCM = onSchedule(
         try {
           const resp = await admin.messaging().sendEachForMulticast({
             tokens: part,
-            notification: {title, body},
+            notification: {
+              title: "نصيحة الصباح: " + title,
+              body,
+            },
             data: {
               route: dataRoute,
               category: "daily",
+              type: "parent_tip",
             },
           });
           totalAttempted += resp.successCount;
@@ -106,13 +115,12 @@ exports.sendDaily5210ReminderFCM = onSchedule(
           });
           if (resp.failureCount > 0) {
             console.warn(
-              "sendDaily5210ReminderFCM: failures",
+              "sendParentMorningTipFCM: failures",
               resp.failureCount,
-              resp.responses?.slice(0, 3),
             );
           }
         } catch (err) {
-          console.error("sendDaily5210ReminderFCM multicast error", err);
+          console.error("sendParentMorningTipFCM multicast error", err);
         }
       }
 
@@ -122,7 +130,7 @@ exports.sendDaily5210ReminderFCM = onSchedule(
         docId: notifDocId,
         titleAr: title,
         bodyAr: body,
-        type: "daily_reminder",
+        type: "parent_tip",
         actionUrl: `route:${dataRoute}`,
       });
 
@@ -132,6 +140,34 @@ exports.sendDaily5210ReminderFCM = onSchedule(
       }
     }
 
-    console.log("sendDaily5210ReminderFCM done, approx success:", totalAttempted);
+    console.log(
+      "sendParentMorningTipFCM done, dayIndex",
+      dayIndex,
+      "approx success:",
+      totalAttempted,
+    );
   },
 );
+
+function cairoDayIndex() {
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat("en", {
+    timeZone: "Africa/Cairo",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(now);
+  const y = +parts.find((p) => p.type === "year").value;
+  const m = +parts.find((p) => p.type === "month").value;
+  const d = +parts.find((p) => p.type === "day").value;
+  const utc = Date.UTC(y, m - 1, d);
+  const startYear = Date.UTC(y, 0, 1);
+  return Math.floor((utc - startYear) / 86400000);
+}
+
+function truncateBody(s, max) {
+  if (!s || s.length <= max) {
+    return s || "";
+  }
+  return s.slice(0, max - 1) + "…";
+}

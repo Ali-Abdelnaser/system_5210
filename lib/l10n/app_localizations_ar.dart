@@ -99,29 +99,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get onboardingTitle5 => '5 حصص فاكهة وخضار';
 
   @override
-  String get onboardingDesc5 =>
-      'جسمك محتاج طاقة! كُل 5 حصص من الفواكه والخضروات الملونة كل يوم لتبقى بصحة جيدة وقوياً.';
+  String get onboardingDesc5 => 'جسمك محتاج طاقة! كُل 5 حصص من الفواكه والخضروات الملونة كل يوم لتبقى بصحة جيدة وقوياً.';
 
   @override
   String get onboardingTitle2 => 'ساعتان أمام الشاشة كحد أقصى';
 
   @override
-  String get onboardingDesc2 =>
-      'وقت التلفزيون والموبايل يجب ألا يزيد عن ساعتين، للحفاظ على تركيزك ونشاط ذهنك.';
+  String get onboardingDesc2 => 'وقت التلفزيون والموبايل يجب ألا يزيد عن ساعتين، للحفاظ على تركيزك ونشاط ذهنك.';
 
   @override
   String get onboardingTitle1 => 'ساعة من النشاط ممارس';
 
   @override
-  String get onboardingDesc1 =>
-      'تحرك والعب واجري لمدة ساعة كاملة كل يوم، النشاط البدني يقوي قلبك وعضلاتك';
+  String get onboardingDesc1 => 'تحرك والعب واجري لمدة ساعة كاملة كل يوم، النشاط البدني يقوي قلبك وعضلاتك';
 
   @override
   String get onboardingTitle0 => '0 سكر ومشروبات غازية';
 
   @override
-  String get onboardingDesc0 =>
-      'ابعد عن السكر والمشروبات الغازية، واعتمد على الماء والعصائر الطبيعية لصحة أفضل.';
+  String get onboardingDesc0 => 'ابعد عن السكر والمشروبات الغازية، واعتمد على الماء والعصائر الطبيعية لصحة أفضل.';
 
   @override
   String get skip => 'تخطي';
@@ -130,8 +126,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forgotPasswordTitle => 'نسيت كلمة السر؟';
 
   @override
-  String get forgotPasswordDesc =>
-      'لا تقلق، أدخل إيميلك وسنقوم بإرسال كود لاستعادة كلمة السر.';
+  String get forgotPasswordDesc => 'لا تقلق، أدخل إيميلك وسنقوم بإرسال كود لاستعادة كلمة السر.';
 
   @override
   String get sendCode => 'إرسال الكود';
@@ -164,12 +159,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get verifyPhoneTitle => 'تأكيد رقم الهاتف';
 
   @override
-  String get verifyEmailDesc =>
-      'لقد أرسلنا كود مكون من 6 أرقام لبريدك.\nبرجاء إدخاله بالأسفل.';
+  String get verifyEmailDesc => 'لقد أرسلنا كود مكون من 6 أرقام لبريدك.\nبرجاء إدخاله بالأسفل.';
 
   @override
-  String get verifyPhoneDesc =>
-      'لقد أرسلنا كود مكون من 6 أرقام لهاتفك.\nبرجاء إدخاله بالأسفل.';
+  String get verifyPhoneDesc => 'لقد أرسلنا كود مكون من 6 أرقام لهاتفك.\nبرجاء إدخاله بالأسفل.';
 
   @override
   String get verifyAndContinue => 'تأكيد واستمرار';
@@ -181,8 +174,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get verificationTitle => 'التحقق';
 
   @override
-  String get verificationDesc =>
-      'أدخل الكود المكون من 6 أرقام الذي أرسلناه لجهازك';
+  String get verificationDesc => 'أدخل الكود المكون من 6 أرقام الذي أرسلناه لجهازك';
 
   @override
   String get verify => 'إرسال';
@@ -191,8 +183,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resendCode => 'إعادة إرسال الكود';
 
   @override
-  String get emailVerificationLinkSent =>
-      'أرسلنا رابط تحقق إلى بريدك. افتح الرابط من صندوق الوارد ثم اضغط متابعة.';
+  String get emailVerificationLinkSent => 'أرسلنا رابط تحقق إلى بريدك. افتح الرابط من صندوق الوارد ثم اضغط متابعة.';
 
   @override
   String get verified => 'تم التحقق!';
@@ -204,23 +195,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get continueButton => 'متابعة';
 
   @override
-  String get authNoInternetConnection =>
-      'لا يوجد اتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.';
+  String get authNoInternetConnection => 'لا يوجد اتصال بالإنترنت. تحقق من الشبكة وحاول مرة أخرى.';
 
   @override
-  String get authPhoneNotRegistered =>
-      'رقم الهاتف غير مسجّل. أنشئ حساباً أولاً.';
+  String get authPhoneNotRegistered => 'رقم الهاتف غير مسجّل. أنشئ حساباً أولاً.';
 
   @override
-  String get authPhoneAlreadyRegisteredSignIn =>
-      'رقم الهاتف مسجّل بالفعل. سجّل الدخول من هنا.';
+  String get authPhoneAlreadyRegisteredSignIn => 'رقم الهاتف مسجّل بالفعل. سجّل الدخول من هنا.';
 
   @override
   String get authSignInInstead => 'هذا البريد مسجّل ومفعّل. سجّل الدخول.';
 
   @override
-  String get authWrongPasswordExistingEmail =>
-      'هذا البريد مسجّل بالفعل. استخدم كلمة السر الصحيحة أو «نسيت كلمة السر».';
+  String get authWrongPasswordExistingEmail => 'هذا البريد مسجّل بالفعل. استخدم كلمة السر الصحيحة أو «نسيت كلمة السر».';
 
   @override
   String get authVerificationCodeResent => 'تم إعادة إرسال الكود.';
@@ -232,12 +219,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get authSessionExpired => 'انتهت الجلسة. سجّل الدخول مرة أخرى.';
 
   @override
-  String get authEmailNotRegistered =>
-      'هذا البريد غير مسجّل. أنشئ حساباً أولاً.';
+  String get authEmailNotRegistered => 'هذا البريد غير مسجّل. أنشئ حساباً أولاً.';
 
   @override
-  String get authEmailNotVerifiedYet =>
-      'لم يتم تأكيد البريد بعد. راجع صندوق الوارد.';
+  String get authEmailNotVerifiedYet => 'لم يتم تأكيد البريد بعد. راجع صندوق الوارد.';
 
   @override
   String get authWrongPasswordTryAgain => 'كلمة السر غير صحيحة. حاول مرة أخرى.';
@@ -333,8 +318,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get goalHint => 'خضار أكتر، حركة أكتر...';
 
   @override
-  String get challengeQuestion =>
-      'إيه أصعب حاجة بتواجهك عشان تحافظي على صحة أسرتك؟';
+  String get challengeQuestion => 'إيه أصعب حاجة بتواجهك عشان تحافظي على صحة أسرتك؟';
 
   @override
   String get challengeHint => 'الوقت، الحلويات، الأطفال الصعب إرضاءهم...';
@@ -650,8 +634,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get invalidPhone => 'يرجى إدخال رقم هاتف صحيح';
 
   @override
-  String get phoneSignInNotAvailable =>
-      'تسجيل الدخول بالهاتف غير متاح حالياً. برجاء استخدام البريد الإلكتروني.';
+  String get phoneSignInNotAvailable => 'تسجيل الدخول بالهاتف غير متاح حالياً. برجاء استخدام البريد الإلكتروني.';
 
   @override
   String get welcomeBack => 'أهلاً بك مجدداً 🌟';
@@ -687,8 +670,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scanIntroTitle => 'ماذا يوجد في طعامك؟';
 
   @override
-  String get scanIntroDesc =>
-      'اكتشف الحقائق الغذائية والتحذيرات الصحية بلمسة واحدة. مساعدك الذكي للتغذية الصحية.';
+  String get scanIntroDesc => 'اكتشف الحقائق الغذائية والتحذيرات الصحية بلمسة واحدة. مساعدك الذكي للتغذية الصحية.';
 
   @override
   String get howItWorks => 'كيف يعمل؟';
@@ -721,8 +703,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get serverErrorTitle => 'مشكلة في الاتصال';
 
   @override
-  String get serverErrorMessage =>
-      'عذراً، نواجه مشكلة بسيطة في السيرفر حالياً. سنعود للخدمة قريباً';
+  String get serverErrorMessage => 'عذراً، نواجه مشكلة بسيطة في السيرفر حالياً. سنعود للخدمة قريباً';
 
   @override
   String get retry => 'إعادة المحاولة';
@@ -772,8 +753,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get saveReport => 'حفظ في السجل';
 
   @override
-  String get disclaimer =>
-      'إخلاء مسؤولية: النتائج تقديرية بناءً على الذكاء الاصطناعي ولا تغني عن استشارة الطبيب المختص.';
+  String get disclaimer => 'إخلاء مسؤولية: النتائج تقديرية بناءً على الذكاء الاصطناعي ولا تغني عن استشارة الطبيب المختص.';
 
   @override
   String get calories => 'سعرات';
@@ -833,12 +813,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get deleteAccount => 'حذف الحساب';
 
   @override
-  String get deleteAccountConfirm =>
-      'هل أنت متأكد من حذف حسابك؟ هذا الإجراء نهائي ولا يمكن التراجع عنه.';
+  String get deleteAccountConfirm => 'هل أنت متأكد من حذف حسابك؟ هذا الإجراء نهائي ولا يمكن التراجع عنه.';
 
   @override
-  String get deleteAccountWarning =>
-      'سيتم حذف جميع بياناتك وتقدمك وملفات الأطفال بشكل نهائي.';
+  String get deleteAccountWarning => 'سيتم حذف جميع بياناتك وتقدمك وملفات الأطفال بشكل نهائي.';
 
   @override
   String get recentScansTitle => 'سجل الفحوصات';
@@ -897,8 +875,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newEmail => 'البريد الإلكتروني الجديد';
 
   @override
-  String get verifyNewEmailDesc =>
-      'ستحتاج إلى التحقق من عنوان بريدك الإلكتروني الجديد.';
+  String get verifyNewEmailDesc => 'ستحتاج إلى التحقق من عنوان بريدك الإلكتروني الجديد.';
 
   @override
   String get noEmail => 'لا يوجد بريد إلكتروني';
@@ -994,8 +971,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get testNotificationTitle => 'تجربة نجحت! 🎉';
 
   @override
-  String get testNotificationBody =>
-      'إشعاراتك شغالة زي الفل، استعد لمغامرات 5210!';
+  String get testNotificationBody => 'إشعاراتك شغالة زي الفل، استعد لمغامرات 5210!';
 
   @override
   String get supportTitle => 'الدعم والمساعدة';
@@ -1007,22 +983,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get faqUpdateProfileQ => 'كيف يمكنني تحديث ملفي الشخصي؟';
 
   @override
-  String get faqUpdateProfileA =>
-      'يمكنك تحديث معلوماتك الشخصية من خلال زيارة تبويب الملف الشخصي والضغط على \'تعديل الملف الشخصي\'.';
+  String get faqUpdateProfileA => 'يمكنك تحديث معلوماتك الشخصية من خلال زيارة تبويب الملف الشخصي والضغط على \'تعديل الملف الشخصي\'.';
 
   @override
   String get faqManageChildrenQ => 'كيف يمكنني إضافة أو إدارة الأبناء؟';
 
   @override
-  String get faqManageChildrenA =>
-      'اذهب إلى تبويب الملف الشخصي واضغط على \'تعديل بيانات الأبناء\' لإدارة الملفات الحالية أو إضافة ملفات جديدة.';
+  String get faqManageChildrenA => 'اذهب إلى تبويب الملف الشخصي واضغط على \'تعديل بيانات الأبناء\' لإدارة الملفات الحالية أو إضافة ملفات جديدة.';
 
   @override
   String get faqDataSecurityQ => 'كيف أعرف أن بياناتي آمنة؟';
 
   @override
-  String get faqDataSecurityA =>
-      'نعم، نحن نستخدم تشفيراً متقدماً لحماية بياناتك الشخصية.';
+  String get faqDataSecurityA => 'نعم، نحن نستخدم تشفيراً متقدماً لحماية بياناتك الشخصية.';
 
   @override
   String get contactSupportTitle => 'اتصل بالدعم';
@@ -1040,8 +1013,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appName => ' 5210EG ';
 
   @override
-  String get appDescription =>
-      'مصمم لمساعدة العائلات على تتبع الصحة، التغذية، والأنشطة لحياة أكثر سعادة وصحة.';
+  String get appDescription => 'مصمم لمساعدة العائلات على تتبع الصحة، التغذية، والأنشطة لحياة أكثر سعادة وصحة.';
 
   @override
   String get developedBy => 'تم التطوير بواسطة';
@@ -1059,43 +1031,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get infoCollectionTitle => '1. جمع المعلومات';
 
   @override
-  String get infoCollectionDesc =>
-      'نحن نجمع معلومات شخصية مثل الاسم والبريد الإلكتروني وكلمة المرور لإنشاء حسابك. نجمع أيضاً بيانات الملف الشخصي (مثل العمر والوزن والطول) لتقديم رؤى صحية مخصصة.';
+  String get infoCollectionDesc => 'نحن نجمع معلومات شخصية مثل الاسم والبريد الإلكتروني وكلمة المرور لإنشاء حسابك. نجمع أيضاً بيانات الملف الشخصي (مثل العمر والوزن والطول) لتقديم رؤى صحية مخصصة.';
 
   @override
   String get howWeUseInfoTitle => '2. كيف نستخدم المعلومات';
 
   @override
-  String get howWeUseInfoDesc =>
-      'تُستخدم بياناتك لتحسين وظائف التطبيق، وتتبع التقدم الصحي، وتقديم توصيات مخصصة. نحن لا نبيع بياناتك الشخصية لأي طرف ثالث.';
+  String get howWeUseInfoDesc => 'تُستخدم بياناتك لتحسين وظائف التطبيق، وتتبع التقدم الصحي، وتقديم توصيات مخصصة. نحن لا نبيع بياناتك الشخصية لأي طرف ثالث.';
 
   @override
   String get dataSecurityTitle => '3. أمن البيانات';
 
   @override
-  String get dataSecurityDesc =>
-      'نحن نطبق تدابير أمنية قياسية لحماية بياناتك. يتم تشفير جميع المعلومات الحساسة أثناء النقل والتخزين.';
+  String get dataSecurityDesc => 'نحن نطبق تدابير أمنية قياسية لحماية بياناتك. يتم تشفير جميع المعلومات الحساسة أثناء النقل والتخزين.';
 
   @override
   String get childrenPrivacyTitle => '4. خصوصية الأطفال';
 
   @override
-  String get childrenPrivacyDesc =>
-      'هذا التطبيق مصمم للعائلات. بينما قد نجمع بيانات عن الأطفال، إلا أنها يتم توفيرها وإدارتها من قبل صاحب حساب ولي الأمر/الوصي.';
+  String get childrenPrivacyDesc => 'هذا التطبيق مصمم للعائلات. بينما قد نجمع بيانات عن الأطفال، إلا أنها يتم توفيرها وإدارتها من قبل صاحب حساب ولي الأمر/الوصي.';
 
   @override
   String get userRightsTitle => '5. حقوق المستخدم';
 
   @override
-  String get userRightsDesc =>
-      'لديك الحق في الوصول إلى معلوماتك الشخصية أو تحديثها أو حذفها في أي وقت من خلال إعدادات التطبيق أو بالتواصل مع الدعم.';
+  String get userRightsDesc => 'لديك الحق في الوصول إلى معلوماتك الشخصية أو تحديثها أو حذفها في أي وقت من خلال إعدادات التطبيق أو بالتواصل مع الدعم.';
 
   @override
   String get policyChangesTitle => '6. التغييرات في السياسة';
 
   @override
-  String get policyChangesDesc =>
-      'قد نقوم بتحديث سياسة الخصوصية الخاصة بنا من حين لآخر. سنقوم بإخطارك بأي تغييرات عن طريق نشر سياسة الخصوصية الجديدة على هذه الصفحة.';
+  String get policyChangesDesc => 'قد نقوم بتحديث سياسة الخصوصية الخاصة بنا من حين لآخر. سنقوم بإخطارك بأي تغييرات عن طريق نشر سياسة الخصوصية الجديدة على هذه الصفحة.';
 
   @override
   String get lastUpdated => 'آخر تحديث: فبراير 2026';
@@ -1142,8 +1108,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get streakNotificationTitle => 'حافظ على الستريك';
 
   @override
-  String get streakNotificationMessage =>
-      'افتح التطبيق الآن للحفاظ على الستريك اليومي وتحقيق أهدافك';
+  String get streakNotificationMessage => 'افتح التطبيق الآن للحفاظ على الستريك اليومي وتحقيق أهدافك';
 
   @override
   String get streakLabel => 'ستريك';
@@ -1176,8 +1141,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get adminDeleteConfirmTitle => 'تأكيد الحذف';
 
   @override
-  String get adminDeleteConfirmMessage =>
-      'هل أنت متأكد من حذف هذا الدكتور؟ لا يمكن التراجع عن هذا الفعل.';
+  String get adminDeleteConfirmMessage => 'هل أنت متأكد من حذف هذا الدكتور؟ لا يمكن التراجع عن هذا الفعل.';
 
   @override
   String get adminNameAr => 'الاسم بالعربي';
@@ -1336,12 +1300,10 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get bondingFingerprintInstruction =>
-      'يرجى الضغط معاً على البصمة لتفعيل التحدي';
+  String get bondingFingerprintInstruction => 'يرجى الضغط معاً على البصمة لتفعيل التحدي';
 
   @override
-  String get bondingPledgeParent =>
-      'ألتزم بمشاركة طفلي هذا التحدي بكل مودة واهتمام.';
+  String get bondingPledgeParent => 'ألتزم بمشاركة طفلي هذا التحدي بكل مودة واهتمام.';
 
   @override
   String get bondingPledgeChild => 'أعد بأن أبذل جهدي وأستمتع بوقتي مع عائلتي.';
@@ -1380,8 +1342,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bondingWallTitle => 'حائط الذكريات ✨';
 
   @override
-  String get bondingNoMemories =>
-      'لا توجد ذكريات بعد، ابدأوا التحديات ووثقوا اللحظات!';
+  String get bondingNoMemories => 'لا توجد ذكريات بعد، ابدأوا التحديات ووثقوا اللحظات!';
 
   @override
   String get bondingMissionAccomplished => 'تمت مهمة اليوم! 🏆';
@@ -1399,8 +1360,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bondingNoMemoriesYet => 'لا توجد ذكريات بعد';
 
   @override
-  String get bondingStartFirstChallenge =>
-      'ابدأوا أول تحدي واملأوا الحائط بالصور!';
+  String get bondingStartFirstChallenge => 'ابدأوا أول تحدي واملأوا الحائط بالصور!';
 
   @override
   String get bondingViewAll => 'عرض الكل';
@@ -1409,8 +1369,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get bondingWhyTitle => 'لماذا لعبة الترابط؟';
 
   @override
-  String get bondingWhyDesc =>
-      'الأبحاث تقول أن 15 دقيقة من النشاط المشترك يومياً تقوي الصحة النفسية للطفل وتزيد من الترابط العائلي بنسبة 40%.';
+  String get bondingWhyDesc => 'الأبحاث تقول أن 15 دقيقة من النشاط المشترك يومياً تقوي الصحة النفسية للطفل وتزيد من الترابط العائلي بنسبة 40%.';
 
   @override
   String get bondingDoneBadge => 'تمت';
@@ -1464,29 +1423,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutWhoWeAreTitle => 'من نحن';
 
   @override
-  String get aboutWhoWeAreContent =>
-      'نحن فريق من طلاب السنة الرابعة كلية الإعلام ب Canadian International College (CIC)\nنحن نهتم بتعزيز الصحة الوقائية للأطفال، ونسعى إلى نشر ثقافة العادات الصحية اليومية داخل الأسرة المصرية بطريقة بسيطة وعملية.\nانطلقت فكرتنا من ملاحظة زيادة الاعتماد على الأطعمة المصنعة، قلة الحركة، وزيادة وقت الشاشات بين الأطفال، وما لذلك من تأثير مباشر على صحتهم الجسدية والنفسية.\nومن هنا جاءت فكرة إنشاء تطبيق يعتمد على مبدأ 5.2.1.0 كإطار سهل وواضح يساعد الأسرة على تنظيم يومها الصحي بدون تعقيد.';
+  String get aboutWhoWeAreContent => 'نحن فريق من طلاب السنة الرابعة كلية الإعلام ب Canadian International College (CIC)\nنحن نهتم بتعزيز الصحة الوقائية للأطفال، ونسعى إلى نشر ثقافة العادات الصحية اليومية داخل الأسرة المصرية بطريقة بسيطة وعملية.\nانطلقت فكرتنا من ملاحظة زيادة الاعتماد على الأطعمة المصنعة، قلة الحركة، وزيادة وقت الشاشات بين الأطفال، وما لذلك من تأثير مباشر على صحتهم الجسدية والنفسية.\nومن هنا جاءت فكرة إنشاء تطبيق يعتمد على مبدأ 5.2.1.0 كإطار سهل وواضح يساعد الأسرة على تنظيم يومها الصحي بدون تعقيد.';
 
   @override
   String get aboutAppConceptTitle => 'فكرة التطبيق';
 
   @override
-  String get aboutAppConceptContent =>
-      'يعتمد التطبيق على مفهوم 5.2.1.0:\n5 حصص من الفاكهة والخضار\n2 ساعات شاشة كحد أقصى\n1 ساعة حركة يوميًا\n0 سكر زائد\nويقدم هذا المفهوم في صورة:\n– محتوى توعوي مبسّط\n– نصائح عملية للأمهات\n– تذكيرات يومية للأطفال\n– أنشطة مشتركة داخل الأسرة\nالتطبيق لا يقدم تشخيصات أو أنظمة علاجية، بل يهدف إلى دعم بناء عادات صحية مستدامة.';
+  String get aboutAppConceptContent => 'يعتمد التطبيق على مفهوم 5.2.1.0:\n5 حصص من الفاكهة والخضار\n2 ساعات شاشة كحد أقصى\n1 ساعة حركة يوميًا\n0 سكر زائد\nويقدم هذا المفهوم في صورة:\n– محتوى توعوي مبسّط\n– نصائح عملية للأمهات\n– تذكيرات يومية للأطفال\n– أنشطة مشتركة داخل الأسرة\nالتطبيق لا يقدم تشخيصات أو أنظمة علاجية، بل يهدف إلى دعم بناء عادات صحية مستدامة.';
 
   @override
   String get aboutVisionTitle => 'رؤيتنا';
 
   @override
-  String get aboutVisionContent =>
-      'أن تصبح العادات الصحية جزءًا طبيعيًا من يوم كل طفل، وأن تكون الأسرة شريكًا أساسيًا في هذا التغيير.';
+  String get aboutVisionContent => 'أن تصبح العادات الصحية جزءًا طبيعيًا من يوم كل طفل، وأن تكون الأسرة شريكًا أساسيًا في هذا التغيير.';
 
   @override
   String get aboutMissionTitle => 'رسالتنا';
 
   @override
-  String get aboutMissionContent =>
-      'تقديم محتوى صحي موثوق، سهل التطبيق، وملائم لثقافة المجتمع، يساعد على تحسين جودة حياة الأطفال من خلال خطوات بسيطة ومستمرة.';
+  String get aboutMissionContent => 'تقديم محتوى صحي موثوق، سهل التطبيق، وملائم لثقافة المجتمع، يساعد على تحسين جودة حياة الأطفال من خلال خطوات بسيطة ومستمرة.';
 
   @override
   String get aboutMediaCoverageTitle => 'التغطية الإعلامية';
@@ -1548,8 +1503,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get congratsHero => 'عاش يا بطل! 🎉';
 
   @override
-  String get goalReachedMsg =>
-      'لقد حققت هدف الـ 5210 خطوة لليوم. استمر في التحرك!';
+  String get goalReachedMsg => 'لقد حققت هدف الـ 5210 خطوة لليوم. استمر في التحرك!';
 
   @override
   String get min => 'دق';
@@ -1564,6 +1518,5 @@ class AppLocalizationsAr extends AppLocalizations {
   String get activityTrackingRequired => 'تحتاج لصلاحية تتبع النشاط';
 
   @override
-  String get activityTrackingDesc =>
-      'من فضلك فعل صلاحية تتبع النشاط من إعدادات الهاتف لمتابعة خطواتك';
+  String get activityTrackingDesc => 'من فضلك فعل صلاحية تتبع النشاط من إعدادات الهاتف لمتابعة خطواتك';
 }
