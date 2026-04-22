@@ -99,25 +99,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingTitle5 => '5 Servings of Fruits & Veggies';
 
   @override
-  String get onboardingDesc5 => 'Your body energy. Eat 5 servings of colorful fruits and vegetables every day to stay strong.';
+  String get onboardingDesc5 =>
+      'Your body energy. Eat 5 servings of colorful fruits and vegetables every day to stay strong.';
 
   @override
   String get onboardingTitle2 => '2 Hours of Screen Time Only';
 
   @override
-  String get onboardingDesc2 => 'TV and mobile time shouldn\'t exceed two hours, so your eyes and mind stay sharp and bright.';
+  String get onboardingDesc2 =>
+      'TV and mobile time shouldn\'t exceed two hours, so your eyes and mind stay sharp and bright.';
 
   @override
   String get onboardingTitle1 => '1 Hour of Exercise & Play';
 
   @override
-  String get onboardingDesc1 => 'Move, play, and run for an entire hour every day. Exercise makes your heart and muscles strong';
+  String get onboardingDesc1 =>
+      'Move, play, and run for an entire hour every day. Exercise makes your heart and muscles strong';
 
   @override
   String get onboardingTitle0 => '0 Sugar & Fizzy Drinks';
 
   @override
-  String get onboardingDesc0 => 'Stay away from sugar and soft drinks, and stick with water and natural juices for better health.';
+  String get onboardingDesc0 =>
+      'Stay away from sugar and soft drinks, and stick with water and natural juices for better health.';
 
   @override
   String get skip => 'Skip';
@@ -126,7 +130,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordTitle => 'Forgot Password?';
 
   @override
-  String get forgotPasswordDesc => 'Don\'t worry. Enter your email and we will send a code to reset your password.';
+  String get forgotPasswordDesc =>
+      'Don\'t worry. Enter your email and we will send a code to reset your password.';
 
   @override
   String get sendCode => 'Send Code';
@@ -159,10 +164,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verifyPhoneTitle => 'Verify Your Phone';
 
   @override
-  String get verifyEmailDesc => 'We sent a 6-digit code to your email.\nPlease enter it below.';
+  String get verifyEmailDesc =>
+      'We sent a 6-digit code to your email.\nPlease enter it below.';
 
   @override
-  String get verifyPhoneDesc => 'We sent a 6-digit code to your phone.\nPlease enter it below.';
+  String get verifyPhoneDesc =>
+      'We sent a 6-digit code to your phone.\nPlease enter it below.';
 
   @override
   String get verifyAndContinue => 'Verify & Continue';
@@ -174,7 +181,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get verificationTitle => 'Verification';
 
   @override
-  String get verificationDesc => 'Enter the 6-digit code we sent to your device';
+  String get verificationDesc =>
+      'Enter the 6-digit code we sent to your device';
 
   @override
   String get verify => 'Verify';
@@ -183,7 +191,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get resendCode => 'Resend Code';
 
   @override
-  String get emailVerificationLinkSent => 'We sent a verification link to your email. Open the link in your inbox, then tap Continue below.';
+  String get emailVerificationLinkSent =>
+      'We sent a verification link to your email. Open the link in your inbox, then tap Continue below.';
 
   @override
   String get verified => 'Verified!';
@@ -195,19 +204,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get continueButton => 'Continue';
 
   @override
-  String get authNoInternetConnection => 'No internet connection. Please check your network and try again.';
+  String get authNoInternetConnection =>
+      'No internet connection. Please check your network and try again.';
 
   @override
-  String get authPhoneNotRegistered => 'This phone number is not registered. Please create an account first.';
+  String get authPhoneNotRegistered =>
+      'This phone number is not registered. Please create an account first.';
 
   @override
-  String get authPhoneAlreadyRegisteredSignIn => 'This phone number is already registered. Please sign in instead.';
+  String get authPhoneAlreadyRegisteredSignIn =>
+      'This phone number is already registered. Please sign in instead.';
 
   @override
-  String get authSignInInstead => 'This email is already registered and verified. Please sign in.';
+  String get authSignInInstead =>
+      'This email is already registered and verified. Please sign in.';
 
   @override
-  String get authWrongPasswordExistingEmail => 'This email is already registered. Sign in with the correct password, or use Forgot password.';
+  String get authWrongPasswordExistingEmail =>
+      'This email is already registered. Sign in with the correct password, or use Forgot password.';
 
   @override
   String get authVerificationCodeResent => 'Verification code sent again.';
@@ -219,10 +233,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authSessionExpired => 'Session expired. Please sign in again.';
 
   @override
-  String get authEmailNotRegistered => 'This email is not registered. Please create an account first.';
+  String get authEmailNotRegistered =>
+      'This email is not registered. Please create an account first.';
 
   @override
-  String get authEmailNotVerifiedYet => 'Email not verified yet. Please check your inbox.';
+  String get authEmailNotVerifiedYet =>
+      'Email not verified yet. Please check your inbox.';
 
   @override
   String get authWrongPasswordTryAgain => 'Wrong password. Please try again.';
@@ -234,13 +250,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get authNoAccountFoundEmail => 'No account found with this email.';
 
   @override
-  String get authEmailAlreadyExistsGeneric => 'An account already exists with this email.';
+  String get authEmailAlreadyExistsGeneric =>
+      'An account already exists with this email.';
 
   @override
   String get authInvalidVerificationCode => 'Invalid verification code.';
 
   @override
-  String get authTooManyRequests => 'Too many attempts from this device. Please try again later.';
+  String get authTooManyRequests =>
+      'Too many attempts from this device. Please try again later.';
 
   @override
   String get whoAreYou => 'Who are you?';
@@ -294,13 +312,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get heroHint => 'Doing exercise, eating fruit, helping others...';
 
   @override
-  String get favoriteFoodQuestion => 'What\'s the tastiest healthy food you love?';
+  String get favoriteFoodQuestion =>
+      'What\'s the tastiest healthy food you love?';
 
   @override
   String get foodHint => 'Apples, salad, chicken...';
 
   @override
-  String get superPowerQuestion => 'If you had a super power, what would it be?';
+  String get superPowerQuestion =>
+      'If you had a super power, what would it be?';
 
   @override
   String get powerHint => 'Flying, super strength, super speed...';
@@ -318,13 +338,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goalHint => 'e.g. Eat more veggies, stay active...';
 
   @override
-  String get challengeQuestion => 'What\'s the hardest part about staying healthy?';
+  String get challengeQuestion =>
+      'What\'s the hardest part about staying healthy?';
 
   @override
   String get challengeHint => 'Time, picky eaters, sweets...';
 
   @override
-  String get activityQuestion => 'What\'s your family\'s favorite active way to play?';
+  String get activityQuestion =>
+      'What\'s your family\'s favorite active way to play?';
 
   @override
   String get activityHint => 'Walking, dancing, playing ball...';
@@ -586,7 +608,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteChild => 'Delete Child';
 
   @override
-  String get deleteChildConfirm => 'Are you sure you want to delete this child profile?';
+  String get deleteChildConfirm =>
+      'Are you sure you want to delete this child profile?';
 
   @override
   String get congratulationsTitle => 'Congratulations';
@@ -634,7 +657,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invalidPhone => 'Please enter a valid phone number';
 
   @override
-  String get phoneSignInNotAvailable => 'Sign in with phone is not available yet. Please use email.';
+  String get phoneSignInNotAvailable =>
+      'Sign in with phone is not available yet. Please use email.';
 
   @override
   String get welcomeBack => 'Welcome back 🌟';
@@ -670,7 +694,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanIntroTitle => 'What\'s in your food?';
 
   @override
-  String get scanIntroDesc => 'Discover nutrition facts and health warnings with one touch. Your smart assistant for healthy nutrition.';
+  String get scanIntroDesc =>
+      'Discover nutrition facts and health warnings with one touch. Your smart assistant for healthy nutrition.';
 
   @override
   String get howItWorks => 'How it works?';
@@ -703,7 +728,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get serverErrorTitle => 'Connection Issue';
 
   @override
-  String get serverErrorMessage => 'Sorry, we\'re facing a minor issue with the server. We\'ll be back online soon';
+  String get serverErrorMessage =>
+      'Sorry, we\'re facing a minor issue with the server. We\'ll be back online soon';
 
   @override
   String get retry => 'Retry';
@@ -735,7 +761,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get containsHarmfulStuff => 'Contains ingredients that may not suit children';
+  String get containsHarmfulStuff =>
+      'Contains ingredients that may not suit children';
 
   @override
   String get positives => 'Positives';
@@ -753,7 +780,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveReport => 'Save to History';
 
   @override
-  String get disclaimer => 'Disclaimer: Results are AI-generated estimates and do not replace professional medical advice.';
+  String get disclaimer =>
+      'Disclaimer: Results are AI-generated estimates and do not replace professional medical advice.';
 
   @override
   String get calories => 'Calories';
@@ -804,7 +832,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteReport => 'Delete Report';
 
   @override
-  String get deleteReportConfirm => 'Are you sure you want to delete this report?';
+  String get deleteReportConfirm =>
+      'Are you sure you want to delete this report?';
 
   @override
   String get confirm => 'Confirm';
@@ -813,10 +842,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deleteAccount => 'Delete Account';
 
   @override
-  String get deleteAccountConfirm => 'Are you sure you want to delete your account? This action is permanent and cannot be undone.';
+  String get deleteAccountConfirm =>
+      'Are you sure you want to delete your account? This action is permanent and cannot be undone.';
 
   @override
-  String get deleteAccountWarning => 'All your data, progress, and children profiles will be permanently erased.';
+  String get deleteAccountWarning =>
+      'All your data, progress, and children profiles will be permanently erased.';
 
   @override
   String get recentScansTitle => 'Scan History';
@@ -875,7 +906,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newEmail => 'New Email';
 
   @override
-  String get verifyNewEmailDesc => 'You will need to verify your new email address.';
+  String get verifyNewEmailDesc =>
+      'You will need to verify your new email address.';
 
   @override
   String get noEmail => 'No Email';
@@ -971,7 +1003,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get testNotificationTitle => 'Test Successful! 🎉';
 
   @override
-  String get testNotificationBody => 'Your notifications are working perfectly. Get ready for 5210 adventures!';
+  String get testNotificationBody =>
+      'Your notifications are working perfectly. Get ready for 5210 adventures!';
 
   @override
   String get supportTitle => 'Support & Help';
@@ -983,19 +1016,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get faqUpdateProfileQ => 'How do I update my profile?';
 
   @override
-  String get faqUpdateProfileA => 'You can update your personal information by visiting the Profile tab and clicking \'Edit Profile\'.';
+  String get faqUpdateProfileA =>
+      'You can update your personal information by visiting the Profile tab and clicking \'Edit Profile\'.';
 
   @override
   String get faqManageChildrenQ => 'How do I add or manage children?';
 
   @override
-  String get faqManageChildrenA => 'Go to the Profile tab and tap \'Edit Children\' to manage profiles or add new ones.';
+  String get faqManageChildrenA =>
+      'Go to the Profile tab and tap \'Edit Children\' to manage profiles or add new ones.';
 
   @override
   String get faqDataSecurityQ => 'How do I know my data is secure?';
 
   @override
-  String get faqDataSecurityA => 'Yes, we use advanced encryption to protect your data.';
+  String get faqDataSecurityA =>
+      'Yes, we use advanced encryption to protect your data.';
 
   @override
   String get contactSupportTitle => 'Contact Support';
@@ -1013,7 +1049,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => '5210EG';
 
   @override
-  String get appDescription => 'Designed to help families track health, nutrition, and activities for a happier, healthier lifestyle.';
+  String get appDescription =>
+      'Designed to help families track health, nutrition, and activities for a happier, healthier lifestyle.';
 
   @override
   String get developedBy => 'Developed by';
@@ -1031,37 +1068,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get infoCollectionTitle => '1. Information Collection';
 
   @override
-  String get infoCollectionDesc => 'We collect personal information such as name, email, and password to create your account. We also collect profile data (like age, weight, height) to provide personalized health insights.';
+  String get infoCollectionDesc =>
+      'We collect personal information such as name, email, and password to create your account. We also collect profile data (like age, weight, height) to provide personalized health insights.';
 
   @override
   String get howWeUseInfoTitle => '2. How We Use Information';
 
   @override
-  String get howWeUseInfoDesc => 'Your data is used to improve app functionality, track health progress, and provide tailored recommendations. We do not sell your personal data to third parties.';
+  String get howWeUseInfoDesc =>
+      'Your data is used to improve app functionality, track health progress, and provide tailored recommendations. We do not sell your personal data to third parties.';
 
   @override
   String get dataSecurityTitle => '3. Data Security';
 
   @override
-  String get dataSecurityDesc => 'We implement industry-standard security measures to protect your data. All sensitive information is encrypted during transmission and storage.';
+  String get dataSecurityDesc =>
+      'We implement industry-standard security measures to protect your data. All sensitive information is encrypted during transmission and storage.';
 
   @override
   String get childrenPrivacyTitle => '4. Children\'s Privacy';
 
   @override
-  String get childrenPrivacyDesc => 'This app is designed for families. While we may collect data about children, it is provided and managed by the parent/guardian account holder.';
+  String get childrenPrivacyDesc =>
+      'This app is designed for families. While we may collect data about children, it is provided and managed by the parent/guardian account holder.';
 
   @override
   String get userRightsTitle => '5. User Rights';
 
   @override
-  String get userRightsDesc => 'You have the right to access, update, or delete your personal information at any time through the app settings or by contacting support.';
+  String get userRightsDesc =>
+      'You have the right to access, update, or delete your personal information at any time through the app settings or by contacting support.';
 
   @override
   String get policyChangesTitle => '6. Changes to Policy';
 
   @override
-  String get policyChangesDesc => 'We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.';
+  String get policyChangesDesc =>
+      'We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.';
 
   @override
   String get lastUpdated => 'Last updated: February 2026';
@@ -1108,7 +1151,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get streakNotificationTitle => 'Keep Your Streak Alive';
 
   @override
-  String get streakNotificationMessage => 'Open the app now to maintain your daily streak and reach your goals.';
+  String get streakNotificationMessage =>
+      'Open the app now to maintain your daily streak and reach your goals.';
 
   @override
   String get streakLabel => 'Streak';
@@ -1141,7 +1185,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminDeleteConfirmTitle => 'Confirm Delete';
 
   @override
-  String get adminDeleteConfirmMessage => 'Are you sure you want to delete this doctor? This action cannot be undone.';
+  String get adminDeleteConfirmMessage =>
+      'Are you sure you want to delete this doctor? This action cannot be undone.';
 
   @override
   String get adminNameAr => 'Name (Arabic)';
@@ -1195,10 +1240,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminDoctorPhoto => 'Doctor\'s Photo';
 
   @override
-  String get adminInitializeAccount => 'Initialize Admin Account (First time only)';
+  String get adminInitializeAccount =>
+      'Initialize Admin Account (First time only)';
 
   @override
-  String get adminAccountCreated => 'Admin account ali/123 created successfully';
+  String get adminAccountCreated =>
+      'Admin account ali/123 created successfully';
 
   @override
   String get adminManageRecipes => 'Manage Recipes';
@@ -1213,7 +1260,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get adminNoRecipes => 'No recipes available yet';
 
   @override
-  String get adminDeleteRecipeConfirm => 'Are you sure you want to delete this recipe?';
+  String get adminDeleteRecipeConfirm =>
+      'Are you sure you want to delete this recipe?';
 
   @override
   String get adminRecipeIngredientsAr => 'Ingredients (Ar - one per line)';
@@ -1289,7 +1337,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get bondingEnjoyChallenge => 'Enjoy this challenge today, you\'ll get a new one tomorrow!';
+  String get bondingEnjoyChallenge =>
+      'Enjoy this challenge today, you\'ll get a new one tomorrow!';
 
   @override
   String get bondingDocumentMoment => 'Document the moment ✨';
@@ -1300,13 +1349,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get bondingFingerprintInstruction => 'Please press the fingerprint together to activate the challenge';
+  String get bondingFingerprintInstruction =>
+      'Please press the fingerprint together to activate the challenge';
 
   @override
-  String get bondingPledgeParent => 'I commit to sharing this challenge with my child with love and care.';
+  String get bondingPledgeParent =>
+      'I commit to sharing this challenge with my child with love and care.';
 
   @override
-  String get bondingPledgeChild => 'I promise to do my best and enjoy my time with my family.';
+  String get bondingPledgeChild =>
+      'I promise to do my best and enjoy my time with my family.';
 
   @override
   String get bondingTapToFlip => 'Tap the card to flip it';
@@ -1342,7 +1394,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bondingWallTitle => 'Wall of Memories ✨';
 
   @override
-  String get bondingNoMemories => 'No memories yet, start challenges and capture the moments!';
+  String get bondingNoMemories =>
+      'No memories yet, start challenges and capture the moments!';
 
   @override
   String get bondingMissionAccomplished => 'Mission Done for Today! 🏆';
@@ -1360,7 +1413,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bondingNoMemoriesYet => 'No memories yet';
 
   @override
-  String get bondingStartFirstChallenge => 'Start your first challenge and fill the wall with photos!';
+  String get bondingStartFirstChallenge =>
+      'Start your first challenge and fill the wall with photos!';
 
   @override
   String get bondingViewAll => 'View All';
@@ -1369,7 +1423,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bondingWhyTitle => 'Why Bonding Game?';
 
   @override
-  String get bondingWhyDesc => 'Research shows that 15 minutes of shared activity daily strengthens a child\'s mental health and increases family bonding by 40%.';
+  String get bondingWhyDesc =>
+      'Research shows that 15 minutes of shared activity daily strengthens a child\'s mental health and increases family bonding by 40%.';
 
   @override
   String get bondingDoneBadge => 'Done';
@@ -1423,25 +1478,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutWhoWeAreTitle => 'Who We Are';
 
   @override
-  String get aboutWhoWeAreContent => 'We are a team of fourth-year Mass Communication students at the Canadian International College (CIC). We are committed to promoting preventive health for children and spreading awareness of healthy daily habits within Egyptian families in a simple and practical way. Our idea was inspired by the noticeable increase in children’s reliance on processed foods, reduced physical activity, and excessive screen time, and the direct impact these habits have on their physical and mental well-being. From this observation, we developed an application based on the 5·2·1·0 principle as a clear and practical framework to help families organize a healthier daily routine without complexity.';
+  String get aboutWhoWeAreContent =>
+      'We are a team of fourth-year Mass Communication students at the Canadian International College (CIC). We are committed to promoting preventive health for children and spreading awareness of healthy daily habits within Egyptian families in a simple and practical way. Our idea was inspired by the noticeable increase in children’s reliance on processed foods, reduced physical activity, and excessive screen time, and the direct impact these habits have on their physical and mental well-being. From this observation, we developed an application based on the 5·2·1·0 principle as a clear and practical framework to help families organize a healthier daily routine without complexity.';
 
   @override
   String get aboutAppConceptTitle => 'The App Concept';
 
   @override
-  String get aboutAppConceptContent => 'The application is built around the 5·2·1·0 concept:\n• 5 servings of fruits and vegetables\n• 2 hours of screen time maximum\n• 1 hour of physical activity daily\n• 0 added sugar\nThe concept is delivered through:\n– Simplified educational content\n– Practical tips for mothers\n– Daily reminders for children\n– Interactive activities within the family\nThe application does not provide medical diagnoses or treatment plans. Instead, it aims to support the development of sustainable healthy habits.';
+  String get aboutAppConceptContent =>
+      'The application is built around the 5·2·1·0 concept:\n• 5 servings of fruits and vegetables\n• 2 hours of screen time maximum\n• 1 hour of physical activity daily\n• 0 added sugar\nThe concept is delivered through:\n– Simplified educational content\n– Practical tips for mothers\n– Daily reminders for children\n– Interactive activities within the family\nThe application does not provide medical diagnoses or treatment plans. Instead, it aims to support the development of sustainable healthy habits.';
 
   @override
   String get aboutVisionTitle => 'Our Vision';
 
   @override
-  String get aboutVisionContent => 'To make healthy habits a natural part of every child’s daily life and to position families as essential partners in this positive change.';
+  String get aboutVisionContent =>
+      'To make healthy habits a natural part of every child’s daily life and to position families as essential partners in this positive change.';
 
   @override
   String get aboutMissionTitle => 'Our Mission';
 
   @override
-  String get aboutMissionContent => 'To provide reliable, easy-to-apply, and culturally relevant health content that helps improve children’s quality of life through small, consistent steps.';
+  String get aboutMissionContent =>
+      'To provide reliable, easy-to-apply, and culturally relevant health content that helps improve children’s quality of life through small, consistent steps.';
 
   @override
   String get aboutMediaCoverageTitle => 'Media Coverage';
@@ -1503,7 +1562,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get congratsHero => 'Congrats Hero! 🎉';
 
   @override
-  String get goalReachedMsg => 'You\'ve reached your 5210 steps goal today. Keep moving!';
+  String get goalReachedMsg =>
+      'You\'ve reached your 5210 steps goal today. Keep moving!';
 
   @override
   String get min => 'min';
@@ -1518,5 +1578,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get activityTrackingRequired => 'Activity Tracking Required';
 
   @override
-  String get activityTrackingDesc => 'Please enable activity tracking permission in settings to track your steps';
+  String get activityTrackingDesc =>
+      'Please enable activity tracking permission in settings to track your steps';
 }
